@@ -2,6 +2,7 @@ package com.example.contestifyme.friendsFeature.data
 
 import android.content.Context
 import com.example.contestifyme.friendsFeature.model.FriendsRepository
+import com.example.contestifyme.friendsFeature.model.FriendsRepositoryImpl
 
 interface FriendsContainer {
     val friendsRepository: FriendsRepository
@@ -9,7 +10,8 @@ interface FriendsContainer {
 class FriendsContainerImpl(
     private val context: Context
 ) : FriendsContainer {
-    override val friendsRepository: FriendsRepository
-        get() = TODO("Not yet implemented")
+    override val friendsRepository: FriendsRepository by lazy {
+        FriendsRepositoryImpl()
+    }
 
 }

@@ -2,6 +2,7 @@ package com.example.contestifyme.compareFeature.data
 
 import android.content.Context
 import com.example.contestifyme.compareFeature.model.CompareRepository
+import com.example.contestifyme.compareFeature.model.CompareRepositoryImpl
 
 interface CompareContainer {
     val compareRepository: CompareRepository
@@ -9,7 +10,7 @@ interface CompareContainer {
 class CompareContainerImpl(
     private val context: Context
 ) : CompareContainer {
-    override val compareRepository: CompareRepository
-        get() = TODO("Not yet implemented")
-
+    override val compareRepository: CompareRepository by lazy {
+        CompareRepositoryImpl()
+    }
 }

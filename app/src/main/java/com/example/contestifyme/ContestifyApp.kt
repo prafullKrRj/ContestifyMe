@@ -1,5 +1,8 @@
 package com.example.contestifyme
 
+import androidx.compose.foundation.layout.Arrangement.SpaceEvenly
+import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material.icons.filled.Menu
@@ -105,16 +108,22 @@ fun ContestifyNavigationBar(navigateTo: (Screens) -> Unit) {
     BottomAppBar (
         modifier = Modifier.fillMaxWidth(),
     ) {
-        repeat(5) {
-            IconButton(
-                onClick = {
-                    navigateTo(array[it])
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = SpaceEvenly
+        ) {
+            repeat(5) {
+                IconButton(
+                    onClick = {
+                        navigateTo(array[it])
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Home,
+                        contentDescription = "Home"
+                    )
                 }
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Home,
-                    contentDescription = "Home"
-                )
             }
         }
     }

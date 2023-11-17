@@ -2,6 +2,7 @@ package com.example.contestifyme.profileFeature.data
 
 import android.content.Context
 import com.example.contestifyme.profileFeature.model.ProfileRepository
+import com.example.contestifyme.profileFeature.model.ProfileRepositoryImpl
 
 interface ProfileContainer {
     val profileRepository: ProfileRepository
@@ -9,7 +10,7 @@ interface ProfileContainer {
 class ProfileContainerImpl(
     private val context: Context
 ) : ProfileContainer {
-    override val profileRepository: ProfileRepository
-        get() = TODO("Not yet implemented")
-
+    override val profileRepository: ProfileRepository by lazy {
+        ProfileRepositoryImpl()
+    }
 }
