@@ -2,12 +2,12 @@ package com.example.contestifyme
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,8 +16,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -115,19 +118,25 @@ fun ContestifyNavigationBar(navigateTo: (Screens) -> Unit) {
         Pair(R.string.problems, R.drawable.problems)
     )
 
-    NavigationBar {
+    NavigationBar (
+        modifier = Modifier.clip(shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)),
+    ) {
         items.forEachIndexed { index, item ->
-            NavigationBarItem(
-                icon = { Icon(painter = painterResource(id = item.second), contentDescription = stringResource(
-                    id = item.first
-                )) },
+            NavigationBarItem (
+                icon = { Icon(
+                    painter = painterResource(id = item.second),
+                    contentDescription = stringResource(
+                        id = item.first,
+                    )
+                ) },
                 label = { Text(text = stringResource(id = item.first)) },
                 selected = selectedItem == index,
                 onClick = {
                     selectedItem = index
                     navigateTo(array[index])
                 },
-                alwaysShowLabel = false
+                alwaysShowLabel = false,
+                colors = NavigationBarItemDefaults.colors(indicatorColor = Color.Green)
             )
         }
     }
