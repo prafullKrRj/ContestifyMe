@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ContestifyMe</string>
+    <string name="profile">Profile</string>
+    <string name="contest">Contest</string>
+    <string name="compare">Contest</string>
+    <string name="friends">Friends</string>
+    <string name="problems">Problems</string>
 </resources>

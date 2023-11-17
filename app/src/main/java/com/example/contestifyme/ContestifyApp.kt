@@ -1,22 +1,23 @@
 package com.example.contestifyme
 
-import androidx.compose.foundation.layout.Arrangement.SpaceEvenly
-import androidx.compose.ui.Alignment
-import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Icon
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.Icons
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.ui.Modifier
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -26,11 +27,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.contestifyme.Screens.PROFILE
 import com.example.contestifyme.Screens.COMPARE
 import com.example.contestifyme.Screens.CONTESTS
 import com.example.contestifyme.Screens.FRIENDS
 import com.example.contestifyme.Screens.PROBLEMS
+import com.example.contestifyme.Screens.PROFILE
 import com.example.contestifyme.compareFeature.ui.CompareScreen
 import com.example.contestifyme.compareFeature.ui.CompareViewModel
 import com.example.contestifyme.contestsFeature.ui.ContestsScreen
@@ -105,26 +106,29 @@ fun CreationExtras.contestifyApplication() : ContestifyApplication =
 fun ContestifyNavigationBar(navigateTo: (Screens) -> Unit) {
     val array = listOf(PROFILE, CONTESTS, COMPARE, FRIENDS, PROBLEMS)
 
-    BottomAppBar (
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = SpaceEvenly
-        ) {
-            repeat(5) {
-                IconButton(
-                    onClick = {
-                        navigateTo(array[it])
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Home,
-                        contentDescription = "Home"
-                    )
-                }
-            }
+    var selectedItem by remember { mutableStateOf(0) }
+    val items = listOf(
+        Pair(R.string.profile, R.drawable.profile),
+        Pair(R.string.contest, R.drawable.contest),
+        Pair(R.string.compare, R.drawable.compare),
+        Pair(R.string.friends, R.drawable.friends),
+        Pair(R.string.problems, R.drawable.problems)
+    )
+
+    NavigationBar {
+        items.forEachIndexed { index, item ->
+            NavigationBarItem(
+                icon = { Icon(painter = painterResource(id = item.second), contentDescription = stringResource(
+                    id = item.first
+                )) },
+                label = { Text(text = stringResource(id = item.first)) },
+                selected = selectedItem == index,
+                onClick = {
+                    selectedItem = index
+                    navigateTo(array[index])
+                },
+                alwaysShowLabel = false
+            )
         }
     }
 }
