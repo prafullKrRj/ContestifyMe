@@ -14,6 +14,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -60,7 +62,8 @@ fun ContestifyAPP() {
         }
     }
 }
-
+fun CreationExtras.contestifyApplication() : ContestifyApplication =
+    (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as ContestifyApplication)
 @Composable
 fun ContestifyNavigationBar(navigateTo: (Screens) -> Unit) {
     val array = listOf(PROFILE, CONTESTS, COMPARE, FRIENDS, PROBLEMS)
