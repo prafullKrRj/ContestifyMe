@@ -102,6 +102,7 @@ fun ProfileCard (modifier: Modifier) {
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileAppBar(settingClicked: () -> Unit) {
     CenterAlignedTopAppBar(
