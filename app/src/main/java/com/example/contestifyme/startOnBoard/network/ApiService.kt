@@ -1,6 +1,6 @@
-package com.example.contestifyme.ui.network
+package com.example.contestifyme.startOnBoard.network
 
-import com.example.contestifyme.ui.network.model.userInfo
+import com.example.contestifyme.startOnBoard.network.model.userInfo
 import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.http.Url

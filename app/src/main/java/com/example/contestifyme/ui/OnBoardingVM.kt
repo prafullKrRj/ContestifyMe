@@ -3,8 +3,8 @@ package com.example.contestifyme.ui
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.contestifyme.ui.data.AppUser
-import com.example.contestifyme.ui.data.OnBoardRepository
+import com.example.contestifyme.startOnBoard.data.AppUser
+import com.example.contestifyme.startOnBoard.data.OnBoardRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map

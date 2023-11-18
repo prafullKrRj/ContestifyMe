@@ -11,8 +11,8 @@ import com.example.contestifyme.features.problemsFeature.data.ProblemsContainer
 import com.example.contestifyme.features.problemsFeature.data.ProblemsContainerImpl
 import com.example.contestifyme.features.profileFeature.data.ProfileContainer
 import com.example.contestifyme.features.profileFeature.data.ProfileContainerImpl
-import com.example.contestifyme.ui.data.OnBoardContainer
-import com.example.contestifyme.ui.data.OnBoardContainerImpl
+import com.example.contestifyme.startOnBoard.data.OnBoardContainer
+import com.example.contestifyme.startOnBoard.data.OnBoardContainerImpl
 
 class ContestifyApplication : Application(){
     lateinit var profileContainer: ProfileContainer

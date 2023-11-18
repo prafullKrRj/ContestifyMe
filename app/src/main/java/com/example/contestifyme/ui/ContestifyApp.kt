@@ -57,7 +57,6 @@ import com.example.contestifyme.ui.Screens.PROBLEMS
 import com.example.contestifyme.ui.Screens.PROFILE
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ContestifyAPP (viewModel: OnBoardingVM) {
     val navController: NavHostController = rememberNavController()
@@ -187,7 +186,7 @@ fun ContestifyNavigationBar(navigateTo: (Screens) -> Unit) {
                     navigateTo(array[index])
                 },
                 alwaysShowLabel = false,
-                colors = NavigationBarItemDefaults.colors(indicatorColor = Color.Green)
+                colors = NavigationBarItemDefaults.colors()
             )
         }
     }

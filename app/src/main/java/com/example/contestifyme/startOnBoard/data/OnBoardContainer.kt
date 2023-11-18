@@ -1,10 +1,10 @@
-package com.example.contestifyme.ui.data
+package com.example.contestifyme.startOnBoard.data
 
 import android.content.Context
 import com.example.contestifyme.constants.Constants.BASE_URL
 import com.example.contestifyme.constants.Constants.URL
-import com.example.contestifyme.ui.network.ApiService
-import com.example.contestifyme.ui.network.model.userInfo
+import com.example.contestifyme.startOnBoard.network.ApiService
+import com.example.contestifyme.startOnBoard.network.model.userInfo
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

@@ -1,4 +1,4 @@
-package com.example.contestifyme.ui.network.model
+package com.example.contestifyme.startOnBoard.network.model
 
 import com.google.gson.annotations.SerializedName
 

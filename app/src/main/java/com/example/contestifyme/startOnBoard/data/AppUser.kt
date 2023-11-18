@@ -1,4 +1,4 @@
-package com.example.contestifyme.ui.data
+package com.example.contestifyme.startOnBoard.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
