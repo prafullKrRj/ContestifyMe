@@ -1,5 +1,6 @@
 package com.example.contestifyme.ui
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,11 +40,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.contestifyme.ContestifyApplication
 import com.example.contestifyme.R
-import com.example.contestifyme.ui.Screens.COMPARE
-import com.example.contestifyme.ui.Screens.CONTESTS
-import com.example.contestifyme.ui.Screens.FRIENDS
-import com.example.contestifyme.ui.Screens.PROBLEMS
-import com.example.contestifyme.ui.Screens.PROFILE
 import com.example.contestifyme.features.compareFeature.ui.CompareScreen
 import com.example.contestifyme.features.compareFeature.ui.CompareViewModel
 import com.example.contestifyme.features.contestsFeature.ui.ContestsScreen
@@ -54,8 +50,14 @@ import com.example.contestifyme.features.problemsFeature.ui.ProblemsScreen
 import com.example.contestifyme.features.problemsFeature.ui.ProblemsViewModel
 import com.example.contestifyme.features.profileFeature.ui.ProfileScreen
 import com.example.contestifyme.features.profileFeature.ui.ProfileViewModel
+import com.example.contestifyme.ui.Screens.COMPARE
+import com.example.contestifyme.ui.Screens.CONTESTS
+import com.example.contestifyme.ui.Screens.FRIENDS
+import com.example.contestifyme.ui.Screens.PROBLEMS
+import com.example.contestifyme.ui.Screens.PROFILE
 import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ContestifyAPP (viewModel: OnBoardingVM) {
     val navController: NavHostController = rememberNavController()
@@ -67,8 +69,12 @@ fun ContestifyAPP (viewModel: OnBoardingVM) {
         delay(1500)
         showBox = false
     }
-    Box(modifier = Modifier.fillMaxSize()) {
+    var visible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        visible = true
+    }
 
+    Box(modifier = Modifier.fillMaxSize()) {
         if (viewModelState.users.isEmpty()) {
             OnBoardingScreen(
                 viewModel = viewModel,
@@ -77,24 +83,25 @@ fun ContestifyAPP (viewModel: OnBoardingVM) {
             ContestifyMainApp(navController, viewModelState.users[0].handle)
         }
         if (showBox) {
-            Box(modifier = Modifier.fillMaxSize().background(Color.Green), contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Green)
+                , contentAlignment = Alignment.Center) {
                 ContestifyImage(modifier = Modifier)
             }
         }
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContestifyMainApp(navController: NavHostController, handle: String) {
-
     Scaffold(
         bottomBar = {
             ContestifyNavigationBar {
                 navController.navigate(it.name)
             }
-        }
+        },
     ) { paddingValues ->
         Column(
             modifier = Modifier.padding(paddingValues),
@@ -143,6 +150,7 @@ fun ContestifyMainApp(navController: NavHostController, handle: String) {
             }
         }
     }
+
 }
 
 fun CreationExtras.contestifyApplication() : ContestifyApplication =
