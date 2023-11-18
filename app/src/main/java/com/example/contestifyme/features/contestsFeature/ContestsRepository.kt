@@ -1,4 +1,4 @@
-package com.example.contestifyme.features.contestsFeature.model
+package com.example.contestifyme.features.contestsFeature
 
 interface ContestsRepository {
 

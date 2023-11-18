@@ -1,4 +1,4 @@
-package com.example.contestifyme.features.problemsFeature.model
+package com.example.contestifyme.features.problemsFeature.data
 
 interface ProblemsRepository {
 

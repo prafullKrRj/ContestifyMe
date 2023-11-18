@@ -1,4 +1,4 @@
-package com.example.contestifyme.features.profileFeature.model
+package com.example.contestifyme.features.profileFeature.data
 
 interface ProfileRepository {
 

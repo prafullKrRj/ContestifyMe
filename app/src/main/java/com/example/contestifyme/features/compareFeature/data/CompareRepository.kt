@@ -1,4 +1,4 @@
-package com.example.contestifyme.features.compareFeature.model
+package com.example.contestifyme.features.compareFeature.data
 
 interface CompareRepository {
 

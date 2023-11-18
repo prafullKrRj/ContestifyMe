@@ -1,8 +1,8 @@
 package com.example.contestifyme.features.contestsFeature.data
 
 import android.content.Context
-import com.example.contestifyme.features.contestsFeature.model.ContestsRepository
-import com.example.contestifyme.features.contestsFeature.model.ContestsRepositoryImpl
+import com.example.contestifyme.features.contestsFeature.ContestsRepository
+import com.example.contestifyme.features.contestsFeature.ContestsRepositoryImpl
 
 interface ContestsContainer {
     val contestsRepository: ContestsRepository
