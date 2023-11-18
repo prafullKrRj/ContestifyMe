@@ -36,7 +36,7 @@ fun FrontScreen(handle: String, swipeToSubmission: () -> Unit = {}) {
         .fillMaxSize()) {
         item {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End
             ) {

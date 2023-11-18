@@ -112,7 +112,7 @@ fun ContestifyMainApp(navController: NavHostController, handle: String) {
                         initializer {
                             ProfileViewModel(
                                 profileRepository = contestifyApplication().profileContainer.profileRepository,
-                                hande = handle
+                                handle = handle
                             )
                         }
                     }), handle = handle)
