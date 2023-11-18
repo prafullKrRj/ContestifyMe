@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import com.example.contestifyme.R
 
 @Composable
-fun FrontScreen(swipeToSubmission: () -> Unit = {}) {
+fun FrontScreen(handle: String, swipeToSubmission: () -> Unit = {}) {
     LazyColumn(modifier = Modifier
         .padding(16.dp)
         .fillMaxSize()) {
@@ -46,7 +46,7 @@ fun FrontScreen(swipeToSubmission: () -> Unit = {}) {
             }
         }
         item {
-            RankCard(modifier = Modifier.fillMaxWidth(), rank = "newbie", handle = "alpha123", country = "India")
+            RankCard(modifier = Modifier.fillMaxWidth(), rank = "newbie", handle = handle, country = "India")
             Spacer(modifier = Modifier.height(8.dp))
         }
         item {

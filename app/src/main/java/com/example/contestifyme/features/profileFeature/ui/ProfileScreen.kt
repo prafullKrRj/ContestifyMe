@@ -53,7 +53,7 @@ fun ProfileScreen(
                 .padding(paddingValues = paddingValues)) {
             HorizontalPager(pageCount = 2, state = pagerState, userScrollEnabled = true) {
                 when (it) {
-                    0 -> FrontScreen {
+                    0 -> FrontScreen(handle) {
                         scope.launch { pagerState.animateScrollToPage(1) }
                     }
                     1 -> SubmissionsScreen()

@@ -1,8 +1,8 @@
 package com.example.contestifyme.startOnBoard.data
 
 import android.content.Context
+import com.example.contestifyme.constants.Constants
 import com.example.contestifyme.constants.Constants.BASE_URL
-import com.example.contestifyme.constants.Constants.URL
 import com.example.contestifyme.startOnBoard.network.ApiService
 import com.example.contestifyme.startOnBoard.network.model.userInfo
 import kotlinx.coroutines.flow.Flow
@@ -50,5 +50,5 @@ class OnBoardRepositoryImpl (
 
     override fun getUser(): Flow<List<AppUser>> = userDao.getUser()
 
-    override suspend fun getUserValidation(handle: String): userInfo = apiService.getUserInfo(URL)
+    override suspend fun getUserValidation(handle: String): userInfo = apiService.getUserInfo(Constants.getUserStart(handle))
 }
