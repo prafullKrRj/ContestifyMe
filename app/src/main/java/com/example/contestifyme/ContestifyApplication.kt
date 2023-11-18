@@ -1,16 +1,18 @@
 package com.example.contestifyme
 
 import android.app.Application
-import com.example.contestifyme.compareFeature.data.CompareContainer
-import com.example.contestifyme.compareFeature.data.CompareContainerImpl
-import com.example.contestifyme.contestsFeature.data.ContestsContainer
-import com.example.contestifyme.contestsFeature.data.ContestsContainerImpl
-import com.example.contestifyme.friendsFeature.data.FriendsContainer
-import com.example.contestifyme.friendsFeature.data.FriendsContainerImpl
-import com.example.contestifyme.problemsFeature.data.ProblemsContainer
-import com.example.contestifyme.problemsFeature.data.ProblemsContainerImpl
-import com.example.contestifyme.profileFeature.data.ProfileContainer
-import com.example.contestifyme.profileFeature.data.ProfileContainerImpl
+import com.example.contestifyme.features.compareFeature.data.CompareContainer
+import com.example.contestifyme.features.compareFeature.data.CompareContainerImpl
+import com.example.contestifyme.features.contestsFeature.data.ContestsContainer
+import com.example.contestifyme.features.contestsFeature.data.ContestsContainerImpl
+import com.example.contestifyme.features.friendsFeature.data.FriendsContainer
+import com.example.contestifyme.features.friendsFeature.data.FriendsContainerImpl
+import com.example.contestifyme.features.problemsFeature.data.ProblemsContainer
+import com.example.contestifyme.features.problemsFeature.data.ProblemsContainerImpl
+import com.example.contestifyme.features.profileFeature.data.ProfileContainer
+import com.example.contestifyme.features.profileFeature.data.ProfileContainerImpl
+import com.example.contestifyme.ui.data.OnBoardContainer
+import com.example.contestifyme.ui.data.OnBoardContainerImpl
 
 class ContestifyApplication : Application(){
     lateinit var profileContainer: ProfileContainer
@@ -18,6 +20,7 @@ class ContestifyApplication : Application(){
     lateinit var compareContainer: CompareContainer
     lateinit var friendsContainer: FriendsContainer
     lateinit var problemsContainer: ProblemsContainer
+    lateinit var onBoardContainer: OnBoardContainer
     override fun onCreate() {
         super.onCreate()
         initialiseContainers()
@@ -28,5 +31,6 @@ class ContestifyApplication : Application(){
         compareContainer = CompareContainerImpl(this)
         friendsContainer = FriendsContainerImpl(this)
         problemsContainer = ProblemsContainerImpl(this)
+        onBoardContainer = OnBoardContainerImpl(this)
     }
 }
