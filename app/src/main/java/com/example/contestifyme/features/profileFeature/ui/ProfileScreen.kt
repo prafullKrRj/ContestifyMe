@@ -2,15 +2,16 @@
 
 package com.example.contestifyme.features.profileFeature.ui
 
-import androidx.compose.material3.ElevatedCard
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -20,6 +21,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -27,14 +29,16 @@ import androidx.compose.ui.text.font.FontFamily.Companion.SansSerif
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.contestifyme.R
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel,
     handle: String
 ) {
-
+    val pagerState = rememberPagerState()
+    val scope = rememberCoroutineScope()
     Scaffold (
         topBar = {
             ProfileAppBar {
@@ -42,61 +46,19 @@ fun ProfileScreen(
             }
         }
     ) { paddingValues ->
-        LazyColumn(modifier = Modifier.padding(16.dp), contentPadding = paddingValues) {
-            item {
-                ProfileCard(modifier = Modifier.fillMaxWidth())
-            }
-        }
-    }
-}
 
-@Composable
-fun ProfileCard (modifier: Modifier) {
-    ElevatedCard {
-        Column(
-            modifier = modifier.padding(horizontal = 12.dp, vertical = 8.dp)
-        ) {
-            Text(
-                text = "Name",
-                fontFamily = SansSerif,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Spacer(modifier = Modifier.padding(4.dp))
-            Text(
-                text = "Email",
-                fontFamily = SansSerif,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Spacer(modifier = Modifier.padding(4.dp))
-            Text(
-                text = "Phone",
-                fontFamily = SansSerif,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Spacer(modifier = Modifier.padding(4.dp))
-            Text(
-                text = "College",
-                fontFamily = SansSerif,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Spacer(modifier = Modifier.padding(4.dp))
-            Text(
-                text = "Year",
-                fontFamily = SansSerif,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Spacer(modifier = Modifier.padding(4.dp))
-            Text(
-                text = "Branch",
-                fontFamily = SansSerif,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+        Column (
+            Modifier
+                .fillMaxSize()
+                .padding(paddingValues = paddingValues)) {
+            HorizontalPager(pageCount = 2, state = pagerState, userScrollEnabled = true) {
+                when (it) {
+                    0 -> FrontScreen {
+                        scope.launch { pagerState.animateScrollToPage(1) }
+                    }
+                    1 -> SubmissionsScreen()
+                }
+            }
         }
     }
 }
