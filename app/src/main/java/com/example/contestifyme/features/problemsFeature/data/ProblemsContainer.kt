@@ -1,8 +1,10 @@
 package com.example.contestifyme.features.problemsFeature.data
 
 import android.content.Context
+import com.example.contestifyme.ContestifyApplication
 import com.example.contestifyme.constants.Constants.BASE_URL
-import com.example.contestifyme.features.problemsFeature.network.ProblemsApiService
+import com.example.contestifyme.features.problemsFeature.data.local.ProblemsDatabase
+import com.example.contestifyme.features.problemsFeature.data.remote.ProblemsApiService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -21,6 +23,6 @@ class ProblemsContainerImpl(
 
     private val apiService: ProblemsApiService = retrofit.create(ProblemsApiService::class.java)
     override val problemsRepository: ProblemsRepository by lazy {
-        ProblemsRepositoryImpl(apiService)
+        ProblemsRepositoryImpl(apiService, ProblemsDatabase.getDatabase(context).problemsDao())
     }
 }

@@ -1,4 +1,4 @@
-package com.example.contestifyme.features.problemsFeature.network
+package com.example.contestifyme.features.problemsFeature.data.remote
 
 import com.example.contestifyme.features.problemsFeature.model.ProblemsDto
 import retrofit2.http.GET

@@ -7,4 +7,6 @@ data class ProblemsDto(
     val result: Result,
     @SerializedName("status")
     val status: String
-)
+) {
+
+}

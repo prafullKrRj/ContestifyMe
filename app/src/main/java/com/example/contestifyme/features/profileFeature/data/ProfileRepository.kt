@@ -1,7 +1,5 @@
 package com.example.contestifyme.features.profileFeature.data
 
-import android.util.Log
-import com.example.contestifyme.features.profileFeature.constants.Constants
 import com.example.contestifyme.features.profileFeature.data.local.ProfileDao
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserRatingEntity
@@ -9,8 +7,6 @@ import com.example.contestifyme.features.profileFeature.data.local.entities.User
 import com.example.contestifyme.features.profileFeature.data.remote.ProfileApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import retrofit2.HttpException
-import java.io.IOException
 
 interface ProfileRepository {
 
