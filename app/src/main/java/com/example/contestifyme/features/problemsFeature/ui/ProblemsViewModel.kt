@@ -1,6 +1,8 @@
 package com.example.contestifyme.features.problemsFeature.ui
 
-import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.contestifyme.features.problemsFeature.data.ProblemsRepository
@@ -13,7 +15,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
-import java.lang.StringBuilder
 
 class ProblemsViewModel(
     private val problemsRepository: ProblemsRepository,
@@ -23,6 +24,7 @@ class ProblemsViewModel(
         ProblemState(it)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ProblemState())
 
+    var isError by mutableStateOf(false)
     init {
         getProblems()
     }
@@ -45,12 +47,13 @@ class ProblemsViewModel(
                         )
                     )
                 }
+                isError = false
                 println(list)
                 problemsRepository.upsertProblems(list)
             } catch (e: HttpException) {
-                Log.d("prafull", "getProblems: http")
+                isError = true
             } catch (e: IOException) {
-                Log.d("prafull", "getProblems: io")
+                isError = true
             }
         }
     }

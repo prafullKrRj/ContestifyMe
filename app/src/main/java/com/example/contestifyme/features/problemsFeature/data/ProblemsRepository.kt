@@ -2,7 +2,7 @@ package com.example.contestifyme.features.problemsFeature.data
 
 import com.example.contestifyme.features.problemsFeature.data.local.ProblemsDao
 import com.example.contestifyme.features.problemsFeature.data.local.entities.ProblemsEntity
-import com.example.contestifyme.features.problemsFeature.problemsConstants.Constants
+import com.example.contestifyme.features.problemsFeature.problemsConstants.ProblemsConstants
 import com.example.contestifyme.features.problemsFeature.model.ProblemsDto
 import com.example.contestifyme.features.problemsFeature.data.remote.ProblemsApiService
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +20,7 @@ class ProblemsRepositoryImpl (
     private val problemsApiService: ProblemsApiService,
     private val problemsDao: ProblemsDao
 ) : ProblemsRepository {
-    override suspend fun getProblemsFromApi(): ProblemsDto = problemsApiService.getProblems(Constants.getProblems())
+    override suspend fun getProblemsFromApi(): ProblemsDto = problemsApiService.getProblems(ProblemsConstants.getProblems())
     override fun getProblemsFromDb(): Flow<List<ProblemsEntity>> = problemsDao.getProblemsFromDb()
 
     override suspend fun deleteAll() = problemsDao.deleteALl()
