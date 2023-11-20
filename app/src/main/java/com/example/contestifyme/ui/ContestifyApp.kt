@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.ViewModelFactoryDsl
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -94,10 +95,16 @@ fun ContestifyAPP (viewModel: OnBoardingVM) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContestifyMainApp(navController: NavHostController, handle: String) {
+    var selected by rememberSaveable {
+        mutableStateOf(PROFILE.name)
+    }
     Scaffold(
         bottomBar = {
             ContestifyNavigationBar {
-                navController.navigate(it.name)
+                if (selected != it.name) {
+                    navController.navigate(it.name)
+                    selected = it.name
+                }
             }
         },
     ) { paddingValues ->
@@ -108,47 +115,23 @@ fun ContestifyMainApp(navController: NavHostController, handle: String) {
             NavHost(navController = navController, startDestination = PROFILE.name) {
 
                 composable(route = PROFILE.name) {
-                    ProfileScreen(viewModel = viewModel(factory = viewModelFactory {
-                        initializer {
-                            ProfileViewModel(
-                                profileRepository = contestifyApplication().profileContainer.profileRepository,
-                                handle = handle
-                            )
-                        }
-                    }), handle = handle)
+                    ProfileScreen(viewModel = viewModel(factory = AppViewModelProvider.profileViewModel(handle)), handle = handle)
                 }
                 composable(route = CONTESTS.name) {
-                    ContestsScreen(viewModel = viewModel(factory = viewModelFactory {
-                        initializer {
-                            ContestsViewModel(contestifyApplication().contestsContainer.contestsRepository)
-                        }
-                    }))
+                    ContestsScreen(viewModel = viewModel(factory = AppViewModelProvider.contestVM))
                 }
                 composable(route = COMPARE.name) {
-                    CompareScreen(viewModel = viewModel(factory = viewModelFactory {
-                        initializer {
-                            CompareViewModel(contestifyApplication().compareContainer.compareRepository)
-                        }
-                    }))
+                    CompareScreen(viewModel = viewModel(factory = AppViewModelProvider.compareVm))
                 }
                 composable(route = FRIENDS.name) {
-                    FriendsScreen(viewModel = viewModel(factory = viewModelFactory {
-                        initializer {
-                            FriendsViewModel(contestifyApplication().friendsContainer.friendsRepository)
-                        }
-                    }))
+                    FriendsScreen(viewModel = viewModel(factory = AppViewModelProvider.friendsVM))
                 }
                 composable(route = PROBLEMS.name) {
-                    ProblemsScreen(viewModel = viewModel(factory = viewModelFactory {
-                        initializer {
-                            ProblemsViewModel(contestifyApplication().problemsContainer.problemsRepository)
-                        }
-                    }))
+                    ProblemsScreen(viewModel = viewModel(factory = AppViewModelProvider.problemsVM))
                 }
             }
         }
     }
-
 }
 
 fun CreationExtras.contestifyApplication() : ContestifyApplication =
@@ -196,4 +179,36 @@ enum class Screens {
     COMPARE,
     FRIENDS,
     PROBLEMS
+}
+object AppViewModelProvider {
+    fun profileViewModel(handle: String): ViewModelProvider.Factory {
+        return viewModelFactory {
+            initializer {
+                ProfileViewModel(
+                    profileRepository = contestifyApplication().profileContainer.profileRepository,
+                    handle = handle
+                )
+            }
+        }
+    }
+    val problemsVM = viewModelFactory {
+        initializer {
+            ProblemsViewModel(contestifyApplication().problemsContainer.problemsRepository)
+        }
+    }
+    val contestVM = viewModelFactory {
+        initializer {
+            ContestsViewModel(contestifyApplication().contestsContainer.contestsRepository)
+        }
+    }
+    val compareVm = viewModelFactory {
+        initializer {
+            CompareViewModel(contestifyApplication().compareContainer.compareRepository)
+        }
+    }
+    val friendsVM = viewModelFactory {
+        initializer {
+            FriendsViewModel(contestifyApplication().friendsContainer.friendsRepository)
+        }
+    }
 }

@@ -81,7 +81,6 @@ fun ProblemsScreen(viewModel: ProblemsViewModel) {
 @Composable
 fun ProblemsUI(problems: ProblemState, modifier: Modifier) {
     Column (modifier.fillMaxSize()){
-
         SearchBar()
         Spacer(modifier = Modifier.padding(vertical = 4.dp))
         LazyColumn (modifier = Modifier.padding(horizontal = 12.dp)) {
