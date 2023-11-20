@@ -8,7 +8,7 @@ import com.example.contestifyme.features.problemsFeature.data.remote.ProblemsApi
 import kotlinx.coroutines.flow.Flow
 
 interface ProblemsRepository {
-    suspend fun getProblemsFromApi(): ProblemsDto
+    suspend fun getProblemsFromApi(url: String): ProblemsDto
 
     fun getProblemsFromDb(): Flow<List<ProblemsEntity>>
 
@@ -20,7 +20,7 @@ class ProblemsRepositoryImpl (
     private val problemsApiService: ProblemsApiService,
     private val problemsDao: ProblemsDao
 ) : ProblemsRepository {
-    override suspend fun getProblemsFromApi(): ProblemsDto = problemsApiService.getProblems(ProblemsConstants.getProblems())
+    override suspend fun getProblemsFromApi(url: String): ProblemsDto = problemsApiService.getProblems(url)
     override fun getProblemsFromDb(): Flow<List<ProblemsEntity>> = problemsDao.getProblemsFromDb()
 
     override suspend fun deleteAll() = problemsDao.deleteALl()

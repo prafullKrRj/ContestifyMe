@@ -112,7 +112,7 @@ fun ContestifyMainApp(navController: NavHostController, handle: String) {
             modifier = Modifier.padding(paddingValues),
         ) {
 
-            NavHost(navController = navController, startDestination = PROFILE.name) {
+            NavHost(navController = navController, startDestination = PROBLEMS.name) {
 
                 composable(route = PROFILE.name) {
                     ProfileScreen(viewModel = viewModel(factory = AppViewModelProvider.profileViewModel(handle)), handle = handle)

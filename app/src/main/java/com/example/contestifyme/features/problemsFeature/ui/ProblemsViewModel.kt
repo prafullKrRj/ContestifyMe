@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.contestifyme.features.problemsFeature.data.ProblemsRepository
 import com.example.contestifyme.features.problemsFeature.data.local.entities.ProblemsEntity
 import com.example.contestifyme.features.problemsFeature.model.ProblemsDto
+import com.example.contestifyme.features.problemsFeature.problemsConstants.ProblemsConstants
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -26,12 +27,12 @@ class ProblemsViewModel(
 
     var isError by mutableStateOf(false)
     init {
-        getProblems()
+        getProblems(ProblemsConstants.getProblems())
     }
-    private fun getProblems() {
+    fun getProblems(url: String) {
         viewModelScope.launch {
             try {
-                val x = problemsRepository.getProblemsFromApi()
+                val x = problemsRepository.getProblemsFromApi(url)
                 problemsRepository.deleteAll()
                 val list = mutableListOf<ProblemsEntity>()
                 x.result.problems.forEachIndexed{ index, item->
@@ -57,7 +58,9 @@ class ProblemsViewModel(
             }
         }
     }
+    var selectedTags: List<String> = emptyList()
 }
+
 fun getTags(list: List<String>) : String {
     list.sorted()
     val sb = StringBuilder()
