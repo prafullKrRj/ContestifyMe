@@ -2,8 +2,6 @@
 
 package com.example.contestifyme.features.problemsFeature.ui
 
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.AlertDialog
 import android.annotation.SuppressLint
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -29,6 +27,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Checkbox
@@ -45,6 +44,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -58,7 +58,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -73,11 +72,14 @@ import kotlinx.coroutines.delay
 @Composable
 fun ProblemsScreen(viewModel: ProblemsViewModel) {
     val state by viewModel.problemsUiState.collectAsState()
-    val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
     var shouldDelay by rememberSaveable { mutableStateOf(true) }
     var selectedTags by remember { mutableStateOf(listOf<String>()) }
-    val focusManager = LocalFocusManager.current
+    var tags by rememberSaveable {
+        mutableStateOf(listOf(""))
+    }
+
     LaunchedEffect(Unit) {
         delay(1500) // Delay for 2000 milliseconds (2 seconds)
         shouldDelay = false // Set the flag to false after the delay
@@ -92,12 +94,17 @@ fun ProblemsScreen(viewModel: ProblemsViewModel) {
             ProblemsTopBar()
         }
     ) { paddingValues ->
-        ProblemsUI(viewModel = viewModel, problems = state, modifier = Modifier.padding(paddingValues = paddingValues), selectedTags = selectedTags, sortType = {
-            viewModel.getBySort(1200)
+        ProblemsUI(viewModel = viewModel, list = state.entity.filter {
+            if (selectedTags.isNotEmpty()) {
+                it.tags.containsAll(selectedTags)
+            } else {
+                true
+            }
+        }, modifier = Modifier.padding(paddingValues = paddingValues), selectedTags = selectedTags, sortType = {
+
         }) {
-            viewModel.selectedTags = it
             selectedTags = it
-            viewModel.getProblems(ProblemsConstants.getProblemsByTags(selectedTags))
+            tags.plus(it)
         }
         if (shouldDelay) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -107,7 +114,7 @@ fun ProblemsScreen(viewModel: ProblemsViewModel) {
     }
 }
 @Composable
-fun ProblemsUI(viewModel: ProblemsViewModel, problems: ProblemState, modifier: Modifier, sortType: (String) -> Unit, selectedTags: List<String>, updateList: (List<String>) -> Unit) {
+fun ProblemsUI(viewModel: ProblemsViewModel, list: List<ProblemsEntity>, modifier: Modifier, sortType: (String) -> Unit, selectedTags: List<String>, updateList: (List<String>) -> Unit) {
     Column (modifier.fillMaxSize()){
         SearchBar()
         Spacer(modifier = Modifier.padding(vertical = 2.dp))
@@ -118,7 +125,7 @@ fun ProblemsUI(viewModel: ProblemsViewModel, problems: ProblemState, modifier: M
         }
         Spacer(modifier = Modifier.padding(vertical = 2.dp))
         LazyColumn (modifier = Modifier.padding(horizontal = 12.dp)) {
-            problems.entity.forEach {
+            list.forEach {
                 item {
                     ProblemItemCard(it)
                 }
@@ -162,7 +169,6 @@ fun TagsSection (viewModel: ProblemsViewModel, selectedTags: List<String>, sortT
         if (sortSelected) {
             SortDialog("none") {
                 sortSelected = false
-                viewModel.getBySort(1200)
             }
         }
     }
@@ -223,6 +229,7 @@ fun SortDialog(previousType: String, sortType: (String) -> Unit) {
         }
     )
 }
+@ExperimentalMaterial3Api
 @Composable
 fun SelectionChip(selected: Boolean, title: String, icon: Int, onClick: () -> Unit) {
     var innerSelected by remember { mutableStateOf(false) }

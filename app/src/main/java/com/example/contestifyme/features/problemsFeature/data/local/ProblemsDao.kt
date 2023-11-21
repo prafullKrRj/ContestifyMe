@@ -21,5 +21,5 @@ interface ProblemsDao {
     @Query("SELECT * FROM problems_entity WHERE rating = :rating")
     fun getProblemsByRatingDesc(rating: Int) : Flow<List<ProblemsEntity>>
     @Query("SELECT * FROM problems_entity ORDER BY rating ASC")
-    fun getProblemsByRatingAsc() : Flow<List<ProblemsEntity>>
+    fun getProblemsByRatingAsc() : List<ProblemsEntity>
 }

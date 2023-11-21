@@ -1,5 +1,6 @@
 package com.example.contestifyme.features.problemsFeature.ui
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -8,14 +9,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.contestifyme.features.problemsFeature.data.ProblemsRepository
 import com.example.contestifyme.features.problemsFeature.data.local.entities.ProblemsEntity
-import com.example.contestifyme.features.problemsFeature.model.ProblemsDto
-import com.example.contestifyme.features.problemsFeature.problemsConstants.ProblemsConstants
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -25,18 +24,17 @@ class ProblemsViewModel(
 ) : ViewModel() {
     var rating: MutableState<Int> = mutableStateOf(0)
 
-    var problemsUiState: StateFlow<ProblemState> = problemsRepository.getSortedByDesc(rating.value).map {
-        ProblemState(it)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ProblemState())
-
-    var isError by mutableStateOf(false)
+    var problemsUiState: StateFlow<ProblemState> = problemsRepository.getProblemsFromDb()
+        .map { ProblemState(it) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ProblemState(emptyList()))
+    private var isError by mutableStateOf(false)
     init {
-        getProblems(ProblemsConstants.getProblems())
+        getProblems()
     }
-    fun getProblems(url: String) {
+    private fun getProblems() {
         viewModelScope.launch {
             try {
-                val x = problemsRepository.getProblemsFromApi(url)
+                val x = problemsRepository.getProblemsFromApi()
                 problemsRepository.deleteAll()
                 val list = mutableListOf<ProblemsEntity>()
                 x.result.problems.forEachIndexed{ index, item->
@@ -47,11 +45,12 @@ class ProblemsViewModel(
                             points = item.points,
                             unique = "${item.contestId}/${item.index}",
                             index = item.index,
-                            tags = getTags(item.tags),
+                            tags = item.tags,
                             name = item.name
                         )
                     )
                 }
+                Log.d("prafull", "getProblems: $list")
                 isError = false
                 problemsRepository.upsertProblems(list)
             } catch (e: HttpException) {
@@ -61,32 +60,9 @@ class ProblemsViewModel(
             }
         }
     }
-    fun getBySort(rating: Int) {
-        viewModelScope.launch {
-            problemsUiState = problemsRepository.getSortedByDesc(rating = rating).map {
-                ProblemState(it)
-            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ProblemState())
-        }
-    }
-    var selectedTags: List<String> by mutableStateOf(emptyList())
 
 }
 
-fun getTags(list: List<String>) : String {
-    list.sorted()
-    val sb = StringBuilder()
-    sb.append(" ")
-    println(list)
-    for (i in list) {
-        sb.append(i).append(" ")
-    }
-    return sb.toString()
-}
-sealed interface ProblemsUiState {
-    data class Loading(val data: ProblemsDto) : ProblemsUiState
-    data class Success(val data: ProblemsDto) : ProblemsUiState
-    object Error : ProblemsUiState
-}
 data class ProblemState(
-    val entity: List<ProblemsEntity> = emptyList()
+    var entity: List<ProblemsEntity> = emptyList()
 )
