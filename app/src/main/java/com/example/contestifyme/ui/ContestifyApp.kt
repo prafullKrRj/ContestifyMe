@@ -30,7 +30,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.lifecycle.viewmodel.ViewModelFactoryDsl
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -112,7 +111,7 @@ fun ContestifyMainApp(navController: NavHostController, handle: String) {
             modifier = Modifier.padding(paddingValues),
         ) {
 
-            NavHost(navController = navController, startDestination = PROBLEMS.name) {
+            NavHost(navController = navController, startDestination = PROFILE.name) {
 
                 composable(route = PROFILE.name) {
                     ProfileScreen(viewModel = viewModel(factory = AppViewModelProvider.profileViewModel(handle)), handle = handle)
@@ -141,7 +140,7 @@ fun CreationExtras.contestifyApplication() : ContestifyApplication =
 fun ContestifyNavigationBar(navigateTo: (Screens) -> Unit) {
     val array = listOf(PROFILE, CONTESTS, COMPARE, FRIENDS, PROBLEMS)
 
-    var selectedItem by remember { mutableStateOf(0) }
+    var selectedItem by rememberSaveable { mutableStateOf(0) }
     val items = listOf(
         Pair(R.string.profile, R.drawable.profile),
         Pair(R.string.contest, R.drawable.contest),

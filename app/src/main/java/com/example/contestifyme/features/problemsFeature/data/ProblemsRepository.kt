@@ -2,7 +2,6 @@ package com.example.contestifyme.features.problemsFeature.data
 
 import com.example.contestifyme.features.problemsFeature.data.local.ProblemsDao
 import com.example.contestifyme.features.problemsFeature.data.local.entities.ProblemsEntity
-import com.example.contestifyme.features.problemsFeature.problemsConstants.ProblemsConstants
 import com.example.contestifyme.features.problemsFeature.model.ProblemsDto
 import com.example.contestifyme.features.problemsFeature.data.remote.ProblemsApiService
 import kotlinx.coroutines.flow.Flow
@@ -14,6 +13,8 @@ interface ProblemsRepository {
 
     suspend fun deleteAll()
     suspend fun upsertProblems(problems: List<ProblemsEntity>)
+    fun getSortedByDesc(rating: Int): Flow<List<ProblemsEntity>>
+    fun getSortedByAsc(): Flow<List<ProblemsEntity>>
 }
 
 class ProblemsRepositoryImpl (
@@ -25,5 +26,7 @@ class ProblemsRepositoryImpl (
 
     override suspend fun deleteAll() = problemsDao.deleteALl()
     override suspend fun upsertProblems(problems: List<ProblemsEntity>) = problemsDao.upsertProblems(problems = problems)
+    override fun getSortedByDesc(rating: Int): Flow<List<ProblemsEntity>> = problemsDao.getProblemsByRatingDesc(rating)
+    override fun getSortedByAsc(): Flow<List<ProblemsEntity>> = problemsDao.getProblemsByRatingAsc()
 
 }

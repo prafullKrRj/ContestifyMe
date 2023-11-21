@@ -1,5 +1,6 @@
 package com.example.contestifyme.features.problemsFeature.ui
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -21,7 +23,9 @@ class ProblemsViewModel(
     private val problemsRepository: ProblemsRepository,
 
 ) : ViewModel() {
-    var problemsUiState: StateFlow<ProblemState> = problemsRepository.getProblemsFromDb().map {
+    var rating: MutableState<Int> = mutableStateOf(0)
+
+    var problemsUiState: StateFlow<ProblemState> = problemsRepository.getSortedByDesc(rating.value).map {
         ProblemState(it)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ProblemState())
 
@@ -49,7 +53,6 @@ class ProblemsViewModel(
                     )
                 }
                 isError = false
-                println(list)
                 problemsRepository.upsertProblems(list)
             } catch (e: HttpException) {
                 isError = true
@@ -58,14 +61,26 @@ class ProblemsViewModel(
             }
         }
     }
-    var selectedTags: List<String> = emptyList()
+    fun getBySort(rating: Int) {
+        viewModelScope.launch {
+            problemsUiState = problemsRepository.getSortedByDesc(rating = rating).map {
+                ProblemState(it)
+            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ProblemState())
+        }
+    }
+    var selectedTags: List<String> by mutableStateOf(emptyList())
+
 }
 
 fun getTags(list: List<String>) : String {
     list.sorted()
     val sb = StringBuilder()
-    for (i in list) sb.append(i).append(" ")
-    return sb.trim().toString()
+    sb.append(" ")
+    println(list)
+    for (i in list) {
+        sb.append(i).append(" ")
+    }
+    return sb.toString()
 }
 sealed interface ProblemsUiState {
     data class Loading(val data: ProblemsDto) : ProblemsUiState

@@ -1,5 +1,6 @@
 package com.example.contestifyme.features.problemsFeature.data.local
 
+import android.media.Rating
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
@@ -16,4 +17,9 @@ interface ProblemsDao {
 
     @Query("DELETE FROM problems_entity")
     suspend fun deleteALl()
+
+    @Query("SELECT * FROM problems_entity WHERE rating = :rating")
+    fun getProblemsByRatingDesc(rating: Int) : Flow<List<ProblemsEntity>>
+    @Query("SELECT * FROM problems_entity ORDER BY rating ASC")
+    fun getProblemsByRatingAsc() : Flow<List<ProblemsEntity>>
 }

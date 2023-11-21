@@ -2,16 +2,17 @@
 
 package com.example.contestifyme.features.problemsFeature.ui
 
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.AlertDialog
 import android.annotation.SuppressLint
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,7 +31,9 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -72,7 +75,7 @@ fun ProblemsScreen(viewModel: ProblemsViewModel) {
     val state by viewModel.problemsUiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
-    var shouldDelay by remember { mutableStateOf(true) }
+    var shouldDelay by rememberSaveable { mutableStateOf(true) }
     var selectedTags by remember { mutableStateOf(listOf<String>()) }
     val focusManager = LocalFocusManager.current
     LaunchedEffect(Unit) {
@@ -89,7 +92,9 @@ fun ProblemsScreen(viewModel: ProblemsViewModel) {
             ProblemsTopBar()
         }
     ) { paddingValues ->
-        ProblemsUI(problems = state, modifier = Modifier.padding(paddingValues = paddingValues), selectedTags = selectedTags) {
+        ProblemsUI(viewModel = viewModel, problems = state, modifier = Modifier.padding(paddingValues = paddingValues), selectedTags = selectedTags, sortType = {
+            viewModel.getBySort(1200)
+        }) {
             viewModel.selectedTags = it
             selectedTags = it
             viewModel.getProblems(ProblemsConstants.getProblemsByTags(selectedTags))
@@ -102,11 +107,13 @@ fun ProblemsScreen(viewModel: ProblemsViewModel) {
     }
 }
 @Composable
-fun ProblemsUI(problems: ProblemState, modifier: Modifier, selectedTags: List<String>, updateList: (List<String>) -> Unit) {
+fun ProblemsUI(viewModel: ProblemsViewModel, problems: ProblemState, modifier: Modifier, sortType: (String) -> Unit, selectedTags: List<String>, updateList: (List<String>) -> Unit) {
     Column (modifier.fillMaxSize()){
         SearchBar()
         Spacer(modifier = Modifier.padding(vertical = 2.dp))
-        TagsSection(selectedTags) {
+        TagsSection(viewModel, selectedTags, sortType = {
+
+        }) {
             updateList(it)
         }
         Spacer(modifier = Modifier.padding(vertical = 2.dp))
@@ -120,68 +127,142 @@ fun ProblemsUI(problems: ProblemState, modifier: Modifier, selectedTags: List<St
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TagsSection (selectedTags: List<String>, updateList: (List<String>) -> Unit = {}) {
-    var selected by remember { mutableStateOf(false) }
-    val scrollState = rememberScrollState()
-
+fun TagsSection (viewModel: ProblemsViewModel, selectedTags: List<String>, sortType: (String) -> Unit, updateList: (List<String>) -> Unit = {}) {
+    var tagsSelected by remember {
+         mutableStateOf(false)
+    }
+    var sortSelected by remember {
+        mutableStateOf(false)
+    }
     Column (modifier = Modifier
         .fillMaxWidth()
         .padding(horizontal = 16.dp)
         .animateContentSize(
             animationSpec = spring(
-                dampingRatio = 0.8f,
-                stiffness = 800f
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessMediumLow
             )
         )
-        .verticalScroll(scrollState)
     ) {
         Row{
-            FilterChip(
-                selected = selected,
-                onClick = {
-                    selected = !selected
-                },
-                label = {
-                    Text("Tags")
-                },
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.filter_icon),
-                        contentDescription = "Done",
-                        modifier = Modifier.size(FilterChipDefaults.IconSize)
-                    )
-                },
-                colors = FilterChipDefaults.filterChipColors(
-                    containerColor = Color.Transparent,
-                    selectedContainerColor = MaterialTheme.colorScheme.tertiaryContainer
-                )
-            )
+            SelectionChip(false, title = "Tags", icon = R.drawable.filter_icon) {
+                tagsSelected = !tagsSelected
+            }
+            Spacer(modifier = Modifier.padding(horizontal = 4.dp))
+            SelectionChip(false, title = "Sort", icon = R.drawable.sort_icon) {
+                sortSelected = !sortSelected
+            }
         }
-        if (selected) {
+        if (tagsSelected) {
             TagsSelectionWindow(selectedTags) {
                 updateList(it)
+            }
+        }
+        if (sortSelected) {
+            SortDialog("none") {
+                sortSelected = false
+                viewModel.getBySort(1200)
             }
         }
     }
 }
 
 @Composable
+fun SortDialog(previousType: String, sortType: (String) -> Unit) {
+    var selected by remember { mutableStateOf(previousType) }
+    AlertDialog(
+        onDismissRequest = {
+                       sortType(previousType)
+        },
+        title = { Text(text = "Sort By") },
+        text = {
+            Column {
+                Row (
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                ) {
+                    Checkbox(checked = selected == "dsc", onCheckedChange = {
+                        selected = "dsc"
+                    })
+                }
+                Row (
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                ) {
+                    Checkbox(checked = selected == "asc", onCheckedChange = {
+                        selected = "asc"
+                    })
+                }
+                Row (
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                ) {
+                    Checkbox(checked = selected == "none", onCheckedChange = {
+                        selected = "none"
+                    })
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = {
+                sortType(selected)
+            }) {
+                Text(text = "Confirm")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = {
+                sortType("none")
+            }) {
+                Text(text = "Cancel")
+            }
+        }
+    )
+}
+@Composable
+fun SelectionChip(selected: Boolean, title: String, icon: Int, onClick: () -> Unit) {
+    var innerSelected by remember { mutableStateOf(false) }
+    FilterChip(
+        selected = selected,
+        onClick = {
+            innerSelected = !innerSelected
+            onClick()
+        },
+        label = {
+            Text(title)
+        },
+        leadingIcon = {
+            Icon(
+                painter = painterResource(id = icon),
+                contentDescription = "Done",
+                modifier = Modifier.size(FilterChipDefaults.IconSize)
+            )
+        },
+        colors = FilterChipDefaults.filterChipColors(
+            containerColor = Color.Transparent,
+            selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer
+        )
+    )
+}
+@Composable
 fun TagsSelectionWindow(list: List<String>, selectedTags: (List<String>) -> Unit) {
     var tagsList by rememberSaveable {
         mutableStateOf(list)
     }
-    LazyColumn (
+    val scrollState = rememberScrollState()
+    ElevatedCard (
         Modifier
             .fillMaxWidth()
             .height(150.dp)
             .clip(RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colorScheme.primary),
-        contentPadding = PaddingValues(8.dp)
+            .verticalScroll(scrollState)
+            .padding(4.dp)
     ) {
-        item {
-            FlowRow {
+            FlowRow (Modifier.padding(8.dp)) {
                 ProblemsConstants.tags.forEach {
                     FilterChip(
                         modifier = Modifier.padding(end = 4.dp),
@@ -204,7 +285,7 @@ fun TagsSelectionWindow(list: List<String>, selectedTags: (List<String>) -> Unit
                     )
                 }
             }
-        }
+
     }
 }
 @OptIn(ExperimentalMaterial3Api::class)
