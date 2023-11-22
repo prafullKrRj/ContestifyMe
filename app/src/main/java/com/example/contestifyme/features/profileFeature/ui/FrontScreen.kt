@@ -22,21 +22,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.contestifyme.R
+import com.example.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
+import java.util.Date
 
 @Composable
-fun FrontScreen(handle: String, swipeToSubmission: () -> Unit = {}) {
+fun FrontScreen(user: UserInfoEntity, swipeToSubmission: () -> Unit = {}) {
     LazyColumn(modifier = Modifier
         .padding(16.dp)
         .fillMaxSize()) {
         item {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End
             ) {
@@ -46,11 +53,16 @@ fun FrontScreen(handle: String, swipeToSubmission: () -> Unit = {}) {
             }
         }
         item {
-            RankCard(modifier = Modifier.fillMaxWidth(), rank = "newbie", handle = handle, country = "India")
+            RankCard(
+                modifier = Modifier.fillMaxWidth(),
+                rank = "${user.rank}",
+                handle = user.handle,
+                country = "India"
+            )
             Spacer(modifier = Modifier.height(8.dp))
         }
         item {
-            ProfileCard(modifier = Modifier.fillMaxWidth())
+            ProfileCard(modifier = Modifier.fillMaxWidth(), user = user)
         }
     }
 }
@@ -72,33 +84,35 @@ fun RankCard(
     }
 }
 @Composable
-fun ProfileCard (modifier: Modifier) {
+fun ProfileCard (modifier: Modifier, user: UserInfoEntity) {
     ElevatedCard {
         Column(
             modifier = modifier.padding(horizontal = 12.dp, vertical = 8.dp)
         ) {
             Row (Modifier.fillMaxWidth()) {
-                DetailsSection(modifier = Modifier.weight(.7f))
+                DetailsSection(modifier = Modifier.weight(.7f), user = user)
                 ImageSection(modifier = Modifier
                     .weight(.3f)
-                    .fillMaxSize())
+                    .fillMaxSize(),
+                    user = user)
             }
         }
     }
 }
 
 @Composable
-fun DetailsSection(modifier: Modifier) {
+fun DetailsSection(modifier: Modifier, user: UserInfoEntity) {
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center
     ) {
-        DetailItem(text = "Contest Rating")
-        DetailItem(text = "Max Rank")
-        DetailItem(text = "Contribution")
-        DetailItem(text = "Friend of ")
-        DetailItem(text = "Last visit")
-        DetailItem(text = "Registered On")
+        val registeredDate = Date(user.registrationTimeSeconds!!*1000L)
+        DetailItem(text = "Contest Rating: ${user.rating}")
+        DetailItem(text = "Max Rank: ${user.maxRank}")
+        DetailItem(text = "Contribution: ${user.contribution}")
+        DetailItem(text = "Friend of: ${user.friendOfCount}")
+        DetailItem(text = "Last visit: ${user.lastOnlineTimeSeconds}")
+        DetailItem(text = "Registered On: ${registeredDate.month}")
     }
 }
 
@@ -118,26 +132,32 @@ fun DetailItem(text: String) {
     Spacer(modifier = Modifier.padding(6.dp))
 }
 @Composable
-fun ImageSection(modifier: Modifier) {
+fun ImageSection(modifier: Modifier, user: UserInfoEntity) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.img),
-            contentDescription = null,
-            Modifier
-                .size(100.dp)
-                .padding(6.dp)
-                .clip(CircleShape),
-        )
+        ProfilePicture(photoUrl = user.titlePhoto)
         Text(
-            text = "Prafull Kumar Rajput ",
+            text = "${user.name}",
             fontSize = 16.sp,
             fontFamily = FontFamily.SansSerif,
             overflow = TextOverflow.Ellipsis,
         )
     }
+}
 
+@Composable
+fun ProfilePicture(photoUrl: String?) {
+    AsyncImage(
+        model = ImageRequest.Builder(LocalContext.current).data(
+            photoUrl,
+        ).crossfade(true).placeholder(R.drawable.ic_broken_image).build(),
+        contentDescription = null,
+        modifier = Modifier
+            .size(100.dp)
+            .padding(6.dp)
+            .clip(CircleShape)
+    )
 }

@@ -11,7 +11,7 @@ data class UserInfoEntity(
     val avatar: String?,
     val contribution: Int?,
     val country: String?,
-    val firstName: String?,
+    val name: String?,
     val friendOfCount: Int?,
     val lastOnlineTimeSeconds: Int?,
     val maxRank: String?,

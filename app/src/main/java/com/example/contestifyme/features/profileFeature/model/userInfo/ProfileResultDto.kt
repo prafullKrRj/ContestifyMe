@@ -8,7 +8,7 @@ data class ProfileResultDto(
     @SerializedName("country") val country: String?,
     @SerializedName("firstName") val firstName: String?,
     @SerializedName("friendOfCount") val friendOfCount: Int?,
-    @SerializedName("handle") val handle: String?,
+    @SerializedName("handle") val handle: String,
     @SerializedName("lastOnlineTimeSeconds") val lastOnlineTimeSeconds: Int?,
     @SerializedName("maxRank") val maxRank: String?,
     @SerializedName("maxRating") val maxRating: Int?,

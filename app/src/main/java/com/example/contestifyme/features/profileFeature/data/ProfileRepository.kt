@@ -1,43 +1,39 @@
 package com.example.contestifyme.features.profileFeature.data
 
+import com.example.contestifyme.features.profileFeature.constants.ProfileConstants
 import com.example.contestifyme.features.profileFeature.data.local.ProfileDao
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserRatingEntity
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserStatusEntity
 import com.example.contestifyme.features.profileFeature.data.remote.ProfileApiService
+import com.example.contestifyme.features.profileFeature.model.userInfo.ProfileUserDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 interface ProfileRepository {
 
-    suspend fun upsertProfile(userInfoEntity: UserInfoEntity)
-    suspend fun upsertUserRating(insertAll: List<UserRatingEntity>)
-    suspend fun upsertSubmissions(insertAll: List<UserStatusEntity>)
 
-    fun getProfile(id: Int, handle: String): Flow<List<UserInfoEntity>>
-    fun getUserRating(): Flow<List<UserRatingEntity>>
-    fun getUserSubmissions(): Flow<List<UserStatusEntity>>
+    suspend fun insertUser(userInfoEntity: UserInfoEntity)
+    fun getUserInfo(): Flow<List<UserInfoEntity>>
+    /**
+     *  This function is used to get the user info from the API
+     *  */
+    suspend fun getUserInfoFromApi(handle: String): ProfileUserDto
 }
 
 class ProfileRepositoryImpl (
     private val profileApiService: ProfileApiService,
     private val profileDao: ProfileDao
 ) : ProfileRepository {
-    override suspend fun upsertProfile(userInfoEntity: UserInfoEntity) = profileDao.upsertProfile(userInfoEntity)
-
-    override suspend fun upsertUserRating(insertAll: List<UserRatingEntity>) = profileDao.upsertUserRating(insertAll)
-
-    override suspend fun upsertSubmissions(insertAll: List<UserStatusEntity>) = profileDao.upsertSubmissions(insertAll)
-
-    override fun getProfile(id: Int, handle: String): Flow<List<UserInfoEntity>> = flow {
-
-    }
-    override fun getUserRating(): Flow<List<UserRatingEntity>> {
-        TODO("Not yet implemented")
+    override suspend fun insertUser(userInfoEntity: UserInfoEntity) {
+        profileDao.insertUser(userInfoEntity)
     }
 
-    override fun getUserSubmissions(): Flow<List<UserStatusEntity>> {
-        TODO("Not yet implemented")
+    override fun getUserInfo(): Flow<List<UserInfoEntity>> {
+        return profileDao.getUserInfo()
     }
+
+    override suspend fun getUserInfoFromApi(handle: String): ProfileUserDto =
+        profileApiService.getUserInfoFromApi(ProfileConstants.getUserInfo(handle))
 
 }
