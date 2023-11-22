@@ -21,8 +21,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -39,7 +37,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel,
     handle: String
 ) {
-  //  val pagerState = rememberPagerState(initialPage = 0)
+    val pagerState = rememberPagerState(initialPage = 0)
     val scope = rememberCoroutineScope()
     Scaffold (
         topBar = {
@@ -54,14 +52,14 @@ fun ProfileScreen(
                 .fillMaxSize()
                 .padding(paddingValues = paddingValues)) {
 
-          /*  HorizontalPager(pageCount = 2, state = pagerState, userScrollEnabled = true) {
+             HorizontalPager(pageCount = 2, state = pagerState, userScrollEnabled = true) {
                 when (it) {
                     0 -> FrontScreen(handle) {
                         scope.launch { pagerState.animateScrollToPage(1) }
                     }
                     1 -> SubmissionsScreen()
                 }
-            }*/
+            }
         }
     }
 }
