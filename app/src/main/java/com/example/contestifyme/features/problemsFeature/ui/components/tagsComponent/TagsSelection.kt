@@ -42,7 +42,11 @@ fun TagsDialog(selectedTags: List<String>, updateList: (List<String>) -> Unit) {
                                 .padding(vertical = 4.dp)
                                 .clip(RoundedCornerShape(4.dp))
                                 .clickable {
-                                    selected = selected.plus(item)
+                                    selected = if (selected.contains(item)){
+                                        selected.minus(item)
+                                    } else {
+                                        selected.plus(item)
+                                    }
                                 },
                             verticalAlignment = Alignment.CenterVertically
                         ) {

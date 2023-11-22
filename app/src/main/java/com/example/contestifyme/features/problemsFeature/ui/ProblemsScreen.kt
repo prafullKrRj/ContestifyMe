@@ -1,12 +1,8 @@
 @file:OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
-@file:Suppress("UNUSED_EXPRESSION")
 
 package com.example.contestifyme.features.problemsFeature.ui
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -55,6 +51,7 @@ import com.example.contestifyme.features.problemsFeature.ui.components.Selection
 import com.example.contestifyme.features.problemsFeature.ui.components.sortComponents.SortDialog
 import com.example.contestifyme.features.problemsFeature.ui.components.tagsComponent.TagsDialog
 import kotlinx.coroutines.delay
+import okhttp3.internal.filterList
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,7 +61,7 @@ fun ProblemsScreen(viewModel: ProblemsViewModel) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     var shouldDelay by rememberSaveable { mutableStateOf(true) }
-    var selectedTags by remember { mutableStateOf(ProblemsConstants.tags) }
+    var selectedTags by remember { mutableStateOf(emptyList<String>()) }
     var sortType by rememberSaveable {
         mutableStateOf(Pair(0, 0))
     }
@@ -84,17 +81,18 @@ fun ProblemsScreen(viewModel: ProblemsViewModel) {
     ) { paddingValues ->
         ProblemsUI(
             list = state.entity.filter {
-                if (selectedTags.isNotEmpty()) {
-                    it.tags.contains("dp")
-                } else {
-                    true
-                }
-                if (sortType.first != 0) {
+                if (sortType.first != 0 && sortType.second != 0) {
                     it.rating>=sortType.first && it.rating <= sortType.second
                 } else {
                     true
                 }
-            },
+            }.filterList {
+                if (selectedTags.isNotEmpty()) {
+                    this.tags.containsAll(selectedTags)
+                } else {
+                    true
+                }
+            }.sortedBy { it.rating  },
             modifier = Modifier.padding(paddingValues = paddingValues),
             ratingSelected = {
                        sortType = it
@@ -120,7 +118,7 @@ fun ProblemsUI(
     updateList: (List<String>) -> Unit,
     previousType: Pair<Int, Int>
 ) {
-    //println(list)
+    println(list)
     Column (modifier.fillMaxSize()){
         SearchBar()
         Spacer(modifier = Modifier.padding(vertical = 2.dp))
