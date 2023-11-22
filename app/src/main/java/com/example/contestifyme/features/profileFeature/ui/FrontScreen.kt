@@ -32,7 +32,9 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.contestifyme.R
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
-import java.util.Date
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 @Composable
 fun FrontScreen(user: UserInfoEntity, swipeToSubmission: () -> Unit = {}) {
@@ -106,16 +108,20 @@ fun DetailsSection(modifier: Modifier, user: UserInfoEntity) {
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center
     ) {
-        val registeredDate = Date(user.registrationTimeSeconds!!*1000L)
+        val registeredDate = getTime(user.registrationTimeSeconds!!.toLong())
+        val lastActive = getTime(user.lastOnlineTimeSeconds!!.toLong())
         DetailItem(text = "Contest Rating: ${user.rating}")
         DetailItem(text = "Max Rank: ${user.maxRank}")
         DetailItem(text = "Contribution: ${user.contribution}")
         DetailItem(text = "Friend of: ${user.friendOfCount}")
-        DetailItem(text = "Last visit: ${user.lastOnlineTimeSeconds}")
-        DetailItem(text = "Registered On: ${registeredDate.month}")
+        DetailItem(text = "Last visit: ${lastActive.hour}")
+        DetailItem(text = "Registered On:" + " ${registeredDate.dayOfMonth} ${registeredDate.month} ${registeredDate.year}".lowercase())
     }
 }
-
+fun getTime(time: Long): LocalDateTime {
+    val time = Instant.ofEpochSecond(time.toLong())
+    return LocalDateTime.ofInstant(time, ZoneId.systemDefault())
+}
 @Composable
 fun DetailItem(text: String) {
     Row(
