@@ -39,7 +39,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel,
     handle: String
 ) {
-    val pagerState = rememberPagerState()
+  //  val pagerState = rememberPagerState(initialPage = 0)
     val scope = rememberCoroutineScope()
     Scaffold (
         topBar = {
@@ -54,14 +54,14 @@ fun ProfileScreen(
                 .fillMaxSize()
                 .padding(paddingValues = paddingValues)) {
 
-            HorizontalPager(pageCount = 2, state = pagerState, userScrollEnabled = true) {
+          /*  HorizontalPager(pageCount = 2, state = pagerState, userScrollEnabled = true) {
                 when (it) {
                     0 -> FrontScreen(handle) {
                         scope.launch { pagerState.animateScrollToPage(1) }
                     }
                     1 -> SubmissionsScreen()
                 }
-            }
+            }*/
         }
     }
 }

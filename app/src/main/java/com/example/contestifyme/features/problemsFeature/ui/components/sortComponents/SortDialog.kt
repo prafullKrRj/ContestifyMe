@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -21,9 +23,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.example.contestifyme.features.problemsFeature.problemsConstants.ProblemsConstants
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SortDialog(previousType: Int, sortType: (Int) -> Unit) {
+fun SortDialog(previousType: Pair<Int, Int>, sortType: (Pair<Int, Int>) -> Unit) {
     var selected by remember { mutableStateOf(previousType) }
+    var isRange by remember {
+        mutableStateOf(false)
+    }
+    var sliderPosition by remember { mutableStateOf(800f..3500f) }
+
     AlertDialog(
         modifier = Modifier.padding(vertical = 24.dp),
         onDismissRequest = {
@@ -33,6 +41,40 @@ fun SortDialog(previousType: Int, sortType: (Int) -> Unit) {
         text = {
             LazyColumn {
                 item {
+                    Row(modifier = Modifier) {
+                        Checkbox(
+                            checked = isRange,
+                            onCheckedChange = {
+                                isRange = !isRange
+                            }
+                        )
+                        Text(text = "Range")
+                    }
+                    Text(text = "${sliderPosition.start.toInt()} - ${sliderPosition.endInclusive.toInt()}")
+                    RangeSlider(
+                        enabled = isRange,
+                        modifier = Modifier,
+                        steps = 26,
+                        value = sliderPosition,
+                        onValueChange = {
+                            sliderPosition = it
+                        },
+                        valueRange = 800f..3500f,
+                        onValueChangeFinished = {
+                            selected = Pair(sliderPosition.start.toInt(), sliderPosition.endInclusive.toInt())
+                        }
+                    )
+                }
+                item {
+                    Row {
+                        Checkbox(
+                            checked = !isRange,
+                            onCheckedChange = {
+                                isRange = !isRange
+                            }
+                        )
+                        Text(text = "Rating")
+                    }
                     ProblemsConstants.array.forEach { item ->
                         Row(
                             modifier = Modifier
@@ -40,15 +82,16 @@ fun SortDialog(previousType: Int, sortType: (Int) -> Unit) {
                                 .padding(vertical = 4.dp)
                                 .clip(RoundedCornerShape(4.dp))
                                 .clickable {
-                                           selected = item
+                                    selected = Pair(item, item)
                                 },
                             verticalAlignment = CenterVertically
                         ) {
                             Checkbox(
-                                checked = selected == item,
+                                enabled = !isRange,
+                                checked = !isRange && selected == Pair(item, item),
                                 onCheckedChange = { boolean ->
-                                    if (boolean) {
-                                        selected = item
+                                    if (!isRange && boolean) {
+                                        selected = Pair(item, item)
                                     }
                                 }
                             )

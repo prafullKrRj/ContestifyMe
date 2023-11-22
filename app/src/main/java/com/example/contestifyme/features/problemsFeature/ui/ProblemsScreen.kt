@@ -66,7 +66,7 @@ fun ProblemsScreen(viewModel: ProblemsViewModel) {
     var shouldDelay by rememberSaveable { mutableStateOf(true) }
     var selectedTags by remember { mutableStateOf(ProblemsConstants.tags) }
     var sortType by rememberSaveable {
-        mutableStateOf(0)
+        mutableStateOf(Pair(0, 0))
     }
     LaunchedEffect(Unit) {
         delay(1500) // Delay for 2000 milliseconds (2 seconds)
@@ -89,8 +89,8 @@ fun ProblemsScreen(viewModel: ProblemsViewModel) {
                 } else {
                     true
                 }
-                if (sortType != 0) {
-                    it.rating == sortType
+                if (sortType.first != 0) {
+                    it.rating>=sortType.first && it.rating <= sortType.second
                 } else {
                     true
                 }
@@ -115,10 +115,10 @@ fun ProblemsScreen(viewModel: ProblemsViewModel) {
 fun ProblemsUI(
     list: List<ProblemsEntity>,
     modifier: Modifier,
-    ratingSelected: (Int) -> Unit,
+    ratingSelected: (Pair<Int, Int>) -> Unit,
     selectedTags: List<String>,
     updateList: (List<String>) -> Unit,
-    previousType: Int
+    previousType: Pair<Int, Int>
 ) {
     //println(list)
     Column (modifier.fillMaxSize()){
@@ -148,9 +148,9 @@ fun ProblemsUI(
 @Composable
 fun TagsSection (
     selectedTags: List<String>,
-    sortType: (Int) -> Unit,
+    sortType: (Pair<Int, Int>) -> Unit,
     updateList: (List<String>) -> Unit = {},
-    previousType: Int
+    previousType: Pair<Int, Int>
 ) {
     var tagsSelected by remember {
          mutableStateOf(false)
