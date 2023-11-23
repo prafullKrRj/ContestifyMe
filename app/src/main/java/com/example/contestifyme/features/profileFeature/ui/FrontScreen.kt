@@ -119,8 +119,10 @@ fun DetailsSection(modifier: Modifier, user: UserInfoEntity) {
     }
 }
 fun getTime(time: Long): LocalDateTime {
-    val time = Instant.ofEpochSecond(time.toLong())
-    return LocalDateTime.ofInstant(time, ZoneId.systemDefault())
+    return LocalDateTime.ofInstant(
+        Instant.ofEpochSecond(time.toLong()),
+        ZoneId.systemDefault()
+    )
 }
 @Composable
 fun DetailItem(text: String) {

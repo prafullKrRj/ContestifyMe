@@ -2,7 +2,7 @@ package com.example.contestifyme.features.profileFeature.model.submissionsInfo
 
 import com.google.gson.annotations.SerializedName
 
-data class Result(
+data class Submissions(
     @SerializedName("author") val author: Author,
     @SerializedName("contestId") val contestId: Int,
     @SerializedName("creationTimeSeconds") val creationTimeSeconds: Int,

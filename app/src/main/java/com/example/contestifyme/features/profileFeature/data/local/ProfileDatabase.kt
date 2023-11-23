@@ -4,16 +4,19 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.example.contestifyme.features.profileFeature.data.local.entities.ProfileTypeConverters
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
-import com.example.contestifyme.features.profileFeature.data.local.entities.UserRatingEntity
-import com.example.contestifyme.features.profileFeature.data.local.entities.UserStatusEntity
+import com.example.contestifyme.features.profileFeature.data.local.entities.UserRating
+import com.example.contestifyme.features.profileFeature.data.local.entities.UserStatus
 
 
 @Database(
-    entities = [UserInfoEntity::class, UserRatingEntity::class, UserStatusEntity::class],
+    entities = [UserInfoEntity::class, UserRating::class, UserStatus::class],
     version = 1,
     exportSchema = false
 )
+@TypeConverters(ProfileTypeConverters::class)
 abstract class ProfileDatabase: RoomDatabase() {
     abstract fun profileDao(): ProfileDao
 

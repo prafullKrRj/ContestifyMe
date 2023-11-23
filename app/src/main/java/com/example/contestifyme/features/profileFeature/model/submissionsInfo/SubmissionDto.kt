@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class SubmissionDto(
     @SerializedName("result")
-    val result: List<Result>,
+    val submissions: List<Submissions>,
     @SerializedName("status")
     val status: String
 )

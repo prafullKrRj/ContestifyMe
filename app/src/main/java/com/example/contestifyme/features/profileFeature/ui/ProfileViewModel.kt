@@ -5,6 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.contestifyme.features.profileFeature.data.ProfileRepository
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
+import com.example.contestifyme.features.profileFeature.data.local.entities.UserRating
+import com.example.contestifyme.features.profileFeature.data.local.entities.UserStatus
+import com.example.contestifyme.features.profileFeature.model.ratingInfo.RatingResult
+import com.example.contestifyme.features.profileFeature.model.submissionsInfo.Submissions
 import com.example.contestifyme.features.profileFeature.model.userInfo.ProfileUserDto
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -14,6 +18,10 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 
+
+data class ProfileUiState(
+    var user: List<UserInfoEntity> = emptyList()
+)
 class ProfileViewModel(
     private val profileRepository: ProfileRepository,
     private val handle: String
@@ -21,7 +29,9 @@ class ProfileViewModel(
 
     val profileUiState: StateFlow<ProfileUiState> = profileRepository.getUserInfo()
         .map {
-            ProfileUiState(it)
+            ProfileUiState(
+                user = it
+            )
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -34,9 +44,20 @@ class ProfileViewModel(
     private fun updateUserInfo() {
         viewModelScope.launch {
             try {
+
                 val userInfo = profileRepository.getUserInfoFromApi(handle)
+                val ratingInfo = profileRepository.getUserRatingFromApi(handle)
+                val submissionInfo = profileRepository.getUserStatusFromApi(handle)
+                Log.d("prafull", "updateUserInfo: ${profileUiState.value.user[0].ratingInfo}")
                 profileRepository.insertUser(
-                    userInfo.toUserInfoEntity()
+                    userInfo.toUserInfoEntity(
+                        rating = ratingInfo.result.map {
+                            it.toUserRatingEntity()
+                        },
+                        status = submissionInfo.submissions.map {
+                            it.toUserStatusEntity()
+                        }
+                    )
                 )
             } catch (e: HttpException) {
                 Log.d("check", "updateUserInfo: HttpError")
@@ -46,7 +67,27 @@ class ProfileViewModel(
         }
     }
 }
-fun ProfileUserDto.toUserInfoEntity(): UserInfoEntity {
+fun Submissions.toUserStatusEntity(): UserStatus {
+    return UserStatus(
+        id = this.id,
+        name = this.problem.name,
+        verdict = this.verdict,
+        time = this.timeConsumedMillis,
+        contestId = this.contestId
+    )
+}
+fun RatingResult.toUserRatingEntity(): UserRating {
+    return UserRating(
+        contestId = this.contestId,
+        contestName = this.contestName,
+        handle = this.handle,
+        newRating = this.newRating,
+        oldRating = this.oldRating,
+        rank = this.rank,
+        ratingUpdateTimeSeconds = this.ratingUpdateTimeSeconds
+    )
+}
+fun ProfileUserDto.toUserInfoEntity(rating: List<UserRating>, status: List<UserStatus>): UserInfoEntity {
     return UserInfoEntity(
         handle = this.result[0].handle,
         avatar = this.result[0].avatar,
@@ -61,9 +102,8 @@ fun ProfileUserDto.toUserInfoEntity(): UserInfoEntity {
         rank = this.result[0].rank,
         rating = this.result[0].rating,
         registrationTimeSeconds = this.result[0].registrationTimeSeconds,
-        titlePhoto = this.result[0].titlePhoto
+        titlePhoto = this.result[0].titlePhoto,
+        ratingInfo = rating,
+        statusInfo = status
     )
 }
-data class ProfileUiState(
-    var user: List<UserInfoEntity> = emptyList(),
-)

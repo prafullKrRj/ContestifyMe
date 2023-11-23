@@ -4,10 +4,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "user_status")
-data class UserStatusEntity(
+data class UserStatus(
     @PrimaryKey
     val id: Int,
-    val name: Int,
+    val name: String,
     val verdict: String,
     val time: Int,
     val contestId: Int,
