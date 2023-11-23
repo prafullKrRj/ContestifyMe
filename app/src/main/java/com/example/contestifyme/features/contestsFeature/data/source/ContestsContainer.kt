@@ -1,4 +1,4 @@
-package com.example.contestifyme.features.contestsFeature.data
+package com.example.contestifyme.features.contestsFeature.data.source
 
 import android.content.Context
 import com.example.contestifyme.features.contestsFeature.ContestsRepository

@@ -1,7 +1,7 @@
 package com.example.contestifyme.features.compareFeature.ui
 
 import androidx.lifecycle.ViewModel
-import com.example.contestifyme.features.compareFeature.data.CompareRepository
+import com.example.contestifyme.features.compareFeature.data.source.CompareRepository
 
 class CompareViewModel(
     private val compareRepository: CompareRepository,

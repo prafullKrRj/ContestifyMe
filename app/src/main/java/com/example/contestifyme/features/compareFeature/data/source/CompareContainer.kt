@@ -1,4 +1,4 @@
-package com.example.contestifyme.features.compareFeature.data
+package com.example.contestifyme.features.compareFeature.data.source
 
 import android.content.Context
 

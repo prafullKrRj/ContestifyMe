@@ -1,4 +1,4 @@
-package com.example.contestifyme.features.profileFeature.data
+package com.example.contestifyme.features.profileFeature.data.source
 
 import android.content.Context
 import com.example.contestifyme.constants.Constants.BASE_URL

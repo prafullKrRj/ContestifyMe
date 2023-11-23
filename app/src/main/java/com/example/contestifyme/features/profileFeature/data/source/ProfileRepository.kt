@@ -1,19 +1,13 @@
-package com.example.contestifyme.features.profileFeature.data
+package com.example.contestifyme.features.profileFeature.data.source
 
 import com.example.contestifyme.features.profileFeature.constants.ProfileConstants
 import com.example.contestifyme.features.profileFeature.data.local.ProfileDao
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
-import com.example.contestifyme.features.profileFeature.data.local.entities.UserRating
-import com.example.contestifyme.features.profileFeature.data.local.entities.UserStatus
 import com.example.contestifyme.features.profileFeature.data.remote.ProfileApiService
 import com.example.contestifyme.features.profileFeature.model.ratingInfo.RatingDto
 import com.example.contestifyme.features.profileFeature.model.submissionsInfo.SubmissionDto
 import com.example.contestifyme.features.profileFeature.model.userInfo.ProfileUserDto
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 
 interface ProfileRepository {
 

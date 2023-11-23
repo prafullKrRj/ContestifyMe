@@ -7,9 +7,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.contestifyme.features.problemsFeature.data.ProblemsRepository
+import com.example.contestifyme.features.problemsFeature.data.source.ProblemsRepository
 import com.example.contestifyme.features.problemsFeature.data.local.entities.ProblemsEntity
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -21,7 +20,7 @@ import java.io.IOException
 class ProblemsViewModel(
     private val problemsRepository: ProblemsRepository,
 
-) : ViewModel() {
+    ) : ViewModel() {
     var rating: MutableState<Int> = mutableStateOf(0)
 
     var problemsUiState: StateFlow<ProblemState> = problemsRepository.getProblemsFromDb()

@@ -3,6 +3,8 @@ package com.example.contestifyme.features.profileFeature.data.local.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
+import com.example.contestifyme.features.profileFeature.model.UserRating
+import com.example.contestifyme.features.profileFeature.model.UserStatus
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

@@ -1,4 +1,4 @@
-package com.example.contestifyme.features.friendsFeature.data
+package com.example.contestifyme.features.friendsFeature.data.source
 
 interface FriendsRepository {
 

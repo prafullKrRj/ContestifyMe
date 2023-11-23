@@ -3,10 +3,10 @@ package com.example.contestifyme.features.profileFeature.ui
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.contestifyme.features.profileFeature.data.ProfileRepository
+import com.example.contestifyme.features.profileFeature.data.source.ProfileRepository
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
-import com.example.contestifyme.features.profileFeature.data.local.entities.UserRating
-import com.example.contestifyme.features.profileFeature.data.local.entities.UserStatus
+import com.example.contestifyme.features.profileFeature.model.UserRating
+import com.example.contestifyme.features.profileFeature.model.UserStatus
 import com.example.contestifyme.features.profileFeature.model.ratingInfo.RatingResult
 import com.example.contestifyme.features.profileFeature.model.submissionsInfo.Submissions
 import com.example.contestifyme.features.profileFeature.model.userInfo.ProfileUserDto

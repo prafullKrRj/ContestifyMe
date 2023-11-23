@@ -7,12 +7,10 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.contestifyme.features.profileFeature.data.local.entities.ProfileTypeConverters
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
-import com.example.contestifyme.features.profileFeature.data.local.entities.UserRating
-import com.example.contestifyme.features.profileFeature.data.local.entities.UserStatus
 
 
 @Database(
-    entities = [UserInfoEntity::class, UserRating::class, UserStatus::class],
+    entities = [UserInfoEntity::class],
     version = 1,
     exportSchema = false
 )

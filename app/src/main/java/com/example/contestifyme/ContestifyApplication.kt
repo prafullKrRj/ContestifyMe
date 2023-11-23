@@ -1,16 +1,16 @@
 package com.example.contestifyme
 
 import android.app.Application
-import com.example.contestifyme.features.compareFeature.data.CompareContainer
-import com.example.contestifyme.features.compareFeature.data.CompareContainerImpl
-import com.example.contestifyme.features.contestsFeature.data.ContestsContainer
-import com.example.contestifyme.features.contestsFeature.data.ContestsContainerImpl
-import com.example.contestifyme.features.friendsFeature.data.FriendsContainer
-import com.example.contestifyme.features.friendsFeature.data.FriendsContainerImpl
-import com.example.contestifyme.features.problemsFeature.data.ProblemsContainer
-import com.example.contestifyme.features.problemsFeature.data.ProblemsContainerImpl
-import com.example.contestifyme.features.profileFeature.data.ProfileContainer
-import com.example.contestifyme.features.profileFeature.data.ProfileContainerImpl
+import com.example.contestifyme.features.compareFeature.data.source.CompareContainer
+import com.example.contestifyme.features.compareFeature.data.source.CompareContainerImpl
+import com.example.contestifyme.features.contestsFeature.data.source.ContestsContainer
+import com.example.contestifyme.features.contestsFeature.data.source.ContestsContainerImpl
+import com.example.contestifyme.features.friendsFeature.data.source.FriendsContainer
+import com.example.contestifyme.features.friendsFeature.data.source.FriendsContainerImpl
+import com.example.contestifyme.features.problemsFeature.data.source.ProblemsContainer
+import com.example.contestifyme.features.problemsFeature.data.source.ProblemsContainerImpl
+import com.example.contestifyme.features.profileFeature.data.source.ProfileContainer
+import com.example.contestifyme.features.profileFeature.data.source.ProfileContainerImpl
 import com.example.contestifyme.startOnBoard.data.OnBoardContainer
 import com.example.contestifyme.startOnBoard.data.OnBoardContainerImpl
 

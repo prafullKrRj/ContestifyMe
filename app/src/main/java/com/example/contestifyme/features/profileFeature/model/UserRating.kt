@@ -1,11 +1,6 @@
-package com.example.contestifyme.features.profileFeature.data.local.entities
+package com.example.contestifyme.features.profileFeature.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity(tableName = "user_rating")
 data class UserRating(
-    @PrimaryKey
     val contestId: Int,
     val contestName: String,
     val handle: String,
