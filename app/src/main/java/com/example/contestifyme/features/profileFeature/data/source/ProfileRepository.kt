@@ -18,8 +18,8 @@ interface ProfileRepository {
     fun getUserInfo(): Flow<List<UserInfoEntity>>
     suspend fun getUserInfoFromApi(handle: String): ProfileUserDto
     suspend fun getUserRatingFromApi(handle: String): RatingDto
-
-    suspend fun getUserStatusFromApi(handle: String): SubmissionDto
+    suspend fun updateUserInfo(userInfoEntity: UserInfoEntity)
+    suspend fun getUserStatusFromApi(handle: String, start: Int, end: Int): SubmissionDto
 }
 
 class ProfileRepositoryImpl (
@@ -47,7 +47,11 @@ class ProfileRepositoryImpl (
         return profileApiService.getUserRatingFromApi(ProfileConstants.getUserRating(handle))
     }
 
-    override suspend fun getUserStatusFromApi(handle: String): SubmissionDto {
-        return profileApiService.getUserStatusFromApi(ProfileConstants.getUserStatus(handle))
+    override suspend fun updateUserInfo(userInfoEntity: UserInfoEntity) {
+        profileDao.updateUserInfo(userInfoEntity)
+    }
+
+    override suspend fun getUserStatusFromApi(handle: String, start: Int, end: Int): SubmissionDto {
+        return profileApiService.getUserStatusFromApi(ProfileConstants.getUserStatus(handle, start, end))
     }
 }

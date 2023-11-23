@@ -24,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.sourceInformation
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -62,7 +61,13 @@ fun ProfileScreen(
                         0 -> FrontScreen(state.user[0]) {
                             scope.launch { pagerState.animateScrollToPage(1) }
                         }
-                        1 -> SubmissionsScreen()
+                        1 -> SubmissionsScreen(state.user[0].subMissionInfo,
+                            nextSubMissions = {
+                                      viewModel.next()
+                            },
+                            previousSubMissions = {
+                                viewModel.previous()
+                            })
                     }
                  }
              }

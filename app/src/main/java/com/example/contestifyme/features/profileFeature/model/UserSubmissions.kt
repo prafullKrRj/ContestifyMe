@@ -1,9 +1,6 @@
 package com.example.contestifyme.features.profileFeature.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-data class UserStatus(
+data class UserSubmissions(
     val id: Int,
     val name: String,
     val verdict: String,

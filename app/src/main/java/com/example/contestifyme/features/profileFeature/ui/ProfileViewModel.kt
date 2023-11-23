@@ -1,12 +1,15 @@
 package com.example.contestifyme.features.profileFeature.ui
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.contestifyme.features.profileFeature.data.source.ProfileRepository
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
 import com.example.contestifyme.features.profileFeature.model.UserRating
-import com.example.contestifyme.features.profileFeature.model.UserStatus
+import com.example.contestifyme.features.profileFeature.model.UserSubmissions
 import com.example.contestifyme.features.profileFeature.model.ratingInfo.RatingResult
 import com.example.contestifyme.features.profileFeature.model.submissionsInfo.Submissions
 import com.example.contestifyme.features.profileFeature.model.userInfo.ProfileUserDto
@@ -37,18 +40,17 @@ class ProfileViewModel(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = ProfileUiState(emptyList())
         )
+    private val count: Int = 15
+    private var start by mutableStateOf(1)
     init {
         updateUserInfo()
     }
-
     private fun updateUserInfo() {
         viewModelScope.launch {
             try {
-
                 val userInfo = profileRepository.getUserInfoFromApi(handle)
                 val ratingInfo = profileRepository.getUserRatingFromApi(handle)
-                val submissionInfo = profileRepository.getUserStatusFromApi(handle)
-                Log.d("prafull", "updateUserInfo: ${profileUiState.value.user[0].ratingInfo}")
+                val submissionInfo = profileRepository.getUserStatusFromApi(handle, 1, count)
                 profileRepository.insertUser(
                     userInfo.toUserInfoEntity(
                         rating = ratingInfo.result.map {
@@ -66,9 +68,37 @@ class ProfileViewModel(
             }
         }
     }
+    fun next() {
+        start += 15
+        updateUser()
+    }
+    fun previous() {
+        if (start > 15) {
+            start -= 15
+            updateUser()
+        }
+    }
+    private fun updateUser() {
+        viewModelScope.launch {
+            try {
+                val submissionInfo = profileRepository.getUserStatusFromApi(handle, start, count)
+                profileRepository.updateUserInfo(
+                    profileUiState.value.user[0].copy(
+                        subMissionInfo = submissionInfo.submissions.map {
+                            it.toUserStatusEntity()
+                        }
+                    )
+                )
+            } catch (e: HttpException) {
+                Log.d("check", "updateUserInfo: HttpError")
+            } catch (e: IOException) {
+                Log.d("check", "updateUserInfo: IOError")
+            }
+        }
+    }
 }
-fun Submissions.toUserStatusEntity(): UserStatus {
-    return UserStatus(
+fun Submissions.toUserStatusEntity(): UserSubmissions {
+    return UserSubmissions(
         id = this.id,
         name = this.problem.name,
         verdict = this.verdict,
@@ -87,7 +117,7 @@ fun RatingResult.toUserRatingEntity(): UserRating {
         ratingUpdateTimeSeconds = this.ratingUpdateTimeSeconds
     )
 }
-fun ProfileUserDto.toUserInfoEntity(rating: List<UserRating>, status: List<UserStatus>): UserInfoEntity {
+fun ProfileUserDto.toUserInfoEntity(rating: List<UserRating>, status: List<UserSubmissions>): UserInfoEntity {
     return UserInfoEntity(
         handle = this.result[0].handle,
         avatar = this.result[0].avatar,
@@ -104,6 +134,6 @@ fun ProfileUserDto.toUserInfoEntity(rating: List<UserRating>, status: List<UserS
         registrationTimeSeconds = this.result[0].registrationTimeSeconds,
         titlePhoto = this.result[0].titlePhoto,
         ratingInfo = rating,
-        statusInfo = status
+        subMissionInfo = status
     )
 }

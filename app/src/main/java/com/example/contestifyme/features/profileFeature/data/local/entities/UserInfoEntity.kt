@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import com.example.contestifyme.features.profileFeature.model.UserRating
-import com.example.contestifyme.features.profileFeature.model.UserStatus
+import com.example.contestifyme.features.profileFeature.model.UserSubmissions
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -27,7 +27,7 @@ data class UserInfoEntity(
     val registrationTimeSeconds: Int?,
     val titlePhoto: String?,
     val ratingInfo: List<UserRating>,
-    val statusInfo: List<UserStatus>
+    val subMissionInfo: List<UserSubmissions>
 )
 
 class ProfileTypeConverters {
@@ -37,7 +37,7 @@ class ProfileTypeConverters {
         return gson.toJson(list)
     }
     @TypeConverter
-    fun fromUserStatusList(list: List<UserStatus>): String {
+    fun fromUserStatusList(list: List<UserSubmissions>): String {
         return gson.toJson(list)
     }
     @TypeConverter
@@ -46,7 +46,7 @@ class ProfileTypeConverters {
         return gson.fromJson(string, listType)
     }
     @TypeConverter
-    fun toUserStatusList(string: String): List<UserStatus> {
-        return gson.fromJson(string, object : TypeToken<List<UserStatus>>() {}.type)
+    fun toUserStatusList(string: String): List<UserSubmissions> {
+        return gson.fromJson(string, object : TypeToken<List<UserSubmissions>>() {}.type)
     }
 }
