@@ -101,9 +101,11 @@ fun Submissions.toUserStatusEntity(): UserSubmissions {
     return UserSubmissions(
         id = this.id,
         name = this.problem.name,
-        verdict = this.verdict,
+        verdict =  if (this.verdict == "OK") "Accepted" else this.verdict,
         time = this.timeConsumedMillis,
-        contestId = this.contestId
+        contestId = this.contestId,
+        index = this.problem.index,
+        rating = this.problem.rating
     )
 }
 fun RatingResult.toUserRatingEntity(): UserRating {

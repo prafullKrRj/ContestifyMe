@@ -6,4 +6,6 @@ data class UserSubmissions(
     val verdict: String,
     val time: Int,
     val contestId: Int,
+    val index: String,
+    val rating: Int,
 )

@@ -1,7 +1,8 @@
 package com.example.contestifyme.features.profileFeature.constants
 
 import androidx.compose.ui.graphics.Color
-import com.example.contestifyme.ui.theme.CustomColor2
+import com.example.contestifyme.ui.theme.md_theme_dark_onSecondaryContainer
+import com.example.contestifyme.ui.theme.md_theme_dark_secondaryContainer
 
 object ProfileConstants {
 
@@ -19,7 +20,7 @@ object ProfileConstants {
 
     val colors = mapOf(
         "FAILED" to (Color(0xFFFF0000) to Color(0xFFFFFFFF)), // Red background with white text
-        "OK" to (Color(0xFF00FF00) to Color(0xFF000000)), // Green background with black text
+        "ACCEPTED" to (md_theme_dark_secondaryContainer to md_theme_dark_onSecondaryContainer), // Green background with black text
         "PARTIAL" to (Color(0xFFFFFF00) to Color(0xFF000000)), // Yellow background with black text
         "COMPILATION_ERROR" to (Color(0xFFFFA500) to Color(0xFF000000)), // Orange background with black text
         "RUNTIME_ERROR" to (Color(0xFF800080) to Color(0xFFFFFFFF)), // Purple background with white text

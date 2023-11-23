@@ -27,7 +27,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.example.contestifyme.features.profileFeature.constants.ProfileConstants
 import com.example.contestifyme.features.profileFeature.model.UserSubmissions
-import com.example.contestifyme.ui.theme.CustomColor2
 
 @Composable
 fun SubmissionsScreen(
@@ -82,7 +81,8 @@ fun SubMissionCard(userSubmission: UserSubmissions) {
                 )
                 .padding(horizontal = 12.dp, vertical = 8.dp)
         ) {
-            Text(text = userSubmission.name, color = textColor ?: MaterialTheme.colorScheme.onPrimaryContainer)
+            Text(text = userSubmission.index + ". " +userSubmission.name, color = textColor ?: MaterialTheme.colorScheme.onPrimaryContainer)
+            Text(text = userSubmission.verdict.uppercase(), color = textColor ?: MaterialTheme.colorScheme.onPrimaryContainer)
         }
     }
 }
