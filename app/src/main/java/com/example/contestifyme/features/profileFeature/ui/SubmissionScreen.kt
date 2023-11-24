@@ -1,6 +1,7 @@
 package com.example.contestifyme.features.profileFeature.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,7 +33,8 @@ import com.example.contestifyme.features.profileFeature.model.UserSubmissions
 fun SubmissionsScreen(
     submissions: List<UserSubmissions>,
     nextSubMissions: () -> Unit = {},
-    previousSubMissions: () -> Unit = {}
+    previousSubMissions: () -> Unit = {},
+    onClickAction: (Int, Int) -> Unit = { contestId, id -> }
 ) {
 
     LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp)) {
@@ -41,7 +43,10 @@ fun SubmissionsScreen(
         }
         submissions.forEach {userSubmission ->
             item {
-                SubMissionCard(userSubmission)
+                SubMissionCard(userSubmission) {
+                    contestId, id ->
+                    onClickAction(contestId, id)
+                }
             }
         }
         item {
@@ -63,13 +68,16 @@ fun SubmissionsScreen(
 
 
 @Composable
-fun SubMissionCard(userSubmission: UserSubmissions) {
+fun SubMissionCard(userSubmission: UserSubmissions, onClickAction: (Int, Int) -> Unit = { contestId, id -> }) {
     val cardColor = ProfileConstants.colors[userSubmission.verdict.uppercase()]?.first
     val textColor = ProfileConstants.colors[userSubmission.verdict.uppercase()]?.second
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
+            .clickable {
+                onClickAction(userSubmission.contestId, userSubmission.id)
+            }
         ,
         elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
     ) {

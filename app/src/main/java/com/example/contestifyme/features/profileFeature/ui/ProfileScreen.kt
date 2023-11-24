@@ -2,6 +2,7 @@
 
 package com.example.contestifyme.features.profileFeature.ui
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,24 +17,68 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.contestifyme.features.profileFeature.constants.ProfileConstants.getAnswerUrl
+import com.example.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
 import com.example.contestifyme.features.profileFeature.ui.components.ColorInfoDialog
 import com.example.contestifyme.features.profileFeature.ui.components.ProfileAppBar
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel
 ) {
     val state: ProfileUiState by viewModel.profileUiState.collectAsState()
+    if (state.user.isNotEmpty()) {
+        Log.d("praf", "${state.user[0].subMissionInfo}")
+    }
+    val navHostController: NavHostController = rememberNavController()
+    var url by rememberSaveable {
+        mutableStateOf("https://www.codeforces.com/")
+    }
+    Column (
+        Modifier
+            .fillMaxSize()
+    ) {
+        NavHost(navController = navHostController, startDestination = "main") {
+            composable("main") {
+                MainProfileScreen(
+                    user = state.user,
+                    viewModel = viewModel,
+                    navigate = {
+                        url = it
+                        navHostController.navigate("answer")
+                    }
+                )
+            }
+            composable("answer") {
+                SubmissionAnswer(
+                    url = url
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@Composable
+fun MainProfileScreen(
+    user: List<UserInfoEntity>,
+    viewModel: ProfileViewModel,
+    navigate: (String) -> Unit
+) {
     val pagerState = rememberPagerState(initialPage = 0)
     val scope = rememberCoroutineScope()
     var colorInformationDialog by remember {
         mutableStateOf(false)
     }
-    Scaffold (
+    Scaffold(
         topBar = {
             ProfileAppBar(page = pagerState.currentPage) {
                 if (pagerState.currentPage == 1) {
@@ -42,35 +87,41 @@ fun ProfileScreen(
             }
         }
     ) { paddingValues ->
-
         Column (
             Modifier
                 .fillMaxSize()
                 .padding(paddingValues = paddingValues)
         ) {
-             if (state.user.isNotEmpty()) {
-                 HorizontalPager(pageCount = 2, state = pagerState, userScrollEnabled = true) {
+            if (user.isNotEmpty()) {
+                HorizontalPager(
+                    pageCount = 3,
+                    state = pagerState,
+                    userScrollEnabled = true
+                ) {
                     when (it) {
-                        0 -> FrontScreen(state.user[0]) {
+                        0 -> FrontScreen(user[0]) {
                             scope.launch { pagerState.animateScrollToPage(1) }
                         }
-                        1 -> SubmissionsScreen(state.user[0].subMissionInfo,
+
+                        1 -> SubmissionsScreen(user[0].subMissionInfo,
                             nextSubMissions = {
-                                      viewModel.next()
+                                viewModel.next()
                             },
                             previousSubMissions = {
                                 viewModel.previous()
-                            })
+                            },
+                            onClickAction = { contestId, id ->
+                                navigate(getAnswerUrl(contestId, id))
+                            }
+                        )
                     }
-                 }
-             }
-        }
-        if (colorInformationDialog) {
-            ColorInfoDialog(openDialog = {
-                colorInformationDialog = false
-            })
+                }
+            }
         }
     }
+    if (colorInformationDialog) {
+        ColorInfoDialog(openDialog = {
+            colorInformationDialog = false
+        })
+    }
 }
-
-

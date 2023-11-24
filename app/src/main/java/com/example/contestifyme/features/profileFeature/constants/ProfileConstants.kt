@@ -15,8 +15,9 @@ object ProfileConstants {
     fun getUserStatus(handle: String, start: Int, end: Int): String {
         return "https://codeforces.com/api/user.status?handle=$handle&from=$start&count=$end"
     }
-
-
+    fun getAnswerUrl(contestId: Int, id: Int): String {
+        return "https://codeforces.com/contest/$contestId/submission/$id/"
+    }
 
     val colors = mapOf(
         "FAILED" to (Color(0xFFFF0000) to Color(0xFFFFFFFF)), // Red background with white text
