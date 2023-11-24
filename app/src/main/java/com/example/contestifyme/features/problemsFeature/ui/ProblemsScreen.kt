@@ -2,6 +2,12 @@
 
 package com.example.contestifyme.features.problemsFeature.ui
 
+import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.AssistChip
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Alignment
@@ -15,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -107,7 +114,6 @@ fun ProblemsUI(
     updateList: (List<String>) -> Unit,         // Update List based on Tags
     previousType: Pair<Int, Int>                // Previous Sort Type
 ) {
-
     Column (modifier.fillMaxSize()){
         SearchBar()
         Spacer(modifier = Modifier.padding(vertical = 2.dp))
@@ -121,6 +127,11 @@ fun ProblemsUI(
                 updateList(it)
             }
         )
+        SelectedTagsRow(selectedTags = selectedTags) {removedTag ->
+            updateList(selectedTags.filterList {
+                this != removedTag
+            })
+        }
         Spacer(modifier = Modifier.padding(vertical = 2.dp))
         if (list.isEmpty()) {
             EmptyListBox()
@@ -130,6 +141,32 @@ fun ProblemsUI(
     }
 }
 
+@Composable
+fun SelectedTagsRow(selectedTags: List<String>, removeTag: (String) -> Unit) {
+    LazyRow(
+        modifier = Modifier,
+        contentPadding = PaddingValues(horizontal = 8.dp) // 8.dp between each item
+    ) {
+        items(items = selectedTags) { item ->
+            AssistChip(
+                onClick = {
+                    removeTag(item)
+                },
+                label = {
+                    Text(item)
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.Clear,
+                        contentDescription = "Remove Tag",
+                        modifier = Modifier.size(AssistChipDefaults.IconSize)
+                    )
+                },
+                modifier = Modifier.padding(end = 4.dp)
+            )
+        }
+    }
+}
 @Composable
 fun EmptyListBox() {
     Box(
