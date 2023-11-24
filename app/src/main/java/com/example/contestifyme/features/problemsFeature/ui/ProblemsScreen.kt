@@ -86,7 +86,7 @@ fun ProblemsScreen(viewModel: ProblemsViewModel) {
                 } else {
                     true
                 }
-            }.sortedBy { it.rating  },                          // Sort List based on Rating
+            },                          // Sort List based on Rating
             modifier = Modifier.padding(paddingValues = paddingValues),
             ratingSelected = {
                        sortType = it
