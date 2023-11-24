@@ -94,7 +94,7 @@ fun MainProfileScreen(
         ) {
             if (user.isNotEmpty()) {
                 HorizontalPager(
-                    pageCount = 3,
+                    pageCount = 2,
                     state = pagerState,
                     userScrollEnabled = true
                 ) {
