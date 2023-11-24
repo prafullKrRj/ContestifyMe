@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
@@ -53,8 +52,7 @@ import com.example.contestifyme.R.string.submissions as submissions1
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel,
-    handle: String
+    viewModel: ProfileViewModel
 ) {
     val state: ProfileUiState by viewModel.profileUiState.collectAsState()
     val pagerState = rememberPagerState(initialPage = 0)
@@ -156,7 +154,6 @@ fun ProfileAppBar(page: Int, iconClick: () -> Unit) {
                     maxLines = 1, overflow = TextOverflow.Ellipsis, fontFamily = SansSerif,
                 )
             }
-
         },
         actions = {
             IconButton(onClick = {

@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -78,7 +79,17 @@ fun ContestifyAPP (viewModel: OnBoardingVM) {
                 viewModel = viewModel,
             )
         } else {
-            ContestifyMainApp(navController, viewModelState.users[0].handle)
+            /**
+             *  List of viewModels to be used in the app
+             * */
+            val viewModels = listOf(
+                viewModel<ProfileViewModel>(factory = AppViewModelProvider.profileViewModel(viewModelState.users[0].handle)),
+                viewModel<ContestsViewModel>(factory = AppViewModelProvider.contestVM),
+                viewModel<CompareViewModel>(factory = AppViewModelProvider.compareVm),
+                viewModel<FriendsViewModel>(factory = AppViewModelProvider.friendsVM),
+                viewModel<ProblemsViewModel>(factory = AppViewModelProvider.problemsVM)
+            )
+            ContestifyMainApp(navController, viewModels = viewModels)
         }
         if (showBox) {
             Box(modifier = Modifier
@@ -89,11 +100,12 @@ fun ContestifyAPP (viewModel: OnBoardingVM) {
             }
         }
     }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContestifyMainApp(navController: NavHostController, handle: String) {
+fun ContestifyMainApp(navController: NavHostController, viewModels: List<ViewModel>) {
     var selected by rememberSaveable {
         mutableStateOf(PROFILE.name)
     }
@@ -110,23 +122,22 @@ fun ContestifyMainApp(navController: NavHostController, handle: String) {
         Column(
             modifier = Modifier.padding(paddingValues),
         ) {
-
             NavHost(navController = navController, startDestination = PROFILE.name) {
 
                 composable(route = PROFILE.name) {
-                    ProfileScreen(viewModel = viewModel(factory = AppViewModelProvider.profileViewModel(handle)), handle = handle)
+                    ProfileScreen(viewModel = viewModels[0] as ProfileViewModel)
                 }
                 composable(route = CONTESTS.name) {
-                    ContestsScreen(viewModel = viewModel(factory = AppViewModelProvider.contestVM))
+                    ContestsScreen(viewModel = viewModels[1] as ContestsViewModel)
                 }
                 composable(route = COMPARE.name) {
-                    CompareScreen(viewModel = viewModel(factory = AppViewModelProvider.compareVm))
+                    CompareScreen(viewModel = viewModels[2] as CompareViewModel)
                 }
                 composable(route = FRIENDS.name) {
-                    FriendsScreen(viewModel = viewModel(factory = AppViewModelProvider.friendsVM))
+                    FriendsScreen(viewModel = viewModels[3] as FriendsViewModel)
                 }
                 composable(route = PROBLEMS.name) {
-                    ProblemsScreen(viewModel = viewModel(factory = AppViewModelProvider.problemsVM))
+                    ProblemsScreen(viewModel = viewModels[4] as ProblemsViewModel)
                 }
             }
         }
@@ -172,6 +183,9 @@ fun ContestifyNavigationBar(navigateTo: (Screens) -> Unit) {
         }
     }
 }
+/**
+ *  Enum class for the screens in the app
+ * */
 enum class Screens {
     PROFILE,
     CONTESTS,
@@ -179,6 +193,10 @@ enum class Screens {
     FRIENDS,
     PROBLEMS
 }
+
+/**
+ *  ViewModels for the app
+ * */
 object AppViewModelProvider {
     fun profileViewModel(handle: String): ViewModelProvider.Factory {
         return viewModelFactory {
