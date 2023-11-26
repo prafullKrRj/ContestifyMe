@@ -60,7 +60,7 @@ fun VerdictGraph(
                             modifier = Modifier
                                 .width(20.dp)
                                 .height(20.dp)
-                                .background(ProfileConstants.colors[it.uppercase()]!!.first)
+                                .background(ProfileConstants.verdictsColors[it.uppercase()]!!.first)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(text = it, fontSize = 12.sp)

@@ -4,12 +4,12 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.yml.charts.common.model.PlotType
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
+import com.example.contestifyme.features.problemsFeature.problemsConstants.ProblemsConstants
 import com.example.contestifyme.features.profileFeature.constants.ProfileConstants
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
 import com.example.contestifyme.features.profileFeature.data.source.ProfileRepository
@@ -18,6 +18,7 @@ import com.example.contestifyme.features.profileFeature.model.UserSubmissions
 import com.example.contestifyme.features.profileFeature.model.ratingInfo.RatingResult
 import com.example.contestifyme.features.profileFeature.model.submissionsInfo.Submissions
 import com.example.contestifyme.features.profileFeature.model.userInfo.ProfileUserDto
+import com.example.contestifyme.features.profileFeature.ui.GetChartData.getVerdictsList
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -88,22 +89,23 @@ class ProfileViewModel(
         }
         return verdictsMap
     }
-    private fun getList(verdicts: HashMap<String, Int>): List<PieChartData.Slice> {
-        val list: List<PieChartData.Slice> = verdicts.keys.map {
-            PieChartData.Slice(
-                value = verdicts[it]!!.toFloat(),
-                color = ProfileConstants.colors[it.uppercase()]!!.first,
-                label = verdicts[it].toString(),
-            )
+
+    fun getQuestionSolvedByTags(): HashMap<String, Int> {
+        if (profileUiState.value.user.isEmpty()) {
+            return hashMapOf()
         }
-        return list
+
+        val questionSolvedByTags: HashMap<String, Int> = GetChartData.getMap()
+        profileUiState.value.user[0].subMissionInfo.forEach {
+            it.tags.forEach { tag ->
+                if (questionSolvedByTags.containsKey(tag.lowercase())) {
+                    questionSolvedByTags[tag] = questionSolvedByTags[tag]!! + 1
+                }
+            }
+        }
+        return questionSolvedByTags
     }
-    fun pieChartData(verdicts: HashMap<String, Int>): PieChartData {
-        return PieChartData(
-            slices = getList(verdicts),
-            plotType = PlotType.Pie,
-        )
-    }
+
     fun getQuestionSolvedByIndexData(): HashMap<String, Int> {
         if (profileUiState.value.user.isEmpty()) {
             return hashMapOf()
@@ -127,7 +129,8 @@ fun Submissions.toUserStatusEntity(): UserSubmissions {
         time = this.timeConsumedMillis,
         contestId = this.contestId,
         index = this.problem.index,
-        rating = this.problem.rating
+        rating = this.problem.rating,
+        tags = this.problem.tags,
     )
 }
 fun RatingResult.toUserRatingEntity(): UserRating {
@@ -141,6 +144,7 @@ fun RatingResult.toUserRatingEntity(): UserRating {
         ratingUpdateTimeSeconds = this.ratingUpdateTimeSeconds
     )
 }
+
 fun ProfileUserDto.toUserInfoEntity(rating: List<UserRating>, status: List<UserSubmissions>): UserInfoEntity {
     return UserInfoEntity(
         handle = this.result[0].handle,
@@ -162,6 +166,9 @@ fun ProfileUserDto.toUserInfoEntity(rating: List<UserRating>, status: List<UserS
     )
 }
 object GetChartData {
+    /**
+     *    This function returns a PieChartConfig object for the pie chart
+     * */
     fun pieChartConfig(): PieChartConfig {
         return PieChartConfig(
             labelType = PieChartConfig.LabelType.VALUE,
@@ -170,5 +177,59 @@ object GetChartData {
             animationDuration = 1500,
             isClickOnSliceEnabled = false
         )
+    }
+    /**
+     *    This function returns a list of slices for the pie chart (verdicts)
+     * */
+    fun getVerdictsList(verdicts: HashMap<String, Int>): List<PieChartData.Slice> {
+        val list: List<PieChartData.Slice> = verdicts.keys.map {
+            PieChartData.Slice(
+                value = verdicts[it]!!.toFloat(),
+                color = ProfileConstants.verdictsColors[it.uppercase()]!!.first,
+                label = verdicts[it].toString(),
+            )
+        }
+        return list
+    }
+    /**
+     *      This function returns a PieChartData object for the pie chart (verdicts)
+     * */
+    fun getVerdictsData(verdicts: HashMap<String, Int>): PieChartData {
+        return PieChartData(
+            slices = getVerdictsList(verdicts),
+            plotType = PlotType.Pie,
+        )
+    }
+    /**
+     *      This function returns a HashMap of tags with value 0
+     * */
+    fun getMap(): HashMap<String, Int> {
+        val hashMap = hashMapOf<String, Int>()
+        ProblemsConstants.tags.forEach {
+            hashMap[it.lowercase()] = 0
+        }
+        return hashMap
+    }
+    /**
+     *      This function returns a PieChartData object for the donut chart (tags)
+     * */
+    fun getQuestionSolvedByTagsData(solvedByTags: HashMap<String, Int>): PieChartData {
+        return PieChartData(
+            slices = getTagsList(solvedByTags),
+            plotType = PlotType.Donut,
+        )
+    }
+    /**
+     *      This function returns a list of slices for the donut chart (tags)
+     * */
+    private fun getTagsList(verdicts: HashMap<String, Int>): List<PieChartData.Slice> {
+        val list: List<PieChartData.Slice> = verdicts.keys.map {
+            PieChartData.Slice(
+                value = verdicts[it]!!.toFloat(),
+                color = ProfileConstants.solvedByTagsColor[it.lowercase()]!!,
+                label = verdicts[it].toString(),
+            )
+        }
+        return list
     }
 }

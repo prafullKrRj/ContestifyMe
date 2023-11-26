@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun QuestionTypeGraph(data: HashMap<String, Int>) {
+fun QuestionByIndexGraph(data: HashMap<String, Int>) {
     val xData = data.keys.toList().filter {
         !it.last().isDigit()
     }.sorted()

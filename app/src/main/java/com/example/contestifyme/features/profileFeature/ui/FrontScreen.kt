@@ -13,16 +13,22 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import co.yml.charts.ui.piechart.charts.DonutPieChart
+import co.yml.charts.ui.piechart.models.PieChartConfig
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
 import com.example.contestifyme.features.profileFeature.ui.components.ProfileCard
-import com.example.contestifyme.features.profileFeature.ui.components.QuestionTypeGraph
+import com.example.contestifyme.features.profileFeature.ui.components.QuestionByIndexGraph
 import com.example.contestifyme.features.profileFeature.ui.components.RankCard
 import com.example.contestifyme.features.profileFeature.ui.components.RatingGraph
 import com.example.contestifyme.features.profileFeature.ui.components.SubmissionsGraph
@@ -32,6 +38,9 @@ import com.example.contestifyme.features.profileFeature.ui.components.VerdictGra
 fun FrontScreen(user: UserInfoEntity, viewModel: ProfileViewModel, swipeToSubmission: () -> Unit = {}) {
     val verdicts by rememberSaveable {
         mutableStateOf(viewModel.getVerdicts())
+    }
+    val solvedByTags by rememberSaveable {
+        mutableStateOf(viewModel.getQuestionSolvedByTags())
     }
     LazyColumn(modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp)
@@ -63,22 +72,53 @@ fun FrontScreen(user: UserInfoEntity, viewModel: ProfileViewModel, swipeToSubmis
             SubmissionsGraph()
             Spacer(modifier = Modifier.height(8.dp))
         }
-     /*   if (user.subMissionInfo.isNotEmpty()) {
+        item { 
+            QuestionByTypeGraph(solvedByTags)
+        }
+        if (user.subMissionInfo.isNotEmpty()) {
             item {
                 VerdictGraph(
                     verdicts = verdicts,
-                    pieChartData = viewModel.pieChartData(verdicts),
+                    pieChartData = GetChartData.getVerdictsData(verdicts),
                     pieChartConfig = GetChartData.pieChartConfig()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
         item {
-            QuestionTypeGraph(viewModel.getQuestionSolvedByIndexData())
+            QuestionByIndexGraph(viewModel.getQuestionSolvedByIndexData())
             Spacer(modifier = Modifier.height(8.dp))
-        }*/
+        }
     }
 
+}
+
+@Composable
+fun QuestionByTypeGraph(questionSolvedByTags: HashMap<String, Int>) {
+
+    Text(
+        text = "Question Solved By Tags",
+        fontSize = 20.sp,
+        modifier = Modifier.padding(start = 8.dp),
+        textAlign = TextAlign.Center
+    )
+    Row(modifier = Modifier) {
+        DonutPieChart(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(20.dp),
+            pieChartData = GetChartData.getQuestionSolvedByTagsData(questionSolvedByTags),
+            pieChartConfig = PieChartConfig(
+                labelVisible = false,
+                labelFontSize = 42.sp,
+                strokeWidth = 120f,
+                labelColor = Color.Black,
+                activeSliceAlpha = .9f,
+                isAnimationEnable = true,
+                backgroundColor = Color.Transparent,
+            )
+        )
+    }
 }
 
 @Composable

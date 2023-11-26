@@ -19,7 +19,7 @@ object ProfileConstants {
         return "https://codeforces.com/contest/$contestId/submission/$id/"
     }
 
-    val colors = mapOf(
+    val verdictsColors = mapOf(
         "FAILED" to (Color(0xFFFF0000) to Color(0xFFFFFFFF)), // Red background with white text
         "ACCEPTED" to (md_theme_dark_secondaryContainer to md_theme_dark_onSecondaryContainer), // Green background with black text
         "PARTIAL" to (Color(0xFFFFFF00) to Color(0xFF000000)), // Yellow background with black text
@@ -37,5 +37,43 @@ object ProfileConstants {
         "SKIPPED" to (Color(0xFF808080) to Color(0xFFFFFFFF)), // Gray background with white text
         "TESTING" to (Color(0xFF00CED1) to Color(0xFF000000)), // Dark Turquoise background with black text
         "REJECTED" to (Color(0xFFDC143C) to Color(0xFFFFFFFF)) // Crimson background with white text
+    )
+    val solvedByTagsColor = mapOf(
+        "2-sat" to Color(0xFF0000FF),
+        "binary search" to Color(0xFFFF0000),
+        "bitmasks" to Color(0xFF00FF00),
+        "brute force" to Color(0xFFFFFF00),
+        "chinese remainder theorem" to Color(0xFF00FFFF),
+        "combinatorics" to Color(0xFFFF00FF),
+        "constructive algorithms" to Color(0xFF800080),
+        "data structures" to Color(0xFF008080),
+        "dfs and similar" to Color(0xFF000080),
+        "divide and conquer" to Color(0xFF800000),
+        "dp" to Color(0xFF008000),
+        "dsu" to Color(0xFF808000),
+        "expression parsing" to Color(0xFF808080),
+        "fft" to Color(0xFF8000FF),
+        "flows" to Color(0xFF00FFFF),
+        "games" to Color(0xFFFF00FF),
+        "geometry" to Color(0xFF00FF00),
+        "graph matchings" to Color(0xFF0000FF),
+        "graphs" to Color(0xFFFF0000),
+        "greedy" to Color(0xFF00FF80),
+        "hashing" to Color(0xFF00FFFF),
+        "implementation" to Color(0xFF0080FF),
+        "interactive" to Color(0xFF8000FF),
+        "math" to Color(0xFF804040),
+        "matrices" to Color(0xFF00FF80),
+        "meet-in-the-middle" to Color(0xFF8080FF),
+        "number theory" to Color(0xFFFF8080),
+        "probabilities" to Color(0xFF808000),
+        "schedules" to Color(0xFF804080),
+        "shortest paths" to Color(0xFF800040),
+        "sortings" to Color(0xFFFF8040),
+        "string suffix structures" to Color(0xFF408080),
+        "strings" to Color(0xFF404080),
+        "ternary search" to Color(0xFF804000),
+        "trees" to Color(0xFF400040),
+        "two pointers" to Color(0xFFFF8040)
     )
 }

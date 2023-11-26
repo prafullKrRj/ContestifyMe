@@ -38,7 +38,7 @@ fun ColorInfoDialog(openDialog: () -> Unit) {
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }
-                    ProfileConstants.colors.forEach { (key, value) ->
+                    ProfileConstants.verdictsColors.forEach { (key, value) ->
                         item {
                             Row (verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 4.dp)) {
                                 Box(modifier = Modifier

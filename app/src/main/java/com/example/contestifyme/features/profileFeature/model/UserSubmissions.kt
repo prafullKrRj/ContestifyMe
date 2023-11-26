@@ -1,5 +1,7 @@
 package com.example.contestifyme.features.profileFeature.model
 
+import coil.request.Tags
+
 data class UserSubmissions(
     val id: Int,
     val name: String,
@@ -8,4 +10,5 @@ data class UserSubmissions(
     val contestId: Int,
     val index: String,
     val rating: Int,
+    val tags: List<String>
 )
