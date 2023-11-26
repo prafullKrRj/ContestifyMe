@@ -104,6 +104,20 @@ class ProfileViewModel(
             plotType = PlotType.Pie,
         )
     }
+    fun getQuestionSolvedByIndexData(): HashMap<String, Int> {
+        if (profileUiState.value.user.isEmpty()) {
+            return hashMapOf()
+        }
+        val questionSolvedByIndex: HashMap<String, Int> by mutableStateOf(hashMapOf())
+        profileUiState.value.user[0].subMissionInfo.forEach {
+            if (questionSolvedByIndex.containsKey(it.index)) {
+                questionSolvedByIndex[it.index] = questionSolvedByIndex[it.index]!! + 1
+            } else {
+                questionSolvedByIndex[it.index] = 1
+            }
+        }
+        return questionSolvedByIndex
+    }
 }
 fun Submissions.toUserStatusEntity(): UserSubmissions {
     return UserSubmissions(

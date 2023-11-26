@@ -63,7 +63,7 @@ fun FrontScreen(user: UserInfoEntity, viewModel: ProfileViewModel, swipeToSubmis
             SubmissionsGraph()
             Spacer(modifier = Modifier.height(8.dp))
         }
-        if (user.subMissionInfo.isNotEmpty()) {
+     /*   if (user.subMissionInfo.isNotEmpty()) {
             item {
                 VerdictGraph(
                     verdicts = verdicts,
@@ -74,9 +74,9 @@ fun FrontScreen(user: UserInfoEntity, viewModel: ProfileViewModel, swipeToSubmis
             }
         }
         item {
-            QuestionTypeGraph()
+            QuestionTypeGraph(viewModel.getQuestionSolvedByIndexData())
             Spacer(modifier = Modifier.height(8.dp))
-        }
+        }*/
     }
 
 }
