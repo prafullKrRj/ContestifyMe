@@ -1,7 +1,5 @@
 package com.example.contestifyme.features.profileFeature.ui.components
 
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,15 +13,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import co.yml.charts.common.model.PlotType
 import co.yml.charts.ui.piechart.charts.PieChart
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
@@ -31,26 +25,13 @@ import com.example.contestifyme.features.profileFeature.constants.ProfileConstan
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun VerdictGraph(modifier: Modifier = Modifier, verdicts: Map<String, Int>) {
-    val list: List<PieChartData.Slice> = verdicts.keys.map {
-        PieChartData.Slice(
-            value = verdicts[it]!!.toFloat(),
-            color = ProfileConstants.colors[it.uppercase()]!!.first,
-            label = verdicts[it].toString(),
-        )
-    }
-    val pieChartData = PieChartData(
-        slices = list,
-        plotType = PlotType.Pie,
-    )
-    val pieChartConfig = PieChartConfig(
-        labelType = PieChartConfig.LabelType.VALUE,
-        isAnimationEnable = true,
-        showSliceLabels = true,
-        animationDuration = 1500,
-        isClickOnSliceEnabled = false
-    )
-    Column() {
+fun VerdictGraph(
+    modifier: Modifier = Modifier,
+    verdicts: HashMap<String, Int>,
+    pieChartData: PieChartData,
+    pieChartConfig: PieChartConfig
+) {
+        Column(modifier = modifier) {
         Text(
             text = "Verdicts",
             fontSize = 20.sp,
@@ -62,7 +43,7 @@ fun VerdictGraph(modifier: Modifier = Modifier, verdicts: Map<String, Int>) {
                 .width(400.dp)
                 .height(400.dp),
             pieChartData,
-            pieChartConfig,
+            pieChartConfig
         )
         FlowRow {
             verdicts.keys.forEach {

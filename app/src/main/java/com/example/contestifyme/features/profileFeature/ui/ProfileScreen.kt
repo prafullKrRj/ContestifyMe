@@ -99,17 +99,11 @@ fun MainProfileScreen(
                     userScrollEnabled = true
                 ) {
                     when (it) {
-                        0 -> FrontScreen(user[0], viewModel.getVerdicts()) {
+                        0 -> FrontScreen(viewModel = viewModel, user = user[0]) {
                             scope.launch { pagerState.animateScrollToPage(1) }
                         }
 
                         1 -> SubmissionsScreen(user[0].subMissionInfo,
-                            nextSubMissions = {
-                                viewModel.next()
-                            },
-                            previousSubMissions = {
-                                viewModel.previous()
-                            },
                             onClickAction = { contestId, id ->
                                 navigate(getAnswerUrl(contestId, id))
                             }

@@ -7,8 +7,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.contestifyme.features.profileFeature.data.source.ProfileRepository
+import co.yml.charts.common.model.PlotType
+import co.yml.charts.ui.piechart.models.PieChartConfig
+import co.yml.charts.ui.piechart.models.PieChartData
+import com.example.contestifyme.features.profileFeature.constants.ProfileConstants
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
+import com.example.contestifyme.features.profileFeature.data.source.ProfileRepository
 import com.example.contestifyme.features.profileFeature.model.UserRating
 import com.example.contestifyme.features.profileFeature.model.UserSubmissions
 import com.example.contestifyme.features.profileFeature.model.ratingInfo.RatingResult
@@ -42,10 +46,8 @@ class ProfileViewModel(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = ProfileUiState(emptyList())
         )
-    private var start by mutableStateOf(1)
     init {
         updateUserInfo()
-        getVerdictsMap()
     }
     private fun updateUserInfo() {
         viewModelScope.launch {
@@ -70,40 +72,13 @@ class ProfileViewModel(
             }
         }
     }
-    fun next() {
-        start += 15
-        updateUser()
-    }
-    fun previous() {
-        if (start > 15) {
-            start -= 15
-            updateUser()
-        }
-    }
-    private fun updateUser() {
-        viewModelScope.launch {
-            try {
-                val submissionInfo = profileRepository.getUserStatusFromApi(handle)
-                profileRepository.updateUserInfo(
-                    profileUiState.value.user[0].copy(
-                        subMissionInfo = submissionInfo.submissions.map {
-                            it.toUserStatusEntity()
-                        }
-                    )
-                )
-            } catch (e: HttpException) {
-                Log.d("check", "updateUserInfo: HttpError")
-            } catch (e: IOException) {
-                Log.d("check", "updateUserInfo: IOError")
-            }
-        }
-    }
 
-    private var verdictsMap: MutableMap<String, Int> by mutableStateOf(mutableMapOf())
-    private fun getVerdictsMap() {
+
+    fun getVerdicts(): HashMap<String, Int> {
         if (profileUiState.value.user.isEmpty()) {
-            return
+            return hashMapOf()
         }
+        val verdictsMap: HashMap<String, Int> by mutableStateOf(hashMapOf())
         profileUiState.value.user[0].subMissionInfo.forEach {
             if (verdictsMap.containsKey(it.verdict)) {
                 verdictsMap[it.verdict] = verdictsMap[it.verdict]!! + 1
@@ -111,10 +86,23 @@ class ProfileViewModel(
                 verdictsMap[it.verdict] = 1
             }
         }
-    }
-    fun getVerdicts(): Map<String, Int> {
-        getVerdictsMap()
         return verdictsMap
+    }
+    private fun getList(verdicts: HashMap<String, Int>): List<PieChartData.Slice> {
+        val list: List<PieChartData.Slice> = verdicts.keys.map {
+            PieChartData.Slice(
+                value = verdicts[it]!!.toFloat(),
+                color = ProfileConstants.colors[it.uppercase()]!!.first,
+                label = verdicts[it].toString(),
+            )
+        }
+        return list
+    }
+    fun pieChartData(verdicts: HashMap<String, Int>): PieChartData {
+        return PieChartData(
+            slices = getList(verdicts),
+            plotType = PlotType.Pie,
+        )
     }
 }
 fun Submissions.toUserStatusEntity(): UserSubmissions {
@@ -158,4 +146,15 @@ fun ProfileUserDto.toUserInfoEntity(rating: List<UserRating>, status: List<UserS
         ratingInfo = rating,
         subMissionInfo = status
     )
+}
+object GetChartData {
+    fun pieChartConfig(): PieChartConfig {
+        return PieChartConfig(
+            labelType = PieChartConfig.LabelType.VALUE,
+            isAnimationEnable = true,
+            showSliceLabels = true,
+            animationDuration = 1500,
+            isClickOnSliceEnabled = false
+        )
+    }
 }

@@ -32,8 +32,6 @@ import com.example.contestifyme.features.profileFeature.model.UserSubmissions
 @Composable
 fun SubmissionsScreen(
     submissions: List<UserSubmissions>,
-    nextSubMissions: () -> Unit = {},
-    previousSubMissions: () -> Unit = {},
     onClickAction: (Int, Int) -> Unit = { contestId, id -> }
 ) {
 
@@ -46,20 +44,6 @@ fun SubmissionsScreen(
                 SubMissionCard(userSubmission) {
                     contestId, id ->
                     onClickAction(contestId, id)
-                }
-            }
-        }
-        item {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                PaginationButton(image = Icons.Default.KeyboardArrowLeft) {
-                    previousSubMissions()
-                }
-                PaginationButton(image = Icons.Default.KeyboardArrowRight) {
-                    nextSubMissions()
                 }
             }
         }

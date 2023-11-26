@@ -14,6 +14,9 @@ import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -26,7 +29,10 @@ import com.example.contestifyme.features.profileFeature.ui.components.Submission
 import com.example.contestifyme.features.profileFeature.ui.components.VerdictGraph
 
 @Composable
-fun FrontScreen(user: UserInfoEntity, verdictsMap: Map<String, Int>, swipeToSubmission: () -> Unit = {}) {
+fun FrontScreen(user: UserInfoEntity, viewModel: ProfileViewModel, swipeToSubmission: () -> Unit = {}) {
+    val verdicts by rememberSaveable {
+        mutableStateOf(viewModel.getVerdicts())
+    }
     LazyColumn(modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp)
     ) {
@@ -59,7 +65,11 @@ fun FrontScreen(user: UserInfoEntity, verdictsMap: Map<String, Int>, swipeToSubm
         }
         if (user.subMissionInfo.isNotEmpty()) {
             item {
-                VerdictGraph(verdicts = verdictsMap)
+                VerdictGraph(
+                    verdicts = verdicts,
+                    pieChartData = viewModel.pieChartData(verdicts),
+                    pieChartConfig = GetChartData.pieChartConfig()
+                )
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
@@ -67,8 +77,8 @@ fun FrontScreen(user: UserInfoEntity, verdictsMap: Map<String, Int>, swipeToSubm
             QuestionTypeGraph()
             Spacer(modifier = Modifier.height(8.dp))
         }
-
     }
+
 }
 
 @Composable

@@ -112,4 +112,5 @@ dependencies {
      * */
     implementation("co.yml:ycharts:2.1.0")
     implementation("com.github.madrapps:plot:0.1.1")
+    implementation("com.patrykandpatrick.vico:compose-m3:1.13.0")
 }
