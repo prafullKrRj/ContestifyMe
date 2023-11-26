@@ -1,6 +1,7 @@
 package com.example.contestifyme.features.profileFeature.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,13 +19,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
 import com.example.contestifyme.features.profileFeature.ui.components.ProfileCard
+import com.example.contestifyme.features.profileFeature.ui.components.QuestionTypeGraph
 import com.example.contestifyme.features.profileFeature.ui.components.RankCard
+import com.example.contestifyme.features.profileFeature.ui.components.RatingGraph
+import com.example.contestifyme.features.profileFeature.ui.components.SubmissionsGraph
+import com.example.contestifyme.features.profileFeature.ui.components.VerdictGraph
 
 @Composable
-fun FrontScreen(user: UserInfoEntity, swipeToSubmission: () -> Unit = {}) {
-    LazyColumn(modifier = Modifier
-        .padding(16.dp)
-        .fillMaxSize()) {
+fun FrontScreen(user: UserInfoEntity, verdictsMap: Map<String, Int>, swipeToSubmission: () -> Unit = {}) {
+    LazyColumn(modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp)
+    ) {
         item {
             ToSubmissionsScreenButton {
                 swipeToSubmission()
@@ -41,7 +46,28 @@ fun FrontScreen(user: UserInfoEntity, swipeToSubmission: () -> Unit = {}) {
         }
         item {
             ProfileCard(modifier = Modifier.fillMaxWidth(), user = user)
+            Spacer(modifier = Modifier.height(8.dp))
         }
+
+        item {
+            RatingGraph()
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+        item {
+            SubmissionsGraph()
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+        if (user.subMissionInfo.isNotEmpty()) {
+            item {
+                VerdictGraph(verdicts = verdictsMap)
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
+        item {
+            QuestionTypeGraph()
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
     }
 }
 

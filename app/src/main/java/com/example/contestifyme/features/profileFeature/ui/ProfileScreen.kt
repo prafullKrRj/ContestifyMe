@@ -99,7 +99,7 @@ fun MainProfileScreen(
                     userScrollEnabled = true
                 ) {
                     when (it) {
-                        0 -> FrontScreen(user[0]) {
+                        0 -> FrontScreen(user[0], viewModel.getVerdicts()) {
                             scope.launch { pagerState.animateScrollToPage(1) }
                         }
 

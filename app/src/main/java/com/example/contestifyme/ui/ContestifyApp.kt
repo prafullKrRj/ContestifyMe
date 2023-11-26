@@ -177,7 +177,7 @@ fun ContestifyNavigationBar(navigateTo: (Screens) -> Unit) {
                     selectedItem = index
                     navigateTo(array[index])
                 },
-                alwaysShowLabel = false,
+                alwaysShowLabel = true,
                 colors = NavigationBarItemDefaults.colors()
             )
         }

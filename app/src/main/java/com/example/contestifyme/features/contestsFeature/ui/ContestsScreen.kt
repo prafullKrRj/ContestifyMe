@@ -94,12 +94,11 @@ fun ContestsMainScreen(contest: List<ContestsEntity>, modifier: Modifier) {
         }
     }
 }
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContestItem(contest: ContestsEntity) {
     ListItem(
         modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp).clip(RoundedCornerShape(8.dp)),
-        headlineText = { Text(contest.name) },
+        headlineContent = { Text(contest.name) },
         leadingContent = {
             Icon(
                 imageVector = Icons.Filled.Info,

@@ -1,5 +1,6 @@
 package com.example.contestifyme.features.profileFeature.ui
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,6 +26,7 @@ import java.io.IOException
 data class ProfileUiState(
     var user: List<UserInfoEntity> = emptyList()
 )
+@SuppressLint("MutableCollectionMutableState")
 class ProfileViewModel(
     private val profileRepository: ProfileRepository,
     private val handle: String
@@ -40,17 +42,17 @@ class ProfileViewModel(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = ProfileUiState(emptyList())
         )
-    private val count: Int = 15
     private var start by mutableStateOf(1)
     init {
         updateUserInfo()
+        getVerdictsMap()
     }
     private fun updateUserInfo() {
         viewModelScope.launch {
             try {
                 val userInfo = profileRepository.getUserInfoFromApi(handle)
                 val ratingInfo = profileRepository.getUserRatingFromApi(handle)
-                val submissionInfo = profileRepository.getUserStatusFromApi(handle, 1, count)
+                val submissionInfo = profileRepository.getUserStatusFromApi(handle)
                 profileRepository.insertUser(
                     userInfo.toUserInfoEntity(
                         rating = ratingInfo.result.map {
@@ -81,7 +83,7 @@ class ProfileViewModel(
     private fun updateUser() {
         viewModelScope.launch {
             try {
-                val submissionInfo = profileRepository.getUserStatusFromApi(handle, start, count)
+                val submissionInfo = profileRepository.getUserStatusFromApi(handle)
                 profileRepository.updateUserInfo(
                     profileUiState.value.user[0].copy(
                         subMissionInfo = submissionInfo.submissions.map {
@@ -95,6 +97,24 @@ class ProfileViewModel(
                 Log.d("check", "updateUserInfo: IOError")
             }
         }
+    }
+
+    private var verdictsMap: MutableMap<String, Int> by mutableStateOf(mutableMapOf())
+    private fun getVerdictsMap() {
+        if (profileUiState.value.user.isEmpty()) {
+            return
+        }
+        profileUiState.value.user[0].subMissionInfo.forEach {
+            if (verdictsMap.containsKey(it.verdict)) {
+                verdictsMap[it.verdict] = verdictsMap[it.verdict]!! + 1
+            } else {
+                verdictsMap[it.verdict] = 1
+            }
+        }
+    }
+    fun getVerdicts(): Map<String, Int> {
+        getVerdictsMap()
+        return verdictsMap
     }
 }
 fun Submissions.toUserStatusEntity(): UserSubmissions {

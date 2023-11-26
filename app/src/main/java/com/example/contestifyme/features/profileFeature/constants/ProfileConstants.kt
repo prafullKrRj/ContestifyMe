@@ -12,8 +12,8 @@ object ProfileConstants {
     fun getUserInfo(handle: String): String {
         return "https://codeforces.com/api/user.info?handles=$handle"
     }
-    fun getUserStatus(handle: String, start: Int, end: Int): String {
-        return "https://codeforces.com/api/user.status?handle=$handle&from=$start&count=$end"
+    fun getUserStatus(handle: String): String {
+        return "https://codeforces.com/api/user.status?handle=$handle"
     }
     fun getAnswerUrl(contestId: Int, id: Int): String {
         return "https://codeforces.com/contest/$contestId/submission/$id/"

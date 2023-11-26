@@ -21,7 +21,6 @@ android {
             useSupportLibrary = true
         }
     }
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -103,8 +102,14 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
 
     /**
-     *
+     *  Coil
      * */
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation ("com.google.accompanist:accompanist-coil:0.12.0")
+
+    /**
+     *  Graphs
+     * */
+    implementation("co.yml:ycharts:2.1.0")
+    implementation("com.github.madrapps:plot:0.1.1")
 }

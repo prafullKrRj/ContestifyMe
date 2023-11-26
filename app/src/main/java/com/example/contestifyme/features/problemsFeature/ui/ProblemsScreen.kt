@@ -50,6 +50,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.room.Update
 import com.example.contestifyme.R
 import com.example.contestifyme.features.problemsFeature.data.local.entities.ProblemsEntity
 import com.example.contestifyme.features.problemsFeature.ui.components.SelectionChip
@@ -65,8 +66,7 @@ fun ProblemsScreen(viewModel: ProblemsViewModel) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
-
-    var selectedTags by remember { mutableStateOf(emptyList<String>()) }    // List of selected tags
+    var selectedTags by rememberSaveable { mutableStateOf(emptyList<String>()) }    // List of selected tags
     var sortType by rememberSaveable {                                      // Sort Type (Rating)
         mutableStateOf(Pair(0, 0))
     }
@@ -115,7 +115,9 @@ fun ProblemsUI(
     previousType: Pair<Int, Int>                // Previous Sort Type
 ) {
     Column (modifier.fillMaxSize()){
-        SearchBar()
+        SearchBar {
+            TODO()
+        }
         Spacer(modifier = Modifier.padding(vertical = 2.dp))
         TagsSection(
             selectedTags,
@@ -234,7 +236,7 @@ fun TagsSection (
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBar() {
+fun SearchBar(searchUpdate: (String) -> Unit = {}) {
     var text by rememberSaveable { mutableStateOf("") }
     OutlinedTextField(
         modifier = Modifier
