@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.contestifyme.features.friendsFeature.data.local.FriendsDataEntity
 import com.example.contestifyme.features.friendsFeature.data.source.FriendsRepository
+import com.example.contestifyme.features.profileFeature.ui.toUserRatingEntity
+import com.example.contestifyme.features.profileFeature.ui.toUserStatusEntity
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -23,9 +25,9 @@ class FriendsViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FriendsUiState(emptyList()))
 
     init {
-        getFriends(friendsUiState.value.friends.map { it.handle })
+        addFriends(friendsUiState.value.friends.map { it.handle })
     }
-    fun getFriends(handle: List<String>) {
+    fun addFriends(handle: List<String>) {
         if (handle.isEmpty()) return
         viewModelScope.launch {
             try {
@@ -49,6 +51,31 @@ class FriendsViewModel(
                         titlePhoto = it.titlePhoto,
                     )
                 })
+            } catch (e: HttpException) {
+                Log.d("prafull", "http exception")
+            } catch (e: IOException) {
+                Log.d("prafull", "iO exception")
+            }
+        }
+    }
+    fun getFriend(handle: String): FriendsDataEntity {
+        return friendsUiState.value.friends.first { it.handle == handle }
+    }
+    fun getSubMissionsAndRating(friends: FriendsDataEntity) {
+        viewModelScope.launch {
+            try {
+                val rating = friendsRepository.getRatingsFromApi(friends.handle)
+                val submissions = friendsRepository.getSubMissionFromApi(friends.handle)
+                friendsRepository.updateFriendsDataInDb(
+                    listOf(friends.copy(
+                        ratingInfo = rating.result.map {
+                            it.toUserRatingEntity()
+                        },
+                        subMissionInfo = submissions.submissions.map {
+                            it.toUserStatusEntity()
+                        }
+                    ))
+                )
             } catch (e: HttpException) {
                 Log.d("prafull", "http exception")
             } catch (e: IOException) {

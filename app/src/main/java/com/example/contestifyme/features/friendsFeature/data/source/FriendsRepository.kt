@@ -1,18 +1,21 @@
 package com.example.contestifyme.features.friendsFeature.data.source
 
-import android.content.Context
-import androidx.room.Dao
 import com.example.contestifyme.features.friendsFeature.FriendsConstants
 import com.example.contestifyme.features.friendsFeature.data.local.FriendsDao
 import com.example.contestifyme.features.friendsFeature.data.local.FriendsDataEntity
 import com.example.contestifyme.features.friendsFeature.data.remote.FriendsApiService
 import com.example.contestifyme.features.friendsFeature.model.FriendsDetailsDto
+import com.example.contestifyme.features.profileFeature.constants.ProfileConstants
+import com.example.contestifyme.features.profileFeature.model.ratingInfo.RatingDto
+import com.example.contestifyme.features.profileFeature.model.submissionsInfo.SubmissionDto
 import kotlinx.coroutines.flow.Flow
 
 interface FriendsRepository {
     suspend fun getFriendsDataFromApi(handles: List<String>): FriendsDetailsDto
     suspend fun updateFriendsDataInDb(friends: List<FriendsDataEntity>)
     fun getFriendsDataFromDb(): Flow<List<FriendsDataEntity>>
+    suspend fun getRatingsFromApi(handles: String): RatingDto
+    suspend fun getSubMissionFromApi(handles: String): SubmissionDto
 }
 
 class FriendsRepositoryImpl (
@@ -28,5 +31,12 @@ class FriendsRepositoryImpl (
 
     override fun getFriendsDataFromDb(): Flow<List<FriendsDataEntity>> {
         return friendsDao.getAllFriends()
+    }
+
+    override suspend fun getRatingsFromApi(handles: String): RatingDto {
+        return friendsApiService.getUserRatingFromApi(ProfileConstants.getUserRating(handles))
+    }
+    override suspend fun getSubMissionFromApi(handles: String): SubmissionDto {
+        return friendsApiService.getUserStatusFromApi(ProfileConstants.getUserStatus(handles))
     }
 }

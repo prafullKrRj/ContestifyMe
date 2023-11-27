@@ -20,8 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.yml.charts.ui.piechart.charts.DonutPieChart
 import co.yml.charts.ui.piechart.models.PieChartConfig
+import com.example.contestifyme.commons.GetChartData
 import com.example.contestifyme.features.profileFeature.constants.ProfileConstants
-import com.example.contestifyme.features.profileFeature.ui.GetChartData
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable

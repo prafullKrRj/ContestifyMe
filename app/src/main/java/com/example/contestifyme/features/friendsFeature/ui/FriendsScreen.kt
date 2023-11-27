@@ -3,6 +3,12 @@ package com.example.contestifyme.features.friendsFeature.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.contestifyme.features.friendsFeature.data.local.FriendsDataEntity
+import com.example.contestifyme.features.profileFeature.ui.SubmissionAnswer
 
 @Composable
 fun FriendsScreen(
@@ -11,13 +17,38 @@ fun FriendsScreen(
     val state by viewModel.friendsUiState.collectAsState()
     if (state.friends.isEmpty()) {
         NoFriendsScreen {
-            viewModel.getFriends(listOf(it))
+            viewModel.addFriends(listOf(it))
         }
     } else {
-        FriendsListScreen(friends =  state.friends, onFriendClicked = {
-            viewModel.getFriends(listOf(it))
-        }, addFriend = {
-            viewModel.getFriends(listOf(it))
-        })
+        MainFriendsUI(viewModel = viewModel, friends = state.friends)
+    }
+}
+
+@Composable
+fun MainFriendsUI(viewModel: FriendsViewModel, friends: List<FriendsDataEntity>) {
+    val navController: NavHostController = rememberNavController()
+    NavHost(navController = navController, startDestination = "list") {
+        composable("list") {
+            FriendsListScreen(friends =  friends, onFriendClicked = {
+                navController.navigate("detail/$it")
+            }, addFriend = {
+                viewModel.addFriends(listOf(it))
+            })
+        }
+        composable("detail/{handle}") {navBackStackEntry ->
+            navBackStackEntry.arguments?.getString("handle")?.let {
+                val friend = viewModel.getFriend(it)
+                viewModel.getSubMissionsAndRating(friend)
+                FriendsDetailScreen(
+                    navController,
+                    viewModel.getFriend(it)
+                )
+            }
+        }
+        composable("answer") {
+            SubmissionAnswer(
+                url = "https://www.codeforces.com/"
+            )
+        }
     }
 }
