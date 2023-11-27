@@ -47,13 +47,11 @@ fun ProfileScreen(
         NavHost(navController = navHostController, startDestination = "main") {
             composable("main") {
                 MainProfileScreen(
-                    user = state.user,
-                    viewModel = viewModel,
-                    navigate = {
-                        url = it
-                        navHostController.navigate("answer")
-                    }
-                )
+                    user = state.user
+                ) {
+                    url = it
+                    navHostController.navigate("answer")
+                }
             }
             composable("answer") {
                 SubmissionAnswer(
@@ -68,7 +66,6 @@ fun ProfileScreen(
 @Composable
 fun MainProfileScreen(
     user: List<UserInfoEntity>,
-    viewModel: ProfileViewModel,
     navigate: (String) -> Unit
 ) {
     val pagerState = rememberPagerState(
@@ -100,7 +97,7 @@ fun MainProfileScreen(
                     userScrollEnabled = true
                 ) {
                     when (it) {
-                        0 -> FrontScreen(viewModel = viewModel, user = user[0]) {
+                        0 -> FrontScreen(user = user[0]) {
                             scope.launch { pagerState.animateScrollToPage(1) }
                         }
 
