@@ -15,17 +15,11 @@ fun FriendsScreen(
     viewModel: FriendsViewModel
 ) {
     val state by viewModel.friendsUiState.collectAsState()
-    if (state.friends.isEmpty()) {
-        NoFriendsScreen {
-            viewModel.addFriends(listOf(it))
-        }
-    } else {
-        MainFriendsUI(viewModel = viewModel, friends = state.friends)
-    }
+    MainFriendsUI(state = state, viewModel = viewModel, friends = state.friends)
 }
 
 @Composable
-fun MainFriendsUI(viewModel: FriendsViewModel, friends: List<FriendsDataEntity>) {
+fun MainFriendsUI(state: FriendsUiState, viewModel: FriendsViewModel, friends: List<FriendsDataEntity>) {
     val navController: NavHostController = rememberNavController()
     NavHost(navController = navController, startDestination = "list") {
         composable("list") {
@@ -33,14 +27,12 @@ fun MainFriendsUI(viewModel: FriendsViewModel, friends: List<FriendsDataEntity>)
                 navController.navigate("detail/$it")
             }, addFriend = {
                 viewModel.addFriends(listOf(it))
-            })
+            }, state)
         }
         composable("detail/{handle}") {navBackStackEntry ->
             navBackStackEntry.arguments?.getString("handle")?.let {
-                val friend = viewModel.getFriend(it)
-                viewModel.getSubMissionsAndRating(friend)
                 FriendsDetailScreen(
-                    navController,
+                    navHostController = navController,
                     viewModel.getFriend(it)
                 )
             }
@@ -52,3 +44,4 @@ fun MainFriendsUI(viewModel: FriendsViewModel, friends: List<FriendsDataEntity>)
         }
     }
 }
+

@@ -35,7 +35,8 @@ import com.example.contestifyme.features.friendsFeature.data.local.FriendsDataEn
 fun FriendsListScreen(
     friends: List<FriendsDataEntity>,
     onFriendClicked: (String) -> Unit,
-    addFriend: (String) -> Unit
+    addFriend: (String) -> Unit,
+    state: FriendsUiState
 ) {
     var addFriendField by rememberSaveable {
         mutableStateOf(false)
@@ -47,6 +48,12 @@ fun FriendsListScreen(
             }
         }
     ) { paddingValues ->
+        if (friends.isEmpty()) {
+            Text(
+                text = "No friends added yet",
+                modifier = Modifier.padding(16.dp)
+            )
+        }
         LazyColumn(contentPadding = paddingValues) {
             friends.sortedByDescending {
                 it.rating

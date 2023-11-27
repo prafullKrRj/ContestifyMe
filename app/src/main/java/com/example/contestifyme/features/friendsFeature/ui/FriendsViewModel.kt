@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.contestifyme.features.friendsFeature.data.local.FriendsDataEntity
 import com.example.contestifyme.features.friendsFeature.data.source.FriendsRepository
+import com.example.contestifyme.features.profileFeature.model.UserRating
+import com.example.contestifyme.features.profileFeature.model.UserSubmissions
 import com.example.contestifyme.features.profileFeature.ui.toUserRatingEntity
 import com.example.contestifyme.features.profileFeature.ui.toUserStatusEntity
 import kotlinx.coroutines.flow.SharingStarted
@@ -27,63 +29,57 @@ class FriendsViewModel(
     init {
         addFriends(friendsUiState.value.friends.map { it.handle })
     }
-    fun addFriends(handle: List<String>) {
-        if (handle.isEmpty()) return
+    fun addFriends(handles: List<String>) {
+        if (handles.isEmpty()) return
         viewModelScope.launch {
             try {
-                val data = friendsRepository.getFriendsDataFromApi(handle)
-                friendsRepository.updateFriendsDataInDb(data.result.map {
-                    FriendsDataEntity(
-                        id = 0,
-                        handle = it.handle,
-                        avatar = it.avatar,
-                        contribution = it.contribution,
-                        country = it.country,
-                        name = it.firstName,
-                        friendOfCount = it.friendOfCount,
-                        lastOnlineTimeSeconds = it.lastOnlineTimeSeconds,
-                        maxRank = it.maxRank,
-                        maxRating = it.maxRating,
-                        organization = it.organization,
-                        rank = it.rank,
-                        rating = it.rating,
-                        registrationTimeSeconds = it.registrationTimeSeconds,
-                        titlePhoto = it.titlePhoto,
-                    )
-                })
+                val data = friendsRepository.getFriendsDataFromApi(handles)
+                val rating: List<List<UserRating>> = friendsRepository.getRatingsFromApi(handles).map {ratingDto ->
+                    ratingDto.result.map {
+                        it.toUserRatingEntity()
+                    }
+                }
+                val submissions: List<List<UserSubmissions>> = friendsRepository.getSubMissionFromApi(handles).map {submissionDto ->
+                    submissionDto.submissions.map {
+                        it.toUserStatusEntity()
+                    }
+                }
+                friendsRepository.updateFriendsDataInDb(
+                    data.result.mapIndexed { index, it ->
+                        FriendsDataEntity(
+                            id = 0,
+                            handle = it.handle,
+                            avatar = it.avatar,
+                            contribution = it.contribution,
+                            country = it.country,
+                            name = it.firstName,
+                            friendOfCount = it.friendOfCount,
+                            lastOnlineTimeSeconds = it.lastOnlineTimeSeconds,
+                            maxRank = it.maxRank,
+                            maxRating = it.maxRating,
+                            organization = it.organization,
+                            rank = it.rank,
+                            rating = it.rating,
+                            registrationTimeSeconds = it.registrationTimeSeconds,
+                            titlePhoto = it.titlePhoto,
+                            ratingInfo = rating[index],
+                            subMissionInfo = submissions[index]
+                        )
+                    }
+                )
             } catch (e: HttpException) {
-                Log.d("prafull", "http exception")
+                Log.d("prafull", "http error")
             } catch (e: IOException) {
-                Log.d("prafull", "iO exception")
+                Log.d("prafull", "io error")
             }
         }
     }
+
     fun getFriend(handle: String): FriendsDataEntity {
         return friendsUiState.value.friends.first { it.handle == handle }
     }
-    fun getSubMissionsAndRating(friends: FriendsDataEntity) {
-        viewModelScope.launch {
-            try {
-                val rating = friendsRepository.getRatingsFromApi(friends.handle)
-                val submissions = friendsRepository.getSubMissionFromApi(friends.handle)
-                friendsRepository.updateFriendsDataInDb(
-                    listOf(friends.copy(
-                        ratingInfo = rating.result.map {
-                            it.toUserRatingEntity()
-                        },
-                        subMissionInfo = submissions.submissions.map {
-                            it.toUserStatusEntity()
-                        }
-                    ))
-                )
-            } catch (e: HttpException) {
-                Log.d("prafull", "http exception")
-            } catch (e: IOException) {
-                Log.d("prafull", "iO exception")
-            }
-        }
-    }
 }
 data class FriendsUiState(
-    val friends: List<FriendsDataEntity> = emptyList()
+    val friends: List<FriendsDataEntity> = emptyList(),
+    var loading: Boolean = true
 )

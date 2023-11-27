@@ -15,8 +15,8 @@ object ProfileConstants {
     fun getUserStatus(handle: String): String {
         return "https://codeforces.com/api/user.status?handle=$handle"
     }
-    fun getAnswerUrl(contestId: Int, id: Int): String {
-        return "https://codeforces.com/contest/$contestId/submission/$id/"
+    fun getUserStatus(handle: List<String>): String {
+        return "https://codeforces.com/api/user.status?handle=${handle.joinToString(";")}"
     }
 
     val verdictsColors = mapOf(

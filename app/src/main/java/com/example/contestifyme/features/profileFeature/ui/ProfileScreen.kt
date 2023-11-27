@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -22,7 +21,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.contestifyme.features.profileFeature.constants.ProfileConstants.getAnswerUrl
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
 import com.example.contestifyme.features.profileFeature.ui.components.ColorInfoDialog
 import com.example.contestifyme.features.profileFeature.ui.components.ProfileAppBar
@@ -62,7 +60,7 @@ fun ProfileScreen(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainProfileScreen(
     user: List<UserInfoEntity>,
@@ -103,7 +101,7 @@ fun MainProfileScreen(
 
                         1 -> SubmissionsScreen(user[0].subMissionInfo,
                             onClickAction = { contestId, id ->
-                                navigate(getAnswerUrl(contestId, id))
+                                navigate("https://codeforces.com/contest/$contestId/submission/$id")
                             },
                             onBackPress = {
                                 scope.launch { pagerState.animateScrollToPage(0) }

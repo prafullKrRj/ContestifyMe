@@ -14,8 +14,8 @@ interface FriendsRepository {
     suspend fun getFriendsDataFromApi(handles: List<String>): FriendsDetailsDto
     suspend fun updateFriendsDataInDb(friends: List<FriendsDataEntity>)
     fun getFriendsDataFromDb(): Flow<List<FriendsDataEntity>>
-    suspend fun getRatingsFromApi(handles: String): RatingDto
-    suspend fun getSubMissionFromApi(handles: String): SubmissionDto
+    suspend fun getRatingsFromApi(handles: List<String>): List<RatingDto>
+    suspend fun getSubMissionFromApi(handles: List<String>): List<SubmissionDto>
 }
 
 class FriendsRepositoryImpl (
@@ -33,10 +33,14 @@ class FriendsRepositoryImpl (
         return friendsDao.getAllFriends()
     }
 
-    override suspend fun getRatingsFromApi(handles: String): RatingDto {
-        return friendsApiService.getUserRatingFromApi(ProfileConstants.getUserRating(handles))
+    override suspend fun getRatingsFromApi(handles: List<String>): List<RatingDto> {
+        return handles.map {
+            friendsApiService.getUserRatingFromApi(ProfileConstants.getUserRating(it))
+        }
     }
-    override suspend fun getSubMissionFromApi(handles: String): SubmissionDto {
-        return friendsApiService.getUserStatusFromApi(ProfileConstants.getUserStatus(handles))
+    override suspend fun getSubMissionFromApi(handles: List<String>): List<SubmissionDto> {
+        return handles.map {
+            friendsApiService.getUserStatusFromApi(ProfileConstants.getUserStatus(it))
+        }
     }
 }

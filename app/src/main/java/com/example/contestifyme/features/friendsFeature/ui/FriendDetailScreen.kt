@@ -1,7 +1,6 @@
 package com.example.contestifyme.features.friendsFeature.ui
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -28,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import co.yml.charts.common.extensions.isNotNull
 import com.example.contestifyme.commons.GetChartData
 import com.example.contestifyme.features.friendsFeature.data.local.FriendsDataEntity
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
@@ -48,8 +48,6 @@ import com.example.contestifyme.features.profileFeature.ui.components.VerdictGra
 @Composable
 fun FriendsDetailScreen(navHostController: NavHostController, friendInfo: FriendsDataEntity) {
     val user = friendInfo.toUserInfoEntity()
-    Log.d("subInfo", "${user}")
-    Log.d("subInfo", "${user}")
     val verdicts by rememberSaveable {
         mutableStateOf(GetChartData.getVerdicts(user))
     }
@@ -108,14 +106,16 @@ fun FriendsDetailScreen(navHostController: NavHostController, friendInfo: Friend
                 SubmissionsGraph()
                 Spacer(modifier = Modifier.height(8.dp))
             }
-            item {
-                Divider(Modifier.fillMaxWidth())
-                VerdictGraph(
-                    verdicts = verdicts,
-                    pieChartData = GetChartData.getVerdictsData(verdicts),
-                    pieChartConfig = GetChartData.pieChartConfig()
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+            if (GetChartData.getVerdictsData(verdicts).isNotNull() && verdicts.isNotEmpty()) {
+                item {
+                    Divider(Modifier.fillMaxWidth())
+                    VerdictGraph(
+                        verdicts = verdicts,
+                        pieChartData = GetChartData.getVerdictsData(verdicts),
+                        pieChartConfig = GetChartData.pieChartConfig()
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
             }
             item {
                 ShowGraphButtons(showQuestionSolvedByTagsDialog = {
