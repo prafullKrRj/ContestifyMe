@@ -21,7 +21,7 @@ object ProfileConstants {
 
     val verdictsColors = mapOf(
         "FAILED" to (Color(0xFFFF0000) to Color(0xFFFFFFFF)), // Red background with white text
-        "ACCEPTED" to (md_theme_dark_secondaryContainer to md_theme_dark_onSecondaryContainer), // Green background with black text
+        "ACCEPTED" to (Color.Green to Color.White), // Green background with black text
         "PARTIAL" to (Color(0xFFFFFF00) to Color(0xFF000000)), // Yellow background with black text
         "COMPILATION_ERROR" to (Color(0xFFFFA500) to Color(0xFF000000)), // Orange background with black text
         "RUNTIME_ERROR" to (Color(0xFF800080) to Color(0xFFFFFFFF)), // Purple background with white text

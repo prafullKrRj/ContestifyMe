@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -86,8 +87,6 @@ fun FrontScreen(user: UserInfoEntity, viewModel: ProfileViewModel, swipeToSubmis
                 country = "India"
             )
             Spacer(modifier = Modifier.height(8.dp))
-        }
-        item {
             ProfileCard(modifier = Modifier.fillMaxWidth(), user = user)
             Spacer(modifier = Modifier.height(8.dp))
         }
@@ -102,15 +101,17 @@ fun FrontScreen(user: UserInfoEntity, viewModel: ProfileViewModel, swipeToSubmis
         }
         if (user.subMissionInfo.isNotEmpty()) {
             item {
+                Divider(Modifier.fillMaxWidth())
                 VerdictGraph(
                     verdicts = verdicts,
                     pieChartData = GetChartData.getVerdictsData(verdicts),
                     pieChartConfig = GetChartData.pieChartConfig()
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
         item {
+
             ShowGraphButtons(showQuestionSolvedByTagsDialog = {
                 showQuestionSolvedByTagsDialog = true
             }, showQuestionSolvedByIndexDialog = {

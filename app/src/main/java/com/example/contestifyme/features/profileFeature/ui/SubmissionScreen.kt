@@ -1,5 +1,6 @@
 package com.example.contestifyme.features.profileFeature.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -26,9 +27,12 @@ import com.example.contestifyme.features.profileFeature.model.UserSubmissions
 @Composable
 fun SubmissionsScreen(
     submissions: List<UserSubmissions>,
-    onClickAction: (Int, Int) -> Unit = { contestId, id -> }
+    onClickAction: (Int, Int) -> Unit = { contestId, id -> },
+    onBackPress: () -> Unit = {}
 ) {
-
+    BackHandler {
+        onBackPress()
+    }
     LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp)) {
         item {
             Spacer(modifier = Modifier.height(16.dp))

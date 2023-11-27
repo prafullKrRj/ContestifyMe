@@ -107,6 +107,9 @@ fun MainProfileScreen(
                         1 -> SubmissionsScreen(user[0].subMissionInfo,
                             onClickAction = { contestId, id ->
                                 navigate(getAnswerUrl(contestId, id))
+                            },
+                            onBackPress = {
+                                scope.launch { pagerState.animateScrollToPage(0) }
                             }
                         )
                     }
