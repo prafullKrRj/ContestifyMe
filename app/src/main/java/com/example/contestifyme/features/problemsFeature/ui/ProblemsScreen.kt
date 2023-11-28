@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.Box
 import android.annotation.SuppressLint
+import android.widget.SimpleAdapter
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -52,6 +53,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.room.Update
 import com.example.contestifyme.R
+import com.example.contestifyme.commons.ui.SimpleTopAppBar
 import com.example.contestifyme.features.problemsFeature.data.local.entities.ProblemsEntity
 import com.example.contestifyme.features.problemsFeature.ui.components.SelectionChip
 import com.example.contestifyme.features.problemsFeature.ui.components.sortComponents.SortDialog
@@ -77,7 +79,10 @@ fun ProblemsScreen(viewModel: ProblemsViewModel) {
             }
         },
         topBar = {
-            ProblemsTopBar()
+            SimpleTopAppBar(
+                label = R.string.problems,
+                navIcon = Icons.Default.Menu
+            )
         }
     ) { paddingValues ->
         ProblemsUI(
@@ -283,33 +288,4 @@ fun ProblemItemCard(entity: ProblemsEntity) {
             Text(text = "${entity.rating}", fontWeight = FontWeight.Light)
         }
     }
-}
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ProblemsTopBar() {
-    CenterAlignedTopAppBar(
-        title = {
-            Text(
-                text = "Problems",
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        },
-        navigationIcon = {
-            IconButton(onClick = { /* doSomething() */ }) {
-                Icon(
-                    imageVector = Icons.Filled.Menu,
-                    contentDescription = "Menu"
-                )
-            }
-        },
-        actions = {
-            IconButton(onClick = { /* doSomething() */ }) {
-                Icon(
-                    imageVector = Icons.Filled.Favorite,
-                    contentDescription = "Favorite"
-                )
-            }
-        }
-    )
 }

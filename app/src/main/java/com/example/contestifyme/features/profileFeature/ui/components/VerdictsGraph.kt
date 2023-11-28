@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.sp
 import co.yml.charts.ui.piechart.charts.PieChart
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
+import com.example.contestifyme.R
+import com.example.contestifyme.commons.ui.Headings
 import com.example.contestifyme.features.profileFeature.constants.ProfileConstants
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -34,13 +36,7 @@ fun VerdictGraph(
     pieChartConfig: PieChartConfig
 ) {
     Column(modifier = modifier) {
-    Text(
-        text = "VERDICTS",
-        fontSize = 22.sp,
-        modifier = Modifier.padding(top = 8.dp, start = 8.dp),
-        textAlign = TextAlign.Center,
-        fontWeight = FontWeight.Bold
-    )
+    Headings(label = R.string.verdicts)
     PieChart(
         modifier = Modifier
             .width(400.dp)

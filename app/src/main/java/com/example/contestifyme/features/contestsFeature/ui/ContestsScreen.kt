@@ -1,74 +1,56 @@
 package com.example.contestifyme.features.contestsFeature.ui
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.Modifier
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.Icon
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.Icons
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.contestifyme.features.contestsFeature.data.local.ContestDB
+import com.example.contestifyme.R
+import com.example.contestifyme.commons.ui.Headings
+import com.example.contestifyme.commons.ui.SimpleTopAppBar
 import com.example.contestifyme.features.contestsFeature.data.local.ContestsEntity
+import com.example.contestifyme.features.profileFeature.ui.components.getTime
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContestsScreen(
     viewModel: ContestsViewModel
 ) {
-
     val state: ContestUiState by viewModel.state.collectAsState()
     Scaffold (
         topBar = {
-            CenterAlignedTopAppBar(title = {
-                Text(
-                    text = "Contests",
-                    style = MaterialTheme.typography.headlineMedium,
-                    textAlign = TextAlign.Center,
-                )
-            })
+            SimpleTopAppBar (label = R.string.contest)
         }
     ){ paddingValues ->
         if (state.contests.isNotEmpty()) {
             ContestsMainScreen(contest = state.contests, modifier = Modifier.padding(paddingValues))
         } else {
-            Text(
-                modifier = Modifier,
-                text = "No Contests",
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-            )
+            Headings(modifier = Modifier.padding(start = 16.dp), label = R.string.no_contests)
         }
     }
-
 }
 
 @Composable
 fun ContestsMainScreen(contest: List<ContestsEntity>, modifier: Modifier) {
     LazyColumn(modifier) {
         item {
-            Text(
-                modifier = Modifier,
-                text = "Upcoming Contests",
-                style = MaterialTheme.typography.headlineMedium,
-                textAlign = TextAlign.Start,
-            )
+            Headings(modifier = Modifier.padding(start = 16.dp), label = R.string.upcoming_contests)
         }
         contest.filter {
             it.relativeTimeSeconds <= 0
-        }.sortedByDescending {
+        }.sortedBy {
             it.startTimeSeconds
         }.forEach {
             item {
@@ -76,12 +58,7 @@ fun ContestsMainScreen(contest: List<ContestsEntity>, modifier: Modifier) {
             }
         }
         item {
-            Text(
-                modifier = Modifier,
-                text = "Past Contests",
-                style = MaterialTheme.typography.headlineMedium,
-                textAlign = TextAlign.Start,
-            )
+            Headings(modifier = Modifier.padding(start = 16.dp), label = R.string.past_contests)
         }
         contest.filter {
             it.relativeTimeSeconds > 0
@@ -96,15 +73,48 @@ fun ContestsMainScreen(contest: List<ContestsEntity>, modifier: Modifier) {
 }
 @Composable
 fun ContestItem(contest: ContestsEntity) {
-    ListItem(
-        modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp).clip(RoundedCornerShape(8.dp)),
-        headlineContent = { Text(contest.name) },
-        leadingContent = {
-            Icon(
-                imageVector = Icons.Filled.Info,
-                contentDescription = "Info"
-            )
-        },
-        colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
-    )
+    Card(
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp, horizontal = 12.dp)
+            .clickable { },
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+        ) {
+            val startTime = getTime(contest.startTimeSeconds.toLong())
+            ContestDetails(type = "Name", detail = contest.name)
+            ContestDetails(type = "Type", detail = contest.type)
+            ContestDetails(type = "Phase", detail = contest.phase)
+            ContestDetails(type = "Duration", detail = "${contest.durationSeconds / 3600} hours")
+            ContestDetails(type = "Start Time", detail = "${startTime.hour}:${if (startTime.minute < 10) "0"+startTime.minute else startTime.minute}, ${startTime.dayOfMonth}-${startTime.monthValue}-${startTime.year}")
+
+        }
+    }
+}
+@Composable
+fun ContestDetails(type: String = "", detail: String) {
+    Row {
+        Text(
+            modifier = Modifier.weight(.2f),
+            text = type,
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Start,
+        )
+        Text(
+            modifier = Modifier.weight(.05f),
+            text = "->",
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Start,
+        )
+        Text(
+            modifier = Modifier.weight(.5f),
+            text = detail,
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Start,
+        )
+
+    }
 }

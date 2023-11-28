@@ -9,11 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -21,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -29,7 +24,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import co.yml.charts.common.extensions.isNotNull
+import com.example.contestifyme.R
 import com.example.contestifyme.commons.GetChartData
+import com.example.contestifyme.commons.ui.SimpleTopAppBar
 import com.example.contestifyme.features.friendsFeature.data.local.FriendsDataEntity
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
 import com.example.contestifyme.features.profileFeature.model.UserSubmissions
@@ -47,14 +44,6 @@ import com.example.contestifyme.features.profileFeature.ui.components.VerdictGra
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun FriendsDetailScreen(navHostController: NavHostController, handle: String,  viewModel: FriendsViewModel) {
-    val scope = rememberCoroutineScope()
-
-    FriendsDetailMain(navHostController = navHostController, viewModel = viewModel, handle = handle)
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun FriendsDetailMain(navHostController: NavHostController, viewModel: FriendsViewModel, handle: String) {
     val user = viewModel.getFriend(handle).toUserInfoEntity()
     val verdicts by rememberSaveable {
         mutableStateOf(GetChartData.getVerdicts(user))
@@ -70,26 +59,15 @@ fun FriendsDetailMain(navHostController: NavHostController, viewModel: FriendsVi
     }
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = user.handle,
-                        style = MaterialTheme.typography.headlineMedium,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { navHostController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = null,
-                        )
-                    }
-                },
+            SimpleTopAppBar(
+                label = R.string.friends,
+                navIcon = Icons.Filled.ArrowBack,
+                navIconClicked = {
+                    navHostController.popBackStack()
+                }
             )
         },
-    ) {paddingValues ->
+    ) { paddingValues ->
         LazyColumn(contentPadding = PaddingValues(
             horizontal = 16.dp,
             vertical = paddingValues.calculateTopPadding()

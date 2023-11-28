@@ -6,4 +6,8 @@
     <string name="compare">Compare</string>
     <string name="friends">Friends</string>
     <string name="problems">Problems</string>
+    <string name="verdicts">Verdicts</string>
+    <string name="no_contests">No Contests</string>
+    <string name="upcoming_contests">Upcoming Contests</string>
+    <string name="past_contests">Past Contests</string>
 </resources>

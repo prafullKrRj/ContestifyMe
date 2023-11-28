@@ -1,13 +1,20 @@
 package com.example.contestifyme.features.profileFeature.ui
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -17,13 +24,19 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.contestifyme.R
+import com.example.contestifyme.commons.ui.SimpleTopAppBar
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
 import com.example.contestifyme.features.profileFeature.ui.components.ColorInfoDialog
-import com.example.contestifyme.features.profileFeature.ui.components.ProfileAppBar
 import kotlinx.coroutines.launch
 
 @Composable
@@ -31,9 +44,6 @@ fun ProfileScreen(
     viewModel: ProfileViewModel
 ) {
     val state: ProfileUiState by viewModel.profileUiState.collectAsState()
-    if (state.user.isNotEmpty()) {
-        Log.d("praf", "${state.user[0].subMissionInfo}")
-    }
     val navHostController: NavHostController = rememberNavController()
     var url by rememberSaveable {
         mutableStateOf("https://www.codeforces.com/")
@@ -76,11 +86,23 @@ fun MainProfileScreen(
     }
     Scaffold(
         topBar = {
-            ProfileAppBar(page = pagerState.currentPage) {
-                if (pagerState.currentPage == 1) {
+            SimpleTopAppBar (
+                labelRow = {
+                    Row {
+                        Image(painter = painterResource(id = R.drawable.logo2), contentDescription = null, Modifier.size(32.dp))
+                        Spacer(modifier = Modifier.padding(8.dp))
+                        Text(
+                            text =
+                            if (pagerState.currentPage == 0) stringResource(id = R.string.app_name) else stringResource(id = R.string.submissions),
+                            maxLines = 1, overflow = TextOverflow.Ellipsis, fontFamily = FontFamily.SansSerif,
+                        )
+                    }
+                },
+                actionIcon = if (pagerState.currentPage == 0) Icons.Default.Settings else Icons.Default.Info,
+                actionIconClicked = {
                     colorInformationDialog = true
                 }
-            }
+            )
         }
     ) { paddingValues ->
         Column (
