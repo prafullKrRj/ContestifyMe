@@ -7,9 +7,8 @@ import com.example.contestifyme.features.profileFeature.model.UserSubmissions
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-@Entity(tableName = "friends_data", primaryKeys = ["id", "handle"])
+@Entity(tableName = "friends_data", primaryKeys = ["handle"])
 data class FriendsDataEntity (
-    val id: Int,
     val handle: String,
     val avatar: String?,
     val contribution: Int?,

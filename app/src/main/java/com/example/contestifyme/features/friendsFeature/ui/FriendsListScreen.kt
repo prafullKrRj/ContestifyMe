@@ -1,11 +1,15 @@
 package com.example.contestifyme.features.friendsFeature.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -14,6 +18,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -27,8 +32,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.contestifyme.features.friendsFeature.data.local.FriendsDataEntity
 
 @Composable
@@ -43,8 +51,14 @@ fun FriendsListScreen(
     }
     Scaffold(
         topBar = {
-            FriendsAppBar {
-                addFriendField = true
+            FriendsAppBar()
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = { addFriendField = true }, shape = CircleShape) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add Friend"
+                )
             }
         }
     ) { paddingValues ->
@@ -124,54 +138,46 @@ fun AddFriendDialog(
 @Composable
 fun FriendItem(friend: FriendsDataEntity, onFriendClicked: () -> Unit) {
     ElevatedCard(modifier = Modifier
-        .padding(8.dp)
+        .padding(vertical = 4.dp, horizontal = 8.dp)
         .clip(RoundedCornerShape(8.dp))
         .clickable {
             onFriendClicked()
-        }) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            Text(
-                text = friend.handle,
-                modifier = Modifier.weight(1f)
-            )
-            Icon(
-                imageVector = Icons.Default.Info,
-                contentDescription = null
-            )
         }
-        Text(
-            text = "Rating: ${friend.rating}",
-            modifier = Modifier.padding(top = 4.dp)
-        )
+    ) {
+        Row(Modifier.fillMaxSize().padding(8.dp)) {
+            Box(modifier = Modifier.weight(.2f)) {
+                FriendImage(modifier = Modifier, data = friend.titlePhoto)
+            }
+            Column(modifier = Modifier.weight(.6f)) {
+                Text(text = friend.handle, modifier = Modifier.padding(8.dp))
+            }
+            Column(modifier = Modifier.weight(.2f)) {
+                Text(text = friend.rating.toString(), modifier = Modifier.padding(8.dp))
+            }
+        }
     }
 }
 
+@Composable
+fun FriendImage(modifier: Modifier, data: String?) {
+    AsyncImage(
+        modifier = modifier
+            .size(50.dp)
+            .clip(CircleShape),
+        model = ImageRequest.Builder(LocalContext.current).data(data).crossfade(true).build(),
+        contentDescription = null,
+    )
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FriendsAppBar(
-    addFriend: () -> Unit
-) {
+fun FriendsAppBar() {
     CenterAlignedTopAppBar(
         title = {
             Text(
-                text = "Friends",
+                text = "FRIENDS",
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-        },
-        actions = {
-            IconButton(onClick = {
-                addFriend()
-            }) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add Friend"
-                )
-            }
         }
     )
 }

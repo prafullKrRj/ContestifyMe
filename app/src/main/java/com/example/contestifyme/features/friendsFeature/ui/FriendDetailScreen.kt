@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -44,10 +45,17 @@ import com.example.contestifyme.features.profileFeature.ui.components.Submission
 import com.example.contestifyme.features.profileFeature.ui.components.VerdictGraph
 
 @SuppressLint("MutableCollectionMutableState")
+@Composable
+fun FriendsDetailScreen(navHostController: NavHostController, handle: String,  viewModel: FriendsViewModel) {
+    val scope = rememberCoroutineScope()
+
+    FriendsDetailMain(navHostController = navHostController, viewModel = viewModel, handle = handle)
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FriendsDetailScreen(navHostController: NavHostController, friendInfo: FriendsDataEntity) {
-    val user = friendInfo.toUserInfoEntity()
+fun FriendsDetailMain(navHostController: NavHostController, viewModel: FriendsViewModel, handle: String) {
+    val user = viewModel.getFriend(handle).toUserInfoEntity()
     val verdicts by rememberSaveable {
         mutableStateOf(GetChartData.getVerdicts(user))
     }
@@ -85,15 +93,15 @@ fun FriendsDetailScreen(navHostController: NavHostController, friendInfo: Friend
         LazyColumn(contentPadding = PaddingValues(
             horizontal = 16.dp,
             vertical = paddingValues.calculateTopPadding()
-                        + paddingValues.calculateBottomPadding()
+                    + paddingValues.calculateBottomPadding()
         )) {
             item {
                 Spacer(modifier = Modifier.height(8.dp))
                 RankCard(
                     modifier = Modifier.fillMaxWidth(),
-                    rank = "${friendInfo.rank}",
-                    handle = friendInfo.handle,
-                    country = friendInfo.country ?: "",
+                    rank = "${user.rank}",
+                    handle = user.handle,
+                    country = user.country ?: "",
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 ProfileCard(modifier = Modifier, user = user)
@@ -144,7 +152,6 @@ fun FriendsDetailScreen(navHostController: NavHostController, friendInfo: Friend
         }
     }
 }
-
 @Composable
 fun PastSubMissions(submissions: List<UserSubmissions>) {
     Column(
@@ -161,13 +168,14 @@ fun PastSubMissions(submissions: List<UserSubmissions>) {
             if (submissions.size > 7) {
                 repeat(7) {
                     SubMissionCard(userSubmission = submissions[it], onClickAction = {
-                        contestId, id ->
+                            _,
+                            _ ->
                     })
                 }
             } else {
                 repeat(submissions.size) {
                     SubMissionCard(userSubmission = submissions[it], onClickAction = {
-                            contestId, id ->
+                            _, _ ->
                     })
                 }
             }
