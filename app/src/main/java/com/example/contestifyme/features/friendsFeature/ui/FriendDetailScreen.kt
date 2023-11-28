@@ -32,14 +32,14 @@ import com.example.contestifyme.features.profileFeature.data.local.entities.User
 import com.example.contestifyme.features.profileFeature.model.UserSubmissions
 import com.example.contestifyme.features.profileFeature.ui.ShowGraphButtons
 import com.example.contestifyme.features.profileFeature.ui.SubMissionCard
-import com.example.contestifyme.features.profileFeature.ui.components.DetailsDialog
-import com.example.contestifyme.features.profileFeature.ui.components.ProfileCard
-import com.example.contestifyme.features.profileFeature.ui.components.QuestionByIndexGraph
-import com.example.contestifyme.features.profileFeature.ui.components.QuestionByTypeGraph
-import com.example.contestifyme.features.profileFeature.ui.components.RankCard
+import com.example.contestifyme.commons.ui.DetailsDialog
+import com.example.contestifyme.commons.ui.ProfileCard
+import com.example.contestifyme.commons.ui.QuestionByIndexGraph
+import com.example.contestifyme.commons.ui.QuestionByTypeGraph
+import com.example.contestifyme.commons.ui.RankCard
 import com.example.contestifyme.features.profileFeature.ui.components.RatingGraph
-import com.example.contestifyme.features.profileFeature.ui.components.SubmissionsGraph
-import com.example.contestifyme.features.profileFeature.ui.components.VerdictGraph
+import com.example.contestifyme.commons.ui.SubmissionsGraph
+import com.example.contestifyme.commons.ui.VerdictGraph
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable

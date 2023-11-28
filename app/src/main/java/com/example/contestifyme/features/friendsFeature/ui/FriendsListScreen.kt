@@ -14,7 +14,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -42,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.contestifyme.R
@@ -194,7 +197,8 @@ fun FriendItem(modifier: Modifier, friend: FriendsDataEntity, onFriendClicked: (
             }
             Column(modifier = Modifier.weight(.6f)) {
                 Text(text = friend.handle)
-                Text(text = "Active ${getFormattedTime(friend.lastOnlineTimeSeconds?.toLong())}")
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(text = "Active ${getFormattedTime(friend.lastOnlineTimeSeconds?.toLong())}", fontSize = 14.sp)
             }
             Column(modifier = Modifier.weight(.2f)) {
                 Text(

@@ -22,7 +22,7 @@ import com.example.contestifyme.R
 import com.example.contestifyme.commons.ui.Headings
 import com.example.contestifyme.commons.ui.SimpleTopAppBar
 import com.example.contestifyme.features.contestsFeature.data.local.ContestsEntity
-import com.example.contestifyme.features.profileFeature.ui.components.getTime
+import com.example.contestifyme.commons.ui.getTime
 
 @Composable
 fun ContestsScreen(

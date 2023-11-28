@@ -1,4 +1,4 @@
-package com.example.contestifyme.features.profileFeature.ui.components
+package com.example.contestifyme.commons.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

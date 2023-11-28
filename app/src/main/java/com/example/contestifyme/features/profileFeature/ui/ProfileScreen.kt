@@ -36,7 +36,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.contestifyme.R
 import com.example.contestifyme.commons.ui.SimpleTopAppBar
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
-import com.example.contestifyme.features.profileFeature.ui.components.ColorInfoDialog
+import com.example.contestifyme.commons.ui.ColorInfoDialog
 import kotlinx.coroutines.launch
 
 @Composable

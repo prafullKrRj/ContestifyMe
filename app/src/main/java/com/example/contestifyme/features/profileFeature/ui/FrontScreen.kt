@@ -30,14 +30,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.contestifyme.commons.GetChartData
 import com.example.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
-import com.example.contestifyme.features.profileFeature.ui.components.DetailsDialog
-import com.example.contestifyme.features.profileFeature.ui.components.ProfileCard
-import com.example.contestifyme.features.profileFeature.ui.components.QuestionByIndexGraph
-import com.example.contestifyme.features.profileFeature.ui.components.QuestionByTypeGraph
-import com.example.contestifyme.features.profileFeature.ui.components.RankCard
+import com.example.contestifyme.commons.ui.DetailsDialog
+import com.example.contestifyme.commons.ui.ProfileCard
+import com.example.contestifyme.commons.ui.QuestionByIndexGraph
+import com.example.contestifyme.commons.ui.QuestionByTypeGraph
+import com.example.contestifyme.commons.ui.RankCard
 import com.example.contestifyme.features.profileFeature.ui.components.RatingGraph
-import com.example.contestifyme.features.profileFeature.ui.components.SubmissionsGraph
-import com.example.contestifyme.features.profileFeature.ui.components.VerdictGraph
+import com.example.contestifyme.commons.ui.SubmissionsGraph
+import com.example.contestifyme.commons.ui.VerdictGraph
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable

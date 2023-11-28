@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -103,7 +102,6 @@ fun ContestifyAPP (viewModel: OnBoardingVM) {
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContestifyMainApp(navController: NavHostController, viewModels: List<ViewModel>) {
     var selected by rememberSaveable {
@@ -152,25 +150,36 @@ fun ContestifyNavigationBar(navigateTo: (Screens) -> Unit) {
     val array = listOf(PROFILE, CONTESTS, COMPARE, FRIENDS, PROBLEMS)
 
     var selectedItem by rememberSaveable { mutableStateOf(0) }
-    val items = listOf(
+    val unSelectedItems = listOf(
         Pair(R.string.profile, R.drawable.profile),
         Pair(R.string.contest, R.drawable.contest),
         Pair(R.string.compare, R.drawable.compare),
-        Pair(R.string.friends, R.drawable.friends),
+        Pair(R.string.friends, R.drawable.friend),
+        Pair(R.string.problems, R.drawable.problems)
+    )
+    val selectedItems = listOf(
+        Pair(R.string.profile, R.drawable.profile_filled),
+        Pair(R.string.contest, R.drawable.contest),
+        Pair(R.string.compare, R.drawable.compare),
+        Pair(R.string.friends, R.drawable.friends_filled),
         Pair(R.string.problems, R.drawable.problems)
     )
 
     NavigationBar (
         modifier = Modifier.clip(shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)),
     ) {
-        items.forEachIndexed { index, item ->
+        unSelectedItems.forEachIndexed { index, item ->
             NavigationBarItem (
-                icon = { Icon(
-                    painter = painterResource(id = item.second),
-                    contentDescription = stringResource(
-                        id = item.first,
+                icon = {
+                    Icon(
+                        painter = painterResource(
+                            if (selectedItem == index) selectedItems[index].second else unSelectedItems[index].second
+                        ),
+                        contentDescription = stringResource(
+                            id = item.first,
+                        )
                     )
-                ) },
+                },
                 label = { Text(text = stringResource(id = item.first)) },
                 selected = selectedItem == index,
                 onClick = {

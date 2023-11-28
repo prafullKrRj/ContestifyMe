@@ -1,4 +1,4 @@
-package com.example.contestifyme.features.profileFeature.ui.components
+package com.example.contestifyme.commons.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -15,16 +15,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontWeight.Companion
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.yml.charts.ui.piechart.charts.PieChart
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
 import com.example.contestifyme.R
-import com.example.contestifyme.commons.ui.Headings
 import com.example.contestifyme.features.profileFeature.constants.ProfileConstants
 
 @OptIn(ExperimentalLayoutApi::class)

@@ -1,7 +1,7 @@
 package com.example.contestifyme.features.friendsFeature
 
 import androidx.compose.ui.graphics.Color
-import com.example.contestifyme.features.profileFeature.ui.components.getTime
+import com.example.contestifyme.commons.ui.getTime
 import java.time.LocalDateTime
 
 object FriendsConstants {
