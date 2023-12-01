@@ -14,13 +14,12 @@ import com.example.contestifyme.ui.ContestifyAPP
 import com.example.contestifyme.ui.OnBoardingVM
 import com.example.contestifyme.ui.contestifyApplication
 import com.example.contestifyme.ui.theme.ContestifyMeTheme
-import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ContestifyMeTheme(darkTheme = true) {
+            ContestifyMeTheme {
 
                 Surface(
                     modifier = Modifier.fillMaxSize(),

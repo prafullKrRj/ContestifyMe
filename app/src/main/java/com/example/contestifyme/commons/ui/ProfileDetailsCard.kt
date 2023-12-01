@@ -54,12 +54,20 @@ fun DetailsSection(modifier: Modifier, user: UserInfoEntity) {
         verticalArrangement = Arrangement.Center
     ) {
         val registeredDate = getTime(user.registrationTimeSeconds!!.toLong())
-        val lastActive = getTime(user.lastOnlineTimeSeconds!!.toLong())
+        val lastActiveTime = getTime(user.lastOnlineTimeSeconds!!.toLong())
+        val lastActive: String = if (LocalDateTime.now().hour - lastActiveTime.hour == 0) {
+            "Online"
+        } else if (LocalDateTime.now().dayOfMonth - lastActiveTime.dayOfMonth <= 24) {
+            "${LocalDateTime.now().hour - lastActiveTime.hour} hours ago"
+        }
+        else {
+            "${lastActiveTime.dayOfMonth} ${lastActiveTime.month} ${lastActiveTime.year}\".lowercase()"
+        }
         DetailItem(text = "Contest Rating: ${user.rating}")
         DetailItem(text = "Max Rank: ${user.maxRank}")
         DetailItem(text = "Contribution: ${user.contribution}")
         DetailItem(text = "Friend of: ${user.friendOfCount}")
-        DetailItem(text = "Last visit: ${lastActive.hour}")
+        DetailItem(text = "Last visit: $lastActive")
         DetailItem(text = "Registered On:" + " ${registeredDate.dayOfMonth} ${registeredDate.month} ${registeredDate.year}".lowercase())
     }
 }
