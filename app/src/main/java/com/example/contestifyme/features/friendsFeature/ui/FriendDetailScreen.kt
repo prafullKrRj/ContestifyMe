@@ -37,7 +37,7 @@ import com.example.contestifyme.commons.ui.ProfileCard
 import com.example.contestifyme.commons.ui.QuestionByIndexGraph
 import com.example.contestifyme.commons.ui.QuestionByTypeGraph
 import com.example.contestifyme.commons.ui.RankCard
-import com.example.contestifyme.features.profileFeature.ui.components.RatingGraph
+import com.example.contestifyme.commons.ui.RatingGraph
 import com.example.contestifyme.commons.ui.SubmissionsGraph
 import com.example.contestifyme.commons.ui.VerdictGraph
 
