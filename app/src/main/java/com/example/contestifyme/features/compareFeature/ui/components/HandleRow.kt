@@ -22,7 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
@@ -54,7 +53,6 @@ fun HandleSelection(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HandleTextField(modifier: Modifier = Modifier, value: String = "", fh: Boolean, handle: (String) -> Unit) {
     var fromHandle by rememberSaveable { mutableStateOf(fh) }
