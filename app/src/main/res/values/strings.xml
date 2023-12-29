@@ -3,7 +3,8 @@
     <string name="profile">Profile</string>
     <string name="submissions">Submissions</string>
     <string name="contest">Contests</string>
-    <string name="compare">Compare</string>
+    <string name="code_assistance">AI</string>
+    <string name="coder">Code Assistance</string>
     <string name="friends">Friends</string>
     <string name="problems">Problems</string>
     <string name="verdicts">Verdicts</string>

@@ -1,8 +1,6 @@
 package com.example.contestifyme
 
 import android.app.Application
-import com.example.contestifyme.features.compareFeature.data.source.CompareContainer
-import com.example.contestifyme.features.compareFeature.data.source.CompareContainerImpl
 import com.example.contestifyme.features.contestsFeature.data.source.ContestsContainer
 import com.example.contestifyme.features.contestsFeature.data.source.ContestsContainerImpl
 import com.example.contestifyme.features.friendsFeature.data.source.FriendsContainer
@@ -17,7 +15,7 @@ import com.example.contestifyme.startOnBoard.data.OnBoardContainerImpl
 class ContestifyApplication : Application(){
     lateinit var profileContainer: ProfileContainer
     lateinit var contestsContainer: ContestsContainer
-    lateinit var compareContainer: CompareContainer
+ //   lateinit var compareContainer: CompareContainer
     lateinit var friendsContainer: FriendsContainer
     lateinit var problemsContainer: ProblemsContainer
     lateinit var onBoardContainer: OnBoardContainer
@@ -28,7 +26,7 @@ class ContestifyApplication : Application(){
     private fun initialiseContainers() {
         profileContainer = ProfileContainerImpl(this)
         contestsContainer = ContestsContainerImpl(this)
-        compareContainer = CompareContainerImpl(this)
+      //  compareContainer = CompareContainerImpl(this)
         friendsContainer = FriendsContainerImpl(this)
         problemsContainer = ProblemsContainerImpl(this)
         onBoardContainer = OnBoardContainerImpl(this)

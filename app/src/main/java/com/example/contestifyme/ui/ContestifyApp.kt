@@ -39,8 +39,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.contestifyme.ContestifyApplication
 import com.example.contestifyme.R
-import com.example.contestifyme.features.compareFeature.ui.CompareScreen
-import com.example.contestifyme.features.compareFeature.ui.CompareViewModel
+import com.example.contestifyme.features.codeAssistantFeature.ui.CodeAssistanceScreen
+import com.example.contestifyme.features.codeAssistantFeature.ui.CodeAssistanceViewModel
 import com.example.contestifyme.features.contestsFeature.ui.ContestsScreen
 import com.example.contestifyme.features.contestsFeature.ui.ContestsViewModel
 import com.example.contestifyme.features.friendsFeature.ui.FriendsScreen
@@ -49,7 +49,7 @@ import com.example.contestifyme.features.problemsFeature.ui.ProblemsScreen
 import com.example.contestifyme.features.problemsFeature.ui.ProblemsViewModel
 import com.example.contestifyme.features.profileFeature.ui.ProfileScreen
 import com.example.contestifyme.features.profileFeature.ui.ProfileViewModel
-import com.example.contestifyme.ui.Screens.COMPARE
+import com.example.contestifyme.ui.Screens.CODE_ASSISTANCE
 import com.example.contestifyme.ui.Screens.CONTESTS
 import com.example.contestifyme.ui.Screens.FRIENDS
 import com.example.contestifyme.ui.Screens.PROBLEMS
@@ -84,7 +84,7 @@ fun ContestifyAPP (viewModel: OnBoardingVM) {
             val viewModels = listOf(
                 viewModel<ProfileViewModel>(factory = AppViewModelProvider.profileViewModel(viewModelState.users[0].handle)),
                 viewModel<ContestsViewModel>(factory = AppViewModelProvider.contestVM),
-                viewModel<CompareViewModel>(factory = AppViewModelProvider.compareVm),
+                viewModel<CodeAssistanceViewModel>(factory = AppViewModelProvider.compareVm),
                 viewModel<FriendsViewModel>(factory = AppViewModelProvider.friendsVM),
                 viewModel<ProblemsViewModel>(factory = AppViewModelProvider.problemsVM)
             )
@@ -128,8 +128,8 @@ fun ContestifyMainApp(navController: NavHostController, viewModels: List<ViewMod
                 composable(route = CONTESTS.name) {
                     ContestsScreen(viewModel = viewModels[1] as ContestsViewModel)
                 }
-                composable(route = COMPARE.name) {
-                    CompareScreen(viewModel = viewModels[2] as CompareViewModel)
+                composable(route = CODE_ASSISTANCE.name) {
+                    CodeAssistanceScreen(viewModel = viewModels[2] as CodeAssistanceViewModel)
                 }
                 composable(route = FRIENDS.name) {
                     FriendsScreen(viewModel = viewModels[3] as FriendsViewModel)
@@ -147,20 +147,20 @@ fun CreationExtras.contestifyApplication() : ContestifyApplication =
 
 @Composable
 fun ContestifyNavigationBar(navigateTo: (Screens) -> Unit) {
-    val array = listOf(PROFILE, CONTESTS, COMPARE, FRIENDS, PROBLEMS)
+    val array = listOf(PROFILE, CONTESTS, CODE_ASSISTANCE, FRIENDS, PROBLEMS)
 
     var selectedItem by rememberSaveable { mutableStateOf(0) }
     val unSelectedItems = listOf(
         Pair(R.string.profile, R.drawable.profile),
         Pair(R.string.contest, R.drawable.contest),
-        Pair(R.string.compare, R.drawable.compare),
+        Pair(R.string.code_assistance, R.drawable.baseline_android_24),
         Pair(R.string.friends, R.drawable.friend),
         Pair(R.string.problems, R.drawable.problems)
     )
     val selectedItems = listOf(
         Pair(R.string.profile, R.drawable.profile_filled),
         Pair(R.string.contest, R.drawable.contest),
-        Pair(R.string.compare, R.drawable.compare),
+        Pair(R.string.code_assistance, R.drawable.baseline_android_24),
         Pair(R.string.friends, R.drawable.friends_filled),
         Pair(R.string.problems, R.drawable.problems)
     )
@@ -198,7 +198,7 @@ fun ContestifyNavigationBar(navigateTo: (Screens) -> Unit) {
 enum class Screens {
     PROFILE,
     CONTESTS,
-    COMPARE,
+    CODE_ASSISTANCE,
     FRIENDS,
     PROBLEMS
 }
@@ -229,7 +229,7 @@ object AppViewModelProvider {
     }
     val compareVm = viewModelFactory {
         initializer {
-            CompareViewModel(contestifyApplication().compareContainer.compareRepository)
+            CodeAssistanceViewModel(/*contestifyApplication().compareContainer.compareRepository*/)
         }
     }
     val friendsVM = viewModelFactory {

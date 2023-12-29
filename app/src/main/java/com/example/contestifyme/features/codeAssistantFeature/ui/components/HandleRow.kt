@@ -1,4 +1,4 @@
-package com.example.contestifyme.features.compareFeature.ui.components
+package com.example.contestifyme.features.codeAssistantFeature.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

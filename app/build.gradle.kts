@@ -49,6 +49,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
 }
 
 dependencies {
@@ -112,4 +113,14 @@ dependencies {
      * */
     implementation("co.yml:ycharts:2.1.0")
     implementation("com.github.madrapps:plot:0.1.1")
+
+    /**
+     *  Open AI
+     *  */
+    // import Kotlin API client BOM
+    implementation (platform("com.aallam.openai:openai-client-bom:3.6.2"))
+
+    // define dependencies without versions
+    implementation ("com.aallam.openai:openai-client")
+    runtimeOnly ("io.ktor:ktor-client-okhttp")
 }
