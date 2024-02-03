@@ -15,6 +15,9 @@ object ProblemsConstants {
     fun getProblemsByRating(rating: Int) : String {
         return "https://codeforces.com/api/problemset.problems?minRating=$rating"
     }
+    fun getProblemUrl(contestId: Int, index: String) : String {
+        return "https://codeforces.com/problemset/problem/$contestId/$index"
+    }
     val tags: List<String> = listOf<String>(
         "2-sat",
         "binary search",

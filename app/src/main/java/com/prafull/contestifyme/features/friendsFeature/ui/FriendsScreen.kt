@@ -18,12 +18,12 @@ import com.prafull.contestifyme.features.profileFeature.ui.SubmissionAnswer
 fun FriendsScreen(
     viewModel: FriendsViewModel
 ) {
-    val state by viewModel.friendsUiState.collectAsState()
+    val state by viewModel.dataFromDb.collectAsState()
     val navController: NavHostController = rememberNavController()
+
     NavHost(navController = navController, startDestination = "list") {
         composable("list") {
-            FriendsListScreen(friends =  state.friends, onFriendClicked = {
-                viewModel.loading = true
+            FriendsListScreen(viewModel, onFriendClicked = {
                 navController.navigate("detail/$it")
             }) {
                 viewModel.addFriends(listOf(it))
@@ -31,7 +31,7 @@ fun FriendsScreen(
         }
         composable("detail/{handle}") {navBackStackEntry ->
             navBackStackEntry.arguments?.getString("handle")?.let {
-                if (viewModel.loading) {
+                /*if (viewModel.loading) {
                     LoadingScreen()
                     viewModel.updateDetails(it)
                 } else {
@@ -40,7 +40,7 @@ fun FriendsScreen(
                         it,
                         viewModel
                     )
-                }
+                }*/
             }
         }
         composable("answer") {

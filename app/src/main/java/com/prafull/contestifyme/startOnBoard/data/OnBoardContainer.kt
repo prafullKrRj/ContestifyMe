@@ -1,6 +1,7 @@
 package com.prafull.contestifyme.startOnBoard.data
 
 import android.content.Context
+import com.prafull.contestifyme.commons.Response
 import com.prafull.contestifyme.constants.Constants
 import com.prafull.contestifyme.constants.Constants.BASE_URL
 import com.prafull.contestifyme.managers.SharedPrefManager
@@ -61,9 +62,4 @@ class OnBoardRepositoryImpl (
             awaitClose {  }
         }
     }
-}
-sealed class Response<out T> {
-    data class Success<out T>(val data: T) : Response<T>()
-    data class Error(val exception: Exception) : Response<Nothing>()
-    object Loading : Response<Nothing>()
 }

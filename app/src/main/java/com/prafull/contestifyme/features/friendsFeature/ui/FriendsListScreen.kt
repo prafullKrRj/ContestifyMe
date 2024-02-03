@@ -33,6 +33,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.contestifyme.R
+import com.prafull.contestifyme.commons.ui.ErrorScreen
 import com.prafull.contestifyme.commons.ui.SimpleTopAppBar
 import com.prafull.contestifyme.features.friendsFeature.FriendsConstants.getFormattedTime
 import com.prafull.contestifyme.features.friendsFeature.FriendsConstants.getRatingColor
@@ -56,9 +58,9 @@ import com.prafull.contestifyme.features.friendsFeature.data.local.FriendsDataEn
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun FriendsListScreen(
-    friends: List<FriendsDataEntity>,
+    viewModel: FriendsViewModel,
     onFriendClicked: (String) -> Unit,
-    addFriend: (String) -> Unit
+    addFriend: (String) -> Unit,
 ) {
     val visibleState = remember {
         MutableTransitionState(false).apply {
@@ -68,6 +70,7 @@ fun FriendsListScreen(
     var addFriendField by rememberSaveable {
         mutableStateOf(false)
     }
+    val uiState by viewModel.uiState.collectAsState()
     Scaffold(
         topBar = {
                  SimpleTopAppBar(label = R.string.friends)
@@ -81,38 +84,53 @@ fun FriendsListScreen(
             }
         }
     ) { paddingValues ->
-        if (friends.isEmpty()) {
-            Text(
-                text = "No friends added yet",
-                modifier = Modifier.padding(16.dp)
-            )
-        }
-        AnimatedVisibility(
-            visibleState = visibleState,
-            enter = fadeIn(
-                animationSpec = spring(
-                    dampingRatio = DampingRatioLowBouncy,
-                )
-            ),
-            exit = fadeOut()
-        ) {
-        LazyColumn(contentPadding = paddingValues) {
-            friends.sortedByDescending {
-                it.rating
-            }.forEach { friend ->
-                    item {
-                        FriendItem(
-                            modifier = Modifier.animateEnterExit(
-                                enter = slideInHorizontally(
-                                    animationSpec = spring(
-                                        dampingRatio = DampingRatioLowBouncy,
-                                        stiffness = StiffnessVeryLow
+        when (uiState) {
+            is FriendsUiState.Error -> {
+                ErrorScreen {
+                    viewModel.addFriends()
+                }
+            }
+            FriendsUiState.Initial -> {
+
+            }
+            FriendsUiState.Loading -> {
+                LoadingScreen()
+            }
+            is FriendsUiState.Success -> {
+                if ((uiState as FriendsUiState.Success).data.isEmpty()) {
+                    Text(
+                        text = "No friends added yet",
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+                AnimatedVisibility(
+                    visibleState = visibleState,
+                    enter = fadeIn(
+                        animationSpec = spring(
+                            dampingRatio = DampingRatioLowBouncy,
+                        )
+                    ),
+                    exit = fadeOut()
+                ) {
+                    LazyColumn(contentPadding = paddingValues) {
+                        (uiState as FriendsUiState.Success).data.sortedByDescending {
+                            it.rating
+                        }.forEach { friend ->
+                            item {
+                                FriendItem(
+                                    modifier = Modifier.animateEnterExit(
+                                        enter = slideInHorizontally(
+                                            animationSpec = spring(
+                                                dampingRatio = DampingRatioLowBouncy,
+                                                stiffness = StiffnessVeryLow
+                                            ),
+                                            initialOffsetX = { -it },
+                                        )
                                     ),
-                                    initialOffsetX = { -it },
-                                )
-                            ),
-                            friend = friend){
-                            onFriendClicked(friend.handle)
+                                    friend = friend){
+                                    onFriendClicked(friend.handle)
+                                }
+                            }
                         }
                     }
                 }

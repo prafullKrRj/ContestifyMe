@@ -46,7 +46,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.contestifyme.R
+import com.google.android.gms.ads.nativead.NativeAdView
 
 import com.prafull.contestifyme.commons.ui.SimpleTopAppBar
 import com.prafull.contestifyme.features.problemsFeature.data.local.entities.ProblemsEntity
@@ -56,11 +61,26 @@ import com.prafull.contestifyme.features.problemsFeature.ui.components.tagsCompo
 import okhttp3.internal.filterList
 
 @SuppressLint("CoroutineCreationDuringComposition")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProblemsScreen(viewModel: ProblemsViewModel) {
+
+    val problemsNavController = rememberNavController()
+    NavHost(navController = problemsNavController, startDestination = "problems") {
+        composable("problems") {
+            ProblemsMain(viewModel, problemsNavController)
+        }
+        composable("problem/{problemId}") { backStackEntry ->
+            val problemId = backStackEntry.arguments?.getString("problemId")
+            ProblemScreen(problemId = problemId ?: "www.codeforces.com")
+        }
+    }
+
+}
+
+@Composable
+fun ProblemsMain(viewModel: ProblemsViewModel, navController: NavController) {
     val state by viewModel.problemsUiState.collectAsState()
-    val scope = rememberCoroutineScope()
+    rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
     var selectedTags by rememberSaveable { mutableStateOf(emptyList<String>()) }    // List of selected tags
@@ -96,12 +116,13 @@ fun ProblemsScreen(viewModel: ProblemsViewModel) {
             },                          // Sort List based on Rating
             modifier = Modifier.padding(paddingValues = paddingValues),
             ratingSelected = {
-                       sortType = it
+                sortType = it
             }, selectedTags = selectedTags,
             previousType = sortType,
             updateList = {
                 selectedTags = it
-            }
+            },
+            navController = navController
         )
     }
 }
@@ -112,7 +133,8 @@ fun ProblemsUI(
     ratingSelected: (Pair<Int, Int>) -> Unit,    // Sort Type (Rating)
     selectedTags: List<String>,                 // List of selected tags
     updateList: (List<String>) -> Unit,         // Update List based on Tags
-    previousType: Pair<Int, Int>                // Previous Sort Type
+    previousType: Pair<Int, Int>,// Previous Sort Type
+    navController: NavController
 ) {
     Column (modifier.fillMaxSize()){
         SearchBar {
@@ -138,7 +160,7 @@ fun ProblemsUI(
         if (list.isEmpty()) {
             EmptyListBox()
         } else {
-            ProblemsList(list = list)
+            ProblemsList(list = list, navController)
         }
     }
 }
@@ -184,11 +206,13 @@ fun EmptyListBox() {
     }
 }
 @Composable
-fun ProblemsList(list: List<ProblemsEntity>) {
+fun ProblemsList(list: List<ProblemsEntity>, navController: NavController) {
     LazyColumn (modifier = Modifier.padding(horizontal = 12.dp)) {
         list.forEach {
             item {
-                ProblemItemCard(it)
+                ProblemItemCard(it) {
+                    navController.navigate("problem/${it.unique}")
+                }
             }
         }
     }
@@ -234,7 +258,6 @@ fun TagsSection (
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(searchUpdate: (String) -> Unit = {}) {
     var text by rememberSaveable { mutableStateOf("") }
@@ -266,13 +289,15 @@ fun SearchBar(searchUpdate: (String) -> Unit = {}) {
     )
 }
 @Composable
-fun ProblemItemCard(entity: ProblemsEntity) {
+fun ProblemItemCard(entity: ProblemsEntity, onClick: () -> Unit) {
     Card(
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
-            .clickable { },
+            .clickable {
+                onClick()
+            },
     ){
         Column(
             modifier = Modifier

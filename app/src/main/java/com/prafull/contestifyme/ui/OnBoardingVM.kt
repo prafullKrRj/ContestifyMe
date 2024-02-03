@@ -3,8 +3,8 @@ package com.prafull.contestifyme.ui
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.prafull.contestifyme.commons.Response
 import com.prafull.contestifyme.startOnBoard.data.OnBoardRepository
-import com.prafull.contestifyme.startOnBoard.data.Response
 import com.prafull.contestifyme.startOnBoard.network.model.userInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -49,6 +49,7 @@ class OnBoardingVM(
         }
     }
 }
+
 sealed class OnBoardingState {
     object Initial: OnBoardingState()
     object Loading: OnBoardingState()

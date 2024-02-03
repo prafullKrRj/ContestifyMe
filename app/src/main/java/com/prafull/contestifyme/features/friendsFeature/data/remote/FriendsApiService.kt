@@ -1,6 +1,6 @@
 package com.prafull.contestifyme.features.friendsFeature.data.remote
 
-import com.prafull.contestifyme.features.friendsFeature.model.FriendsDetailsDto
+import com.prafull.contestifyme.features.friendsFeature.domain.model.FriendsDetailsDto
 import com.prafull.contestifyme.features.profileFeature.model.ratingInfo.RatingDto
 import com.prafull.contestifyme.features.profileFeature.model.submissionsInfo.SubmissionDto
 import retrofit2.http.GET

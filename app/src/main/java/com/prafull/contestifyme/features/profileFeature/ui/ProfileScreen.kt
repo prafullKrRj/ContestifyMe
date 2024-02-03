@@ -107,7 +107,8 @@ fun ProfileScreen(
             }
         }
     }
-}@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+}
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun MainProfileScreen(
     viewModel: ProfileViewModel,

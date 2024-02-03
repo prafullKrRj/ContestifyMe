@@ -3,8 +3,8 @@ package com.prafull.contestifyme
 import android.app.Application
 import com.prafull.contestifyme.features.contestsFeature.data.source.ContestsContainer
 import com.prafull.contestifyme.features.contestsFeature.data.source.ContestsContainerImpl
-import com.prafull.contestifyme.features.friendsFeature.data.source.FriendsContainer
-import com.prafull.contestifyme.features.friendsFeature.data.source.FriendsContainerImpl
+import com.prafull.contestifyme.features.friendsFeature.di.FriendsContainer
+import com.prafull.contestifyme.features.friendsFeature.di.FriendsContainerImpl
 import com.prafull.contestifyme.features.problemsFeature.data.source.ProblemsContainer
 import com.prafull.contestifyme.features.problemsFeature.data.source.ProblemsContainerImpl
 import com.prafull.contestifyme.features.profileFeature.data.source.ProfileContainer

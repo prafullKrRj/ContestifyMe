@@ -1,9 +1,11 @@
-package com.prafull.contestifyme.features.friendsFeature.data.source
+package com.prafull.contestifyme.features.friendsFeature.di
 
 import android.content.Context
-import com.prafull.contestifyme.constants.Constants.BASE_URL
+import com.prafull.contestifyme.constants.Constants
 import com.prafull.contestifyme.features.friendsFeature.data.local.FriendsDB
 import com.prafull.contestifyme.features.friendsFeature.data.remote.FriendsApiService
+import com.prafull.contestifyme.features.friendsFeature.data.source.FriendsRepositoryImpl
+import com.prafull.contestifyme.features.friendsFeature.domain.repositories.FriendsRepository
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -15,7 +17,7 @@ class FriendsContainerImpl(
 ) : FriendsContainer {
 
     private val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
+        .baseUrl(Constants.BASE_URL)
         .addConverterFactory(
             GsonConverterFactory.create())
         .build()
@@ -25,7 +27,8 @@ class FriendsContainerImpl(
     override val friendsRepository: FriendsRepository by lazy {
         FriendsRepositoryImpl(
             friendsApiService,
-            FriendsDB.getDatabase(context).friendsDao()
+            FriendsDB.getDatabase(context).friendsDao(),
+            context
         )
     }
 

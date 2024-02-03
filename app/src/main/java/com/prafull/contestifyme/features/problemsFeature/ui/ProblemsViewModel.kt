@@ -42,7 +42,7 @@ class ProblemsViewModel(
                             id = index+1,
                             rating = item.rating,
                             points = item.points,
-                            unique = "${item.contestId}/${item.index}",
+                            unique = "${item.contestId}-${item.index}",
                             index = item.index,
                             tags = item.tags,
                             name = item.name

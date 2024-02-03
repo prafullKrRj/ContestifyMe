@@ -167,16 +167,16 @@ fun FriendsDataEntity.toUserInfoEntity(): UserInfoEntity {
         country = country,
         rating = rating,
         maxRating = maxRating,
-        friendOfCount = friendOfCount,
         avatar = avatar,
         titlePhoto = titlePhoto,
         contribution = contribution,
-        organization = organization,
         lastOnlineTimeSeconds = lastOnlineTimeSeconds,
         registrationTimeSeconds = registrationTimeSeconds,
         maxRank = maxRank,
         name = name,
         ratingInfo = ratingInfo,
         subMissionInfo = subMissionInfo,
+        friendOfCount = friendOfCount,
+        organization = organization
     )
 }

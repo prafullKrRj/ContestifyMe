@@ -1,19 +1,18 @@
 package com.prafull.contestifyme.features.friendsFeature.ui
 
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.prafull.contestifyme.features.friendsFeature.data.local.FriendsDataEntity
-import com.prafull.contestifyme.features.friendsFeature.data.source.FriendsRepository
-import com.prafull.contestifyme.features.profileFeature.ui.toUserRatingEntity
-import com.prafull.contestifyme.features.profileFeature.ui.toUserStatusEntity
+import com.prafull.contestifyme.features.friendsFeature.domain.model.FriendsDetailsDto
+import com.prafull.contestifyme.features.friendsFeature.domain.repositories.FriendsRepository
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -21,105 +20,75 @@ import java.io.IOException
 class FriendsViewModel(
     private val friendsRepository: FriendsRepository,
 
-) : ViewModel() {
+    ) : ViewModel() {
 
-    var friendsUiState: StateFlow<FriendsUiState> = friendsRepository.getFriendsDataFromDb().map {
-        FriendsUiState(it)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FriendsUiState(emptyList()))
-
+    val dataFromDb: StateFlow<FriendsUiState.Success> = friendsRepository.getFriendsDataFromDb().map {
+         FriendsUiState.Success(it)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FriendsUiState.Success(emptyList()))
+    private val _uiState = MutableStateFlow<FriendsUiState>(FriendsUiState.Initial)
+    val uiState = _uiState.asStateFlow()
     init {
-        addFriends(friendsUiState.value.friends.map { it.handle })
+        Log.d("handlesdb", "${dataFromDb.value.data.map { it.handle }}")
+        addFriends(dataFromDb.value.data.map { it.handle })
     }
-    var loading: Boolean by mutableStateOf(true)
-
-    fun addFriends(handles: List<String>) {
+    fun addFriends(handles: List<String> = dataFromDb.value.data.map { it.handle }) {
         if (handles.isEmpty()) return
+        Log.d("handles", "$handles")
         viewModelScope.launch {
+            _uiState.update {
+                FriendsUiState.Loading
+            }
             try {
+                val list = mutableListOf<FriendsDataEntity>()
                 handles.forEach { handle ->
-                    val data = friendsRepository.getFriendsDataFromApi(listOf(handle))
-                    val ratingInfo = friendsRepository.getRatingsFromApi(listOf(handle))
-                    val submissionsInfo = friendsRepository.getSubMissionFromApi(listOf(handle))
-                    friendsRepository.updateFriendsDataInDb(
-                        data.result.map {
-                            FriendsDataEntity(
-                                handle = it.handle,
-                                avatar = it.avatar,
-                                contribution = it.contribution,
-                                country = it.country,
-                                name = it.firstName,
-                                friendOfCount = it.friendOfCount,
-                                lastOnlineTimeSeconds = it.lastOnlineTimeSeconds,
-                                maxRank = it.maxRank,
-                                maxRating = it.maxRating,
-                                organization = it.organization,
-                                rank = it.rank,
-                                rating = it.rating,
-                                registrationTimeSeconds = it.registrationTimeSeconds,
-                                titlePhoto = it.titlePhoto,
-                                ratingInfo = ratingInfo.first().result.map {ratingInfo ->
-                                    ratingInfo.toUserRatingEntity()
-                                },
-                                subMissionInfo = submissionsInfo.first().submissions.map {submissionsInfo ->
-                                    submissionsInfo.toUserStatusEntity()
-                                }
-                            )
-                        }
-                    )
+                    list.add(friendsRepository.getFriendsDataFromApi(listOf(handle)).toFriendsDataEntity())
+                }
+                try {
+                    friendsRepository.updateFriendsDataInDb(list)
+                } catch (e: Exception) {
+                    Log.d("handles", "$e")
+                }
+                Log.d("handles", "${list[0].avatar}")
+                _uiState.update {
+                    FriendsUiState.Success(list.toList())
                 }
             } catch (e: HttpException) {
-                Log.d("prafull", "http error")
+                _uiState.update {
+                    FriendsUiState.Error(e)
+                }
             } catch (e: IOException) {
-                Log.d("prafull", "io error")
+                _uiState.update {
+                    FriendsUiState.Error(e)
+                }
             }
         }
     }
-    fun updateDetails(handle: String) {
-        loading = true
-         viewModelScope.launch {
-             try {
-                val data = friendsRepository.getFriendsDataFromApi(listOf(handle))
-                val ratingInfo = friendsRepository.getRatingsFromApi(listOf(handle))
-                val submissionsInfo = friendsRepository.getSubMissionFromApi(listOf(handle))
-                friendsRepository.updateFriendsDataInDb(
-                    data.result.map {
-                        FriendsDataEntity(
-                            handle = it.handle,
-                            avatar = it.avatar,
-                            contribution = it.contribution,
-                            country = it.country,
-                            name = it.firstName,
-                            friendOfCount = it.friendOfCount,
-                            lastOnlineTimeSeconds = it.lastOnlineTimeSeconds,
-                            maxRank = it.maxRank,
-                            maxRating = it.maxRating,
-                            organization = it.organization,
-                            rank = it.rank,
-                            rating = it.rating,
-                            registrationTimeSeconds = it.registrationTimeSeconds,
-                            titlePhoto = it.titlePhoto,
-                            ratingInfo = ratingInfo.first().result.map {ratingInfo ->
-                                ratingInfo.toUserRatingEntity()
-                            },
-                            subMissionInfo = submissionsInfo.first().submissions.map {submissionsInfo ->
-                                submissionsInfo.toUserStatusEntity()
-                            }
-                        )
-                    }
-                )
-                loading = false
-            } catch (e: HttpException) {
-                 loading = false
-            } catch (e: IOException) {
-                 loading = false
-            }
-        }
+    fun addFriend(handle: String) {
+
     }
     fun getFriend(handle: String): FriendsDataEntity {
-        return friendsUiState.value.friends.first { it.handle == handle }
+        return dataFromDb.value.data.first { it.handle == handle }
     }
 }
-data class FriendsUiState(
-    val friends: List<FriendsDataEntity> = emptyList(),
-    var loading: Boolean = true
-)
+sealed class FriendsUiState {
+    object Initial: FriendsUiState()
+    object Loading: FriendsUiState()
+    data class Success(val data: List<FriendsDataEntity>): FriendsUiState()
+    data class Error(val error: Exception): FriendsUiState()
+}
+fun FriendsDetailsDto.toFriendsDataEntity(): FriendsDataEntity {
+    return FriendsDataEntity(
+        handle = this.result.first().handle,
+        avatar = this.result.first().avatar,
+        contribution = this.result.first().contribution,
+        country = this.result.first().country,
+        name = this.result.first().firstName,
+        lastOnlineTimeSeconds = this.result.first().lastOnlineTimeSeconds,
+        maxRank = this.result.first().maxRank,
+        maxRating = this.result.first().maxRating,
+        rank = this.result.first().rank,
+        rating = this.result.first().rating,
+        registrationTimeSeconds = this.result.first().registrationTimeSeconds,
+        titlePhoto = this.result.first().titlePhoto
+    )
+}
