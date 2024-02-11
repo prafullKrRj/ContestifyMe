@@ -1,11 +1,9 @@
 package com.prafull.contestifyme.features.profileFeature.ui
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,7 +30,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -45,10 +42,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.contestifyme.R
-import com.prafull.contestifyme.commons.ui.SimpleTopAppBar
-import com.prafull.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
 import com.prafull.contestifyme.commons.ui.ColorInfoDialog
+import com.prafull.contestifyme.commons.ui.SimpleTopAppBar
 import com.prafull.contestifyme.features.friendsFeature.ui.LoadingScreen
+import com.prafull.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

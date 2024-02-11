@@ -1,7 +1,6 @@
 package com.prafull.contestifyme.features.friendsFeature.di
 
 import android.app.Application
-import android.content.Context
 import com.prafull.contestifyme.constants.Constants
 import com.prafull.contestifyme.features.friendsFeature.data.remote.FriendsApiService
 import com.prafull.contestifyme.features.friendsFeature.data.source.FriendsRepositoryImpl

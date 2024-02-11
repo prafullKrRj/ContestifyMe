@@ -22,9 +22,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.contestifyme.R
 import com.prafull.contestifyme.commons.ui.Headings
 import com.prafull.contestifyme.commons.ui.SimpleTopAppBar
-import com.prafull.contestifyme.features.contestsFeature.data.local.ContestsEntity
 import com.prafull.contestifyme.commons.ui.getTime
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.prafull.contestifyme.features.contestsFeature.data.local.ContestsEntity
+
 @Composable
 fun ContestsScreen(
     viewModel: ContestsViewModel = hiltViewModel()

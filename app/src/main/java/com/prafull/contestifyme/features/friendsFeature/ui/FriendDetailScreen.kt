@@ -2,44 +2,18 @@ package com.prafull.contestifyme.features.friendsFeature.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import co.yml.charts.common.extensions.isNotNull
-import com.example.contestifyme.R
-import com.prafull.contestifyme.commons.GetChartData
-import com.prafull.contestifyme.commons.ui.SimpleTopAppBar
-import com.prafull.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
 import com.prafull.contestifyme.features.profileFeature.domain.model.UserSubmissions
-import com.prafull.contestifyme.features.profileFeature.ui.ShowGraphButtons
 import com.prafull.contestifyme.features.profileFeature.ui.SubMissionCard
-import com.prafull.contestifyme.commons.ui.DetailsDialog
-import com.prafull.contestifyme.commons.ui.ProfileCard
-import com.prafull.contestifyme.commons.ui.QuestionByIndexGraph
-import com.prafull.contestifyme.commons.ui.QuestionByTypeGraph
-import com.prafull.contestifyme.commons.ui.RankCard
-import com.prafull.contestifyme.commons.ui.RatingGraph
-import com.prafull.contestifyme.commons.ui.SubmissionsGraph
-import com.prafull.contestifyme.commons.ui.VerdictGraph
-
 
 
 @SuppressLint("MutableCollectionMutableState")

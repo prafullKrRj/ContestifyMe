@@ -96,19 +96,6 @@ fun CodeAssistanceScreen(
 }
 
 @Composable
-fun BannerAd() {
-    AndroidView(
-        factory = { context ->
-            AdView(context).apply {
-                setAdSize(AdSize.BANNER)
-                this.adUnitId = "ca-app-pub-3940256099942544/6300978111"
-                loadAd(AdRequest.Builder().build())
-                Log.d("add view", "working")
-            }
-        }
-    )
-}
-@Composable
 fun ChatBubble(modifier: Modifier, message: ChatMessage, shape: RoundedCornerShape) {
     Card(modifier = modifier
         .padding(vertical = 6.dp),
