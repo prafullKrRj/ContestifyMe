@@ -18,15 +18,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.contestifyme.R
 import com.prafull.contestifyme.commons.ui.Headings
 import com.prafull.contestifyme.commons.ui.SimpleTopAppBar
 import com.prafull.contestifyme.features.contestsFeature.data.local.ContestsEntity
 import com.prafull.contestifyme.commons.ui.getTime
-
+import androidx.lifecycle.viewmodel.compose.viewModel
 @Composable
 fun ContestsScreen(
-    viewModel: ContestsViewModel
+    viewModel: ContestsViewModel = hiltViewModel()
 ) {
     val state: ContestUiState by viewModel.state.collectAsState()
     Scaffold (

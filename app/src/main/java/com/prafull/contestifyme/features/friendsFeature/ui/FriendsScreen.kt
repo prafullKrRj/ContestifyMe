@@ -8,6 +8,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,9 +18,9 @@ import com.prafull.contestifyme.features.profileFeature.ui.SubmissionAnswer
 
 @Composable
 fun FriendsScreen(
-    viewModel: FriendsViewModel
+    viewModel: FriendsViewModel = hiltViewModel()
 ) {
-    val state by viewModel.dataFromDb.collectAsState()
+
     val navController: NavHostController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "list") {
@@ -26,7 +28,7 @@ fun FriendsScreen(
             FriendsListScreen(viewModel, onFriendClicked = {
                 navController.navigate("detail/$it")
             }) {
-                viewModel.addFriends(listOf(it))
+
             }
         }
         composable("detail/{handle}") {navBackStackEntry ->

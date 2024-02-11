@@ -6,6 +6,7 @@ import com.prafull.contestifyme.features.contestsFeature.data.local.ContestsEnti
 import com.prafull.contestifyme.features.contestsFeature.data.remote.ContestsApiService
 import com.prafull.contestifyme.features.contestsFeature.model.ContestsDto
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 interface ContestsRepository {
     suspend fun insertContests(contestsEntity: ContestsEntity)
@@ -13,7 +14,7 @@ interface ContestsRepository {
     suspend fun getContestsFromApi(): ContestsDto
 }
 
-class ContestsRepositoryImpl (
+class ContestsRepositoryImpl @Inject constructor (
     private val context: Context,
     private val contestsDao: ContestsDao,
     private val contestsApi: ContestsApiService

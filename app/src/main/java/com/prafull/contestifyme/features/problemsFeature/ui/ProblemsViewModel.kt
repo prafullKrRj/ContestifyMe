@@ -7,8 +7,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.prafull.contestifyme.features.problemsFeature.data.source.ProblemsRepository
+import com.prafull.contestifyme.features.problemsFeature.domain.repositories.ProblemsRepository
 import com.prafull.contestifyme.features.problemsFeature.data.local.entities.ProblemsEntity
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -16,11 +17,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
-class ProblemsViewModel(
+@HiltViewModel
+class ProblemsViewModel @Inject constructor(
     private val problemsRepository: ProblemsRepository,
-
-    ) : ViewModel() {
+) : ViewModel() {
     var rating: MutableState<Int> = mutableStateOf(0)
 
     var problemsUiState: StateFlow<ProblemState> = problemsRepository.getProblemsFromDb()

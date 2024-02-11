@@ -1,14 +1,7 @@
 package com.prafull.contestifyme.features.friendsFeature.ui
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.Spring.DampingRatioLowBouncy
-import androidx.compose.animation.core.Spring.StiffnessVeryLow
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -19,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -33,7 +25,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,11 +40,9 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.contestifyme.R
-import com.prafull.contestifyme.commons.ui.ErrorScreen
 import com.prafull.contestifyme.commons.ui.SimpleTopAppBar
 import com.prafull.contestifyme.features.friendsFeature.FriendsConstants.getFormattedTime
 import com.prafull.contestifyme.features.friendsFeature.FriendsConstants.getRatingColor
-import com.prafull.contestifyme.features.friendsFeature.data.local.FriendsDataEntity
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -70,10 +59,10 @@ fun FriendsListScreen(
     var addFriendField by rememberSaveable {
         mutableStateOf(false)
     }
-    val uiState by viewModel.uiState.collectAsState()
+
     Scaffold(
         topBar = {
-                 SimpleTopAppBar(label = R.string.friends)
+            SimpleTopAppBar(label = R.string.friends)
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { addFriendField = true }, shape = CircleShape) {
@@ -84,20 +73,8 @@ fun FriendsListScreen(
             }
         }
     ) { paddingValues ->
-        when (uiState) {
-            is FriendsUiState.Error -> {
-                ErrorScreen {
-                    viewModel.addFriends()
-                }
-            }
-            FriendsUiState.Initial -> {
 
-            }
-            FriendsUiState.Loading -> {
-                LoadingScreen()
-            }
-            is FriendsUiState.Success -> {
-                if ((uiState as FriendsUiState.Success).data.isEmpty()) {
+        /* if ((uiState as FriendsUiState.Success).data.isEmpty()) {
                     Text(
                         text = "No friends added yet",
                         modifier = Modifier.padding(16.dp)
@@ -136,8 +113,8 @@ fun FriendsListScreen(
                 }
             }
         }
-    }
-    if (addFriendField) {
+    }*/
+        /*  if (addFriendField) {
         AddFriendDialog(
             onDismiss = {
                 addFriendField = false
@@ -147,9 +124,9 @@ fun FriendsListScreen(
                 addFriendField = false
             }
         )
+    }*/
     }
 }
-
 @Composable
 fun AddFriendDialog(
     onDismiss: () -> Unit,
@@ -192,6 +169,7 @@ fun AddFriendDialog(
         }
     )
 }
+/*
 @Composable
 fun FriendItem(modifier: Modifier, friend: FriendsDataEntity, onFriendClicked: () -> Unit) {
     ElevatedCard(modifier = modifier
@@ -239,3 +217,4 @@ fun FriendImage(modifier: Modifier, data: String?, borderColor: Color) {
         contentDescription = null,
     )
 }
+*/

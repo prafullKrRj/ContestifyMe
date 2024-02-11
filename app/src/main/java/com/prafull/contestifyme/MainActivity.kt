@@ -23,7 +23,9 @@ import com.prafull.contestifyme.ui.ContestifyAPP
 import com.prafull.contestifyme.ui.OnBoardingScreen
 import com.prafull.contestifyme.ui.OnBoardingVM
 import com.prafull.contestifyme.ui.contestifyApplication
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

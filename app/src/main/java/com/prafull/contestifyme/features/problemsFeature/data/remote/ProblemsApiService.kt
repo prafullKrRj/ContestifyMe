@@ -1,6 +1,6 @@
 package com.prafull.contestifyme.features.problemsFeature.data.remote
 
-import com.prafull.contestifyme.features.problemsFeature.model.ProblemsDto
+import com.prafull.contestifyme.features.problemsFeature.domain.model.ProblemsDto
 import retrofit2.http.GET
 import retrofit2.http.Url
 

@@ -12,20 +12,4 @@ import androidx.room.RoomDatabase
 )
 abstract class ContestDB: RoomDatabase() {
     abstract fun contestsDao(): ContestsDao
-
-    companion object {
-        @Volatile
-        private var INSTANCE: ContestDB? = null
-        fun getInstance(context: Context): ContestDB {
-            return INSTANCE ?: synchronized(this) {
-                Room.databaseBuilder(
-                    context.applicationContext,
-                    ContestDB::class.java,
-                    "contests_db"
-                ).build().also {
-                    INSTANCE = it
-                }
-            }
-        }
-    }
 }

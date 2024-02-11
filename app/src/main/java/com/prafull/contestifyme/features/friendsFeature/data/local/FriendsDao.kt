@@ -8,8 +8,5 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FriendsDao {
-    @Upsert
-    suspend fun upsert(friends: List<FriendsDataEntity>)
-    @Query("SELECT * FROM friends_data")
-    fun getAllFriends(): Flow<List<FriendsDataEntity>>
+
 }

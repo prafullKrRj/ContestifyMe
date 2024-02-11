@@ -27,7 +27,6 @@ import co.yml.charts.common.extensions.isNotNull
 import com.example.contestifyme.R
 import com.prafull.contestifyme.commons.GetChartData
 import com.prafull.contestifyme.commons.ui.SimpleTopAppBar
-import com.prafull.contestifyme.features.friendsFeature.data.local.FriendsDataEntity
 import com.prafull.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
 import com.prafull.contestifyme.features.profileFeature.model.UserSubmissions
 import com.prafull.contestifyme.features.profileFeature.ui.ShowGraphButtons
@@ -41,10 +40,12 @@ import com.prafull.contestifyme.commons.ui.RatingGraph
 import com.prafull.contestifyme.commons.ui.SubmissionsGraph
 import com.prafull.contestifyme.commons.ui.VerdictGraph
 
+
+
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun FriendsDetailScreen(navHostController: NavHostController, handle: String,  viewModel: FriendsViewModel) {
-    val user = viewModel.getFriend(handle).toUserInfoEntity()
+ /*   val user = viewModel.getFriend(handle).toUserInfoEntity()
     val verdicts by rememberSaveable {
         mutableStateOf(GetChartData.getVerdicts(user))
     }
@@ -129,6 +130,7 @@ fun FriendsDetailScreen(navHostController: NavHostController, handle: String,  v
             showQuestionSolvedByIndexDialog = false
         }
     }
+    */
 }
 @Composable
 fun PastSubMissions(submissions: List<UserSubmissions>) {
@@ -160,6 +162,7 @@ fun PastSubMissions(submissions: List<UserSubmissions>) {
         }
     }
 }
+/*
 fun FriendsDataEntity.toUserInfoEntity(): UserInfoEntity {
     return UserInfoEntity(
         handle = handle,
@@ -179,4 +182,4 @@ fun FriendsDataEntity.toUserInfoEntity(): UserInfoEntity {
         friendOfCount = friendOfCount,
         organization = organization
     )
-}
+}*/

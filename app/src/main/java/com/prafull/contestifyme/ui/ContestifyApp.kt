@@ -34,11 +34,8 @@ import com.prafull.contestifyme.ContestifyApplication
 import com.prafull.contestifyme.features.codeAssistantFeature.ui.CodeAssistanceScreen
 import com.prafull.contestifyme.features.codeAssistantFeature.ui.CodeAssistanceViewModel
 import com.prafull.contestifyme.features.contestsFeature.ui.ContestsScreen
-import com.prafull.contestifyme.features.contestsFeature.ui.ContestsViewModel
 import com.prafull.contestifyme.features.friendsFeature.ui.FriendsScreen
-import com.prafull.contestifyme.features.friendsFeature.ui.FriendsViewModel
 import com.prafull.contestifyme.features.problemsFeature.ui.ProblemsScreen
-import com.prafull.contestifyme.features.problemsFeature.ui.ProblemsViewModel
 import com.prafull.contestifyme.features.profileFeature.ui.ProfileScreen
 import com.prafull.contestifyme.features.profileFeature.ui.ProfileViewModel
 import com.prafull.contestifyme.ui.Screens.CODE_ASSISTANCE
@@ -52,10 +49,7 @@ fun ContestifyAPP (handle: String) {
     val navController: NavHostController = rememberNavController()
     val viewModels = listOf(
         viewModel<ProfileViewModel>(factory = AppViewModelProvider.profileViewModel(handle)),
-        viewModel<ContestsViewModel>(factory = AppViewModelProvider.contestVM),
         viewModel<CodeAssistanceViewModel>(factory = AppViewModelProvider.compareVm),
-        viewModel<FriendsViewModel>(factory = AppViewModelProvider.friendsVM),
-        viewModel<ProblemsViewModel>(factory = AppViewModelProvider.problemsVM)
     )
     ContestifyMainApp(navController = navController, viewModels = viewModels)
 }
@@ -78,22 +72,22 @@ fun ContestifyMainApp(navController: NavHostController, viewModels: List<ViewMod
         Column(
             modifier = Modifier.padding(paddingValues),
         ) {
-            NavHost(navController = navController, startDestination = PROFILE.name) {
+            NavHost(navController = navController, startDestination = FRIENDS.name) {
 
                 composable(route = PROFILE.name) {
                     ProfileScreen(viewModel = viewModels[0] as ProfileViewModel)
                 }
                 composable(route = CONTESTS.name) {
-                    ContestsScreen(viewModel = viewModels[1] as ContestsViewModel)
+                    ContestsScreen()
                 }
                 composable(route = CODE_ASSISTANCE.name) {
-                    CodeAssistanceScreen(viewModel = viewModels[2] as CodeAssistanceViewModel)
+                    CodeAssistanceScreen(viewModel = viewModels[1] as CodeAssistanceViewModel)
                 }
                 composable(route = FRIENDS.name) {
-                    FriendsScreen(viewModel = viewModels[3] as FriendsViewModel)
+                    FriendsScreen()
                 }
                 composable(route = PROBLEMS.name) {
-                    ProblemsScreen(viewModel = viewModels[4] as ProblemsViewModel)
+                    ProblemsScreen()
                 }
             }
         }
@@ -175,24 +169,9 @@ object AppViewModelProvider {
             }
         }
     }
-    val problemsVM = viewModelFactory {
-        initializer {
-            ProblemsViewModel(contestifyApplication().problemsContainer.problemsRepository)
-        }
-    }
-    val contestVM = viewModelFactory {
-        initializer {
-            ContestsViewModel(contestifyApplication().contestsContainer.contestsRepository)
-        }
-    }
     val compareVm = viewModelFactory {
         initializer {
             CodeAssistanceViewModel(/*contestifyApplication().compareContainer.compareRepository*/)
-        }
-    }
-    val friendsVM = viewModelFactory {
-        initializer {
-            FriendsViewModel(contestifyApplication().friendsContainer.friendsRepository)
         }
     }
 }
