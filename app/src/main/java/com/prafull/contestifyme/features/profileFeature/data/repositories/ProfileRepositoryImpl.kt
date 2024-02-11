@@ -1,33 +1,26 @@
-package com.prafull.contestifyme.features.profileFeature.data.source
+package com.prafull.contestifyme.features.profileFeature.data.repositories
 
 import com.prafull.contestifyme.features.profileFeature.constants.ProfileConstants
 import com.prafull.contestifyme.features.profileFeature.data.local.ProfileDao
 import com.prafull.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
 import com.prafull.contestifyme.features.profileFeature.data.remote.ProfileApiService
-import com.prafull.contestifyme.features.profileFeature.model.ratingInfo.RatingDto
-import com.prafull.contestifyme.features.profileFeature.model.submissionsInfo.SubmissionDto
-import com.prafull.contestifyme.features.profileFeature.model.userInfo.ProfileUserDto
+import com.prafull.contestifyme.features.profileFeature.domain.model.ratingInfo.RatingDto
+import com.prafull.contestifyme.features.profileFeature.domain.model.submissionsInfo.SubmissionDto
+import com.prafull.contestifyme.features.profileFeature.domain.model.userInfo.ProfileUserDto
+import com.prafull.contestifyme.features.profileFeature.domain.repositories.ProfileRepository
+import com.prafull.contestifyme.managers.SharedPrefManager
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-interface ProfileRepository {
 
-    /**
-     *  User Info
-     * */
-    suspend fun insertUser(userInfoEntity: UserInfoEntity)
-    fun getUserInfo(): Flow<List<UserInfoEntity>>
-    suspend fun getUserInfoFromApi(handle: String): ProfileUserDto
-    suspend fun getUserRatingFromApi(handle: String): RatingDto
-    suspend fun updateUserInfo(userInfoEntity: UserInfoEntity)
-    suspend fun getUserStatusFromApi(handle: String): SubmissionDto
-}
-
-class ProfileRepositoryImpl (
+class ProfileRepositoryImpl @Inject constructor (
     private val profileApiService: ProfileApiService,
-    private val profileDao: ProfileDao
+    private val profileDao: ProfileDao,
+    private val sharedPrefManager: SharedPrefManager
 ) : ProfileRepository {
 
 
+    override fun getUserHandle(): String = sharedPrefManager.getLoginUserHandle()
     /**
      *  User Info
      * */
@@ -54,4 +47,5 @@ class ProfileRepositoryImpl (
     override suspend fun getUserStatusFromApi(handle: String): SubmissionDto {
         return profileApiService.getUserStatusFromApi(ProfileConstants.getUserStatus(handle))
     }
+
 }

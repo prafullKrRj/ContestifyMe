@@ -1,4 +1,4 @@
-package com.prafull.contestifyme.features.contestsFeature.model
+package com.prafull.contestifyme.features.contestsFeature.domain.model
 
 import com.google.gson.annotations.SerializedName
 

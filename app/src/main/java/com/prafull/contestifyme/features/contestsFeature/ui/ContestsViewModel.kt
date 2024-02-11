@@ -3,7 +3,7 @@ package com.prafull.contestifyme.features.contestsFeature.ui
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.prafull.contestifyme.features.contestsFeature.ContestsRepository
+import com.prafull.contestifyme.features.contestsFeature.domain.repositories.ContestsRepository
 import com.prafull.contestifyme.features.contestsFeature.data.local.ContestsEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted

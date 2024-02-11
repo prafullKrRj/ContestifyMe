@@ -28,7 +28,7 @@ import com.example.contestifyme.R
 import com.prafull.contestifyme.commons.GetChartData
 import com.prafull.contestifyme.commons.ui.SimpleTopAppBar
 import com.prafull.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
-import com.prafull.contestifyme.features.profileFeature.model.UserSubmissions
+import com.prafull.contestifyme.features.profileFeature.domain.model.UserSubmissions
 import com.prafull.contestifyme.features.profileFeature.ui.ShowGraphButtons
 import com.prafull.contestifyme.features.profileFeature.ui.SubMissionCard
 import com.prafull.contestifyme.commons.ui.DetailsDialog

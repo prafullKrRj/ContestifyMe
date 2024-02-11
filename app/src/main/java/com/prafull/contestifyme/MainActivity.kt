@@ -17,7 +17,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.prafull.contestifyme.ui.theme.ContestifyMeTheme
-import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.prafull.contestifyme.managers.SharedPrefManager
 import com.prafull.contestifyme.ui.ContestifyAPP
 import com.prafull.contestifyme.ui.OnBoardingScreen
@@ -41,7 +40,7 @@ class MainActivity : ComponentActivity() {
                     val startDestination = if (SharedPrefManager(this).isLoggedIn()) "contestifyApp" else "onBoarding"
                     NavHost(navController = navController, startDestination = startDestination) {
                         composable("contestifyApp") {
-                            ContestifyAPP(handle = SharedPrefManager(context).getLoginUserHandle())
+                            ContestifyAPP()
                         }
                         composable("onBoarding") {
                             OnBoardingScreen(viewModel = viewModel(factory = viewModelFactory {

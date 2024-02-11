@@ -1,4 +1,4 @@
-package com.prafull.contestifyme.features.profileFeature.model.userInfo
+package com.prafull.contestifyme.features.profileFeature.domain.model.userInfo
 
 import com.google.gson.annotations.SerializedName
 

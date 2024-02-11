@@ -22,7 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.prafull.contestifyme.features.profileFeature.constants.ProfileConstants
-import com.prafull.contestifyme.features.profileFeature.model.UserSubmissions
+import com.prafull.contestifyme.features.profileFeature.domain.model.UserSubmissions
 
 @Composable
 fun SubmissionsScreen(

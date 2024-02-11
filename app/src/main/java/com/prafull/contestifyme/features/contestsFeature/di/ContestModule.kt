@@ -1,14 +1,13 @@
-package com.prafull.contestifyme.features.contestsFeature.data.source
+package com.prafull.contestifyme.features.contestsFeature.di
 
 import android.app.Application
-import android.content.Context
 import androidx.room.Room
 import com.prafull.contestifyme.constants.Constants.BASE_URL
-import com.prafull.contestifyme.features.contestsFeature.ContestsRepository
-import com.prafull.contestifyme.features.contestsFeature.ContestsRepositoryImpl
 import com.prafull.contestifyme.features.contestsFeature.data.local.ContestDB
 import com.prafull.contestifyme.features.contestsFeature.data.local.ContestsDao
 import com.prafull.contestifyme.features.contestsFeature.data.remote.ContestsApiService
+import com.prafull.contestifyme.features.contestsFeature.data.repositories.ContestsRepositoryImpl
+import com.prafull.contestifyme.features.contestsFeature.domain.repositories.ContestsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

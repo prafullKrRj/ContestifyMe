@@ -1,6 +1,6 @@
 package com.prafull.contestifyme.features.contestsFeature.data.remote
 
-import com.prafull.contestifyme.features.contestsFeature.model.ContestsDto
+import com.prafull.contestifyme.features.contestsFeature.domain.model.ContestsDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 

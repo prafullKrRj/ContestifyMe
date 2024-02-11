@@ -1,4 +1,4 @@
-package com.prafull.contestifyme.features.profileFeature.model
+package com.prafull.contestifyme.features.profileFeature.domain.model
 
 data class UserSubmissions(
     val id: Int,

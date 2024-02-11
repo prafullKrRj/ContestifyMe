@@ -1,4 +1,4 @@
-package com.prafull.contestifyme.features.profileFeature.model.ratingInfo
+package com.prafull.contestifyme.features.profileFeature.domain.model.ratingInfo
 
 import com.google.gson.annotations.SerializedName
 

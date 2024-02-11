@@ -5,12 +5,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.prafull.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
-import com.prafull.contestifyme.features.profileFeature.data.source.ProfileRepository
-import com.prafull.contestifyme.features.profileFeature.model.UserRating
-import com.prafull.contestifyme.features.profileFeature.model.UserSubmissions
-import com.prafull.contestifyme.features.profileFeature.model.ratingInfo.RatingResult
-import com.prafull.contestifyme.features.profileFeature.model.submissionsInfo.Submissions
-import com.prafull.contestifyme.features.profileFeature.model.userInfo.ProfileUserDto
+import com.prafull.contestifyme.features.profileFeature.domain.repositories.ProfileRepository
+import com.prafull.contestifyme.features.profileFeature.domain.model.UserRating
+import com.prafull.contestifyme.features.profileFeature.domain.model.UserSubmissions
+import com.prafull.contestifyme.features.profileFeature.domain.model.ratingInfo.RatingResult
+import com.prafull.contestifyme.features.profileFeature.domain.model.submissionsInfo.Submissions
+import com.prafull.contestifyme.features.profileFeature.domain.model.userInfo.ProfileUserDto
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
 
 sealed class ProfileUiState {
@@ -29,10 +31,10 @@ sealed class ProfileUiState {
     data class Success(val user: List<UserInfoEntity>): ProfileUiState()
     data class Error(val message: String): ProfileUiState()
 }
+@HiltViewModel
 @SuppressLint("MutableCollectionMutableState")
-class ProfileViewModel(
+class ProfileViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
-    private val handle: String
 ): ViewModel() {
 
     val dataFromDb: StateFlow<ProfileUiState.Success> = profileRepository.getUserInfo()
@@ -60,9 +62,9 @@ class ProfileViewModel(
                 ProfileUiState.Loading
             }
             try {
-                val userInfo = profileRepository.getUserInfoFromApi(handle)
-                val ratingInfo = profileRepository.getUserRatingFromApi(handle)
-                val submissionInfo = profileRepository.getUserStatusFromApi(handle)
+                val userInfo = profileRepository.getUserInfoFromApi(profileRepository.getUserHandle())
+                val ratingInfo = profileRepository.getUserRatingFromApi(profileRepository.getUserHandle())
+                val submissionInfo = profileRepository.getUserStatusFromApi(profileRepository.getUserHandle())
                 val user = userInfo.toUserInfoEntity(
                     rating = ratingInfo.result.map {
                         it.toUserRatingEntity()

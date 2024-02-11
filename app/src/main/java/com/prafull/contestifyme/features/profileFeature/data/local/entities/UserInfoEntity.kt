@@ -3,8 +3,8 @@ package com.prafull.contestifyme.features.profileFeature.data.local.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
-import com.prafull.contestifyme.features.profileFeature.model.UserRating
-import com.prafull.contestifyme.features.profileFeature.model.UserSubmissions
+import com.prafull.contestifyme.features.profileFeature.domain.model.UserRating
+import com.prafull.contestifyme.features.profileFeature.domain.model.UserSubmissions
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

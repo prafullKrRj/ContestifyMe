@@ -3,7 +3,6 @@ package com.prafull.contestifyme.features.codeAssistantFeature.ui
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -157,5 +156,5 @@ fun DataInputField(modifier: Modifier, updateChat: (String) -> Unit) {
 @Preview(showSystemUi = true)
 @Composable
 fun CompareScreenPreview() {
-    CodeAssistanceScreen(viewModel = viewModel(factory = AppViewModelProvider.compareVm))
+    CodeAssistanceScreen(viewModel = viewModel(factory = AppViewModelProvider.codeVM))
 }

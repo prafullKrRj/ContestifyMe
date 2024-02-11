@@ -37,7 +37,6 @@ import com.prafull.contestifyme.features.contestsFeature.ui.ContestsScreen
 import com.prafull.contestifyme.features.friendsFeature.ui.FriendsScreen
 import com.prafull.contestifyme.features.problemsFeature.ui.ProblemsScreen
 import com.prafull.contestifyme.features.profileFeature.ui.ProfileScreen
-import com.prafull.contestifyme.features.profileFeature.ui.ProfileViewModel
 import com.prafull.contestifyme.ui.Screens.CODE_ASSISTANCE
 import com.prafull.contestifyme.ui.Screens.CONTESTS
 import com.prafull.contestifyme.ui.Screens.FRIENDS
@@ -45,11 +44,10 @@ import com.prafull.contestifyme.ui.Screens.PROBLEMS
 import com.prafull.contestifyme.ui.Screens.PROFILE
 
 @Composable
-fun ContestifyAPP (handle: String) {
+fun ContestifyAPP() {
     val navController: NavHostController = rememberNavController()
     val viewModels = listOf(
-        viewModel<ProfileViewModel>(factory = AppViewModelProvider.profileViewModel(handle)),
-        viewModel<CodeAssistanceViewModel>(factory = AppViewModelProvider.compareVm),
+        viewModel<CodeAssistanceViewModel>(factory = AppViewModelProvider.codeVM),
     )
     ContestifyMainApp(navController = navController, viewModels = viewModels)
 }
@@ -72,16 +70,16 @@ fun ContestifyMainApp(navController: NavHostController, viewModels: List<ViewMod
         Column(
             modifier = Modifier.padding(paddingValues),
         ) {
-            NavHost(navController = navController, startDestination = FRIENDS.name) {
+            NavHost(navController = navController, startDestination = PROFILE.name) {
 
                 composable(route = PROFILE.name) {
-                    ProfileScreen(viewModel = viewModels[0] as ProfileViewModel)
+                    ProfileScreen()
                 }
                 composable(route = CONTESTS.name) {
                     ContestsScreen()
                 }
                 composable(route = CODE_ASSISTANCE.name) {
-                    CodeAssistanceScreen(viewModel = viewModels[1] as CodeAssistanceViewModel)
+                    CodeAssistanceScreen(viewModel = viewModels[0] as CodeAssistanceViewModel)
                 }
                 composable(route = FRIENDS.name) {
                     FriendsScreen()
@@ -159,17 +157,8 @@ enum class Screens {
  *  ViewModels for the app
  * */
 object AppViewModelProvider {
-    fun profileViewModel(handle: String): ViewModelProvider.Factory {
-        return viewModelFactory {
-            initializer {
-                ProfileViewModel(
-                    profileRepository = contestifyApplication().profileContainer.profileRepository,
-                    handle = handle
-                )
-            }
-        }
-    }
-    val compareVm = viewModelFactory {
+
+    val codeVM = viewModelFactory {
         initializer {
             CodeAssistanceViewModel(/*contestifyApplication().compareContainer.compareRepository*/)
         }
