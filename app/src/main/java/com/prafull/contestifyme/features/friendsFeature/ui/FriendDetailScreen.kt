@@ -18,94 +18,99 @@ import com.prafull.contestifyme.features.profileFeature.ui.SubMissionCard
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
-fun FriendsDetailScreen(navHostController: NavHostController, handle: String,  viewModel: FriendsViewModel) {
- /*   val user = viewModel.getFriend(handle).toUserInfoEntity()
-    val verdicts by rememberSaveable {
-        mutableStateOf(GetChartData.getVerdicts(user))
-    }
-    val solvedByTags by rememberSaveable {
-        mutableStateOf(GetChartData.getQuestionSolvedByTags(user))
-    }
-    var showQuestionSolvedByTagsDialog by remember {
-        mutableStateOf(false)
-    }
-    var showQuestionSolvedByIndexDialog by remember {
-        mutableStateOf(false)
-    }
-    Scaffold(
-        topBar = {
-            SimpleTopAppBar(
-                label = R.string.friends,
-                navIcon = Icons.Filled.ArrowBack,
-                navIconClicked = {
-                    navHostController.popBackStack()
-                }
-            )
-        },
-    ) { paddingValues ->
-        LazyColumn(contentPadding = PaddingValues(
-            horizontal = 16.dp,
-            vertical = paddingValues.calculateTopPadding()
-                    + paddingValues.calculateBottomPadding()
-        )) {
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-                RankCard(
-                    modifier = Modifier.fillMaxWidth(),
-                    rank = "${user.rank}",
-                    handle = user.handle,
-                    country = user.country ?: "",
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                ProfileCard(modifier = Modifier, user = user)
-            }
-            item {
-                RatingGraph()
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-            item {
-                SubmissionsGraph()
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-            if (GetChartData.getVerdictsData(verdicts).isNotNull() && verdicts.isNotEmpty()) {
-                item {
-                    Divider(Modifier.fillMaxWidth())
-                    VerdictGraph(
-                        verdicts = verdicts,
-                        pieChartData = GetChartData.getVerdictsData(verdicts),
-                        pieChartConfig = GetChartData.pieChartConfig()
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
-            }
-            item {
-                ShowGraphButtons(showQuestionSolvedByTagsDialog = {
-                    showQuestionSolvedByTagsDialog = true
-                }, showQuestionSolvedByIndexDialog = {
-                    showQuestionSolvedByIndexDialog = true
-                })
-            }
-            item {
-                PastSubMissions(submissions = user.subMissionInfo)
-            }
-        }
-    }
-    if (showQuestionSolvedByTagsDialog) {
-        DetailsDialog(content = {
-            QuestionByTypeGraph(solvedByTags)
-        }) {
-            showQuestionSolvedByTagsDialog = false
-        }
-    }
-    if (showQuestionSolvedByIndexDialog) {
-        DetailsDialog(content = {
-            QuestionByIndexGraph(GetChartData.getQuestionSolvedByIndexData(user))
-        }) {
-            showQuestionSolvedByIndexDialog = false
-        }
-    }
-    */
+fun FriendsDetailScreen(
+    navHostController: NavHostController,
+    handle: String,
+    viewModel: FriendsViewModel
+) {
+    /*   val user = viewModel.getFriend(handle).toUserInfoEntity()
+       val verdicts by rememberSaveable {
+           mutableStateOf(GetChartData.getVerdicts(user))
+       }
+       val solvedByTags by rememberSaveable {
+           mutableStateOf(GetChartData.getQuestionSolvedByTags(user))
+       }
+       var showQuestionSolvedByTagsDialog by remember {
+           mutableStateOf(false)
+       }
+       var showQuestionSolvedByIndexDialog by remember {
+           mutableStateOf(false)
+       }
+       Scaffold(
+           topBar = {
+               SimpleTopAppBar(
+                   label = R.string.friends,
+                   navIcon = Icons.Filled.ArrowBack,
+                   navIconClicked = {
+                       navHostController.popBackStack()
+                   }
+               )
+           },
+       ) { paddingValues ->
+           LazyColumn(contentPadding = PaddingValues(
+               horizontal = 16.dp,
+               vertical = paddingValues.calculateTopPadding()
+                       + paddingValues.calculateBottomPadding()
+           )) {
+               item {
+                   Spacer(modifier = Modifier.height(8.dp))
+                   RankCard(
+                       modifier = Modifier.fillMaxWidth(),
+                       rank = "${user.rank}",
+                       handle = user.handle,
+                       country = user.country ?: "",
+                   )
+                   Spacer(modifier = Modifier.height(8.dp))
+                   ProfileCard(modifier = Modifier, user = user)
+               }
+               item {
+                   RatingGraph()
+                   Spacer(modifier = Modifier.height(8.dp))
+               }
+               item {
+                   SubmissionsGraph()
+                   Spacer(modifier = Modifier.height(8.dp))
+               }
+               if (GetChartData.getVerdictsData(verdicts).isNotNull() && verdicts.isNotEmpty()) {
+                   item {
+                       Divider(Modifier.fillMaxWidth())
+                       VerdictGraph(
+                           verdicts = verdicts,
+                           pieChartData = GetChartData.getVerdictsData(verdicts),
+                           pieChartConfig = GetChartData.pieChartConfig()
+                       )
+                       Spacer(modifier = Modifier.height(16.dp))
+                   }
+               }
+               item {
+                   ShowGraphButtons(showQuestionSolvedByTagsDialog = {
+                       showQuestionSolvedByTagsDialog = true
+                   }, showQuestionSolvedByIndexDialog = {
+                       showQuestionSolvedByIndexDialog = true
+                   })
+               }
+               item {
+                   PastSubMissions(submissions = user.subMissionInfo)
+               }
+           }
+       }
+       if (showQuestionSolvedByTagsDialog) {
+           DetailsDialog(content = {
+               QuestionByTypeGraph(solvedByTags)
+           }) {
+               showQuestionSolvedByTagsDialog = false
+           }
+       }
+       if (showQuestionSolvedByIndexDialog) {
+           DetailsDialog(content = {
+               QuestionByIndexGraph(GetChartData.getQuestionSolvedByIndexData(user))
+           }) {
+               showQuestionSolvedByIndexDialog = false
+           }
+       }
+       */
 }
+
 @Composable
 fun PastSubMissions(submissions: List<UserSubmissions>) {
     Column(
@@ -121,15 +126,13 @@ fun PastSubMissions(submissions: List<UserSubmissions>) {
         Column {
             if (submissions.size > 7) {
                 repeat(7) {
-                    SubMissionCard(userSubmission = submissions[it], onClickAction = {
-                            _,
-                            _ ->
+                    SubMissionCard(userSubmission = submissions[it], onClickAction = { _,
+                                                                                       _ ->
                     })
                 }
             } else {
                 repeat(submissions.size) {
-                    SubMissionCard(userSubmission = submissions[it], onClickAction = {
-                            _, _ ->
+                    SubMissionCard(userSubmission = submissions[it], onClickAction = { _, _ ->
                     })
                 }
             }

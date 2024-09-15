@@ -31,17 +31,19 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 
 @Composable
-fun ProfileCard (modifier: Modifier, user: UserInfoEntity) {
+fun ProfileCard(modifier: Modifier, user: UserInfoEntity) {
     ElevatedCard {
         Column(
             modifier = modifier.padding(horizontal = 12.dp, vertical = 8.dp)
         ) {
-            Row (Modifier.fillMaxWidth()) {
+            Row(Modifier.fillMaxWidth()) {
                 DetailsSection(modifier = Modifier.weight(.7f), user = user)
-                ImageSection(modifier = Modifier
-                    .weight(.3f)
-                    .fillMaxSize(),
-                    user = user)
+                ImageSection(
+                    modifier = Modifier
+                        .weight(.3f)
+                        .fillMaxSize(),
+                    user = user
+                )
             }
         }
     }
@@ -59,8 +61,7 @@ fun DetailsSection(modifier: Modifier, user: UserInfoEntity) {
             "Online"
         } else if (LocalDateTime.now().dayOfMonth - lastActiveTime.dayOfMonth <= 24) {
             "${LocalDateTime.now().hour - lastActiveTime.hour} hours ago"
-        }
-        else {
+        } else {
             "${lastActiveTime.dayOfMonth} ${lastActiveTime.month} ${lastActiveTime.year}\".lowercase()"
         }
         DetailItem(text = "Contest Rating: ${user.rating}")
@@ -71,18 +72,20 @@ fun DetailsSection(modifier: Modifier, user: UserInfoEntity) {
         DetailItem(text = "Registered On:" + " ${registeredDate.dayOfMonth} ${registeredDate.month} ${registeredDate.year}".lowercase())
     }
 }
+
 fun getTime(time: Long): LocalDateTime {
     return LocalDateTime.ofInstant(
         Instant.ofEpochSecond(time.toLong()),
         ZoneId.systemDefault()
     )
 }
+
 @Composable
 fun DetailItem(text: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
-    ){
+    ) {
         Image(
             painter = painterResource(id = R.drawable.logo2),
             contentDescription = null,
@@ -92,6 +95,7 @@ fun DetailItem(text: String) {
     }
     Spacer(modifier = Modifier.padding(6.dp))
 }
+
 @Composable
 fun ImageSection(modifier: Modifier, user: UserInfoEntity) {
     Column(

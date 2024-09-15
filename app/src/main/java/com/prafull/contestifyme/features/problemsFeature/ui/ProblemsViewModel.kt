@@ -7,41 +7,42 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.prafull.contestifyme.features.problemsFeature.domain.repositories.ProblemsRepository
 import com.prafull.contestifyme.features.problemsFeature.data.local.entities.ProblemsEntity
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.prafull.contestifyme.features.problemsFeature.domain.repositories.ProblemsRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import retrofit2.HttpException
 import java.io.IOException
-import javax.inject.Inject
 
-@HiltViewModel
-class ProblemsViewModel @Inject constructor(
-    private val problemsRepository: ProblemsRepository,
-) : ViewModel() {
+class ProblemsViewModel : ViewModel(), KoinComponent {
+    private val problemsRepository: ProblemsRepository by inject()
+
     var rating: MutableState<Int> = mutableStateOf(0)
 
     var problemsUiState: StateFlow<ProblemState> = problemsRepository.getProblemsFromDb()
         .map { ProblemState(it) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ProblemState(emptyList()))
     private var isError by mutableStateOf(false)
+
     init {
         getProblems()
     }
+
     private fun getProblems() {
         viewModelScope.launch {
             try {
                 val x = problemsRepository.getProblemsFromApi()
                 problemsRepository.deleteAll()
                 val list = mutableListOf<ProblemsEntity>()
-                x.result.problems.forEachIndexed{ index, item->
+                x.result.problems.forEachIndexed { index, item ->
                     list.add(
                         ProblemsEntity(
-                            id = index+1,
+                            id = index + 1,
                             rating = item.rating,
                             points = item.points,
                             unique = "${item.contestId}-${item.index}",

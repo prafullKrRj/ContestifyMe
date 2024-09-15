@@ -5,13 +5,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.prafull.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
-import com.prafull.contestifyme.features.profileFeature.domain.repositories.ProfileRepository
 import com.prafull.contestifyme.features.profileFeature.domain.model.UserRating
 import com.prafull.contestifyme.features.profileFeature.domain.model.UserSubmissions
 import com.prafull.contestifyme.features.profileFeature.domain.model.ratingInfo.RatingResult
 import com.prafull.contestifyme.features.profileFeature.domain.model.submissionsInfo.Submissions
 import com.prafull.contestifyme.features.profileFeature.domain.model.userInfo.ProfileUserDto
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.prafull.contestifyme.features.profileFeature.domain.repositories.ProfileRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -20,22 +19,23 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import retrofit2.HttpException
 import java.io.IOException
-import javax.inject.Inject
 
 
 sealed class ProfileUiState {
-    object Initial: ProfileUiState()
-    object Loading: ProfileUiState()
-    data class Success(val user: List<UserInfoEntity>): ProfileUiState()
-    data class Error(val message: String): ProfileUiState()
+    data object Initial : ProfileUiState()
+    data object Loading : ProfileUiState()
+    data class Success(val user: List<UserInfoEntity>) : ProfileUiState()
+    data class Error(val message: String) : ProfileUiState()
 }
-@HiltViewModel
+
 @SuppressLint("MutableCollectionMutableState")
-class ProfileViewModel @Inject constructor(
-    private val profileRepository: ProfileRepository,
-): ViewModel() {
+class ProfileViewModel : ViewModel(), KoinComponent {
+
+    private val profileRepository: ProfileRepository by inject()
 
     val dataFromDb: StateFlow<ProfileUiState.Success> = profileRepository.getUserInfo()
         .map {
@@ -49,22 +49,25 @@ class ProfileViewModel @Inject constructor(
         )
 
 
-
     private val _profileUiState = MutableStateFlow<ProfileUiState>(ProfileUiState.Initial)
     val profileUiState: StateFlow<ProfileUiState> = _profileUiState.asStateFlow()
 
     init {
         updateUserInfo()
     }
+
     fun updateUserInfo() {
         viewModelScope.launch {
             _profileUiState.update {
                 ProfileUiState.Loading
             }
             try {
-                val userInfo = profileRepository.getUserInfoFromApi(profileRepository.getUserHandle())
-                val ratingInfo = profileRepository.getUserRatingFromApi(profileRepository.getUserHandle())
-                val submissionInfo = profileRepository.getUserStatusFromApi(profileRepository.getUserHandle())
+                val userInfo =
+                    profileRepository.getUserInfoFromApi(profileRepository.getUserHandle())
+                val ratingInfo =
+                    profileRepository.getUserRatingFromApi(profileRepository.getUserHandle())
+                val submissionInfo =
+                    profileRepository.getUserStatusFromApi(profileRepository.getUserHandle())
                 val user = userInfo.toUserInfoEntity(
                     rating = ratingInfo.result.map {
                         it.toUserRatingEntity()
@@ -97,6 +100,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 }
+
 /**
  *          Extension Functions
  * */
@@ -104,7 +108,7 @@ fun Submissions.toUserStatusEntity(): UserSubmissions {
     return UserSubmissions(
         id = this.id,
         name = this.problem.name,
-        verdict =  if (this.verdict == "OK") "Accepted" else this.verdict,
+        verdict = if (this.verdict == "OK") "Accepted" else this.verdict,
         time = this.timeConsumedMillis,
         contestId = this.contestId,
         index = this.problem.index,
@@ -112,6 +116,7 @@ fun Submissions.toUserStatusEntity(): UserSubmissions {
         tags = this.problem.tags,
     )
 }
+
 fun RatingResult.toUserRatingEntity(): UserRating {
     return UserRating(
         contestId = this.contestId,
@@ -124,7 +129,10 @@ fun RatingResult.toUserRatingEntity(): UserRating {
     )
 }
 
-fun ProfileUserDto.toUserInfoEntity(rating: List<UserRating>, status: List<UserSubmissions>): UserInfoEntity {
+fun ProfileUserDto.toUserInfoEntity(
+    rating: List<UserRating>,
+    status: List<UserSubmissions>
+): UserInfoEntity {
     return UserInfoEntity(
         handle = this.result[0].handle,
         avatar = this.result[0].avatar,

@@ -1,52 +1,42 @@
 package com.prafull.contestifyme.features.friendsFeature.di
 
-import android.app.Application
+import androidx.room.Room
 import com.prafull.contestifyme.constants.Constants
+import com.prafull.contestifyme.features.friendsFeature.data.local.FriendsDB
+import com.prafull.contestifyme.features.friendsFeature.data.local.FriendsDao
 import com.prafull.contestifyme.features.friendsFeature.data.remote.FriendsApiService
-import com.prafull.contestifyme.features.friendsFeature.data.source.FriendsRepositoryImpl
+import com.prafull.contestifyme.features.friendsFeature.data.repositories.FriendsRepositoryImpl
 import com.prafull.contestifyme.features.friendsFeature.domain.repositories.FriendsRepository
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import com.prafull.contestifyme.features.friendsFeature.ui.FriendsViewModel
+import org.koin.android.ext.koin.androidApplication
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
 
-
-@Module
-@InstallIn(SingletonComponent::class)
-object FriendsModule {
-
-    @Provides
-    @Singleton
-    fun provideApiService(): FriendsApiService {
-        return Retrofit.Builder()
+val friendsModule = module {
+    viewModel { FriendsViewModel() }
+    single<FriendsApiService> {
+        Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(FriendsApiService::class.java)
     }
-   /* @Provides
-    @Singleton
-    fun provideAppDatabase(application: Application): ContestDB {
-        return Room.databaseBuilder(
-            application,
-            ContestDB::class.java,
-            "contests_db"
+
+    single<FriendsDB> {
+        Room.databaseBuilder(
+            androidApplication(),
+            FriendsDB::class.java,
+            "friends_db"
         ).build()
     }
-    @Provides
-    @Singleton
-    fun providesContestDao(appDatabase: ContestDB): ContestsDao {
-        return appDatabase.contestsDao()
+
+    single<FriendsDao> {
+        get<FriendsDB>().friendsDao()
     }
-    */
-    @Provides
-    fun providesFriendsRepository(app: Application, api: FriendsApiService): FriendsRepository {
-        return FriendsRepositoryImpl(
-            friendsApiService = api,
-            context = app
-        )
+
+    single<FriendsRepository> {
+        FriendsRepositoryImpl()
     }
 }

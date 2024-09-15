@@ -13,13 +13,14 @@ interface FriendsApiService {
         @Url url: String
     ): FriendsDetailsDto
 
+
     @GET
     suspend fun getUserRatingFromApi(
         @Url url: String
-    ) : RatingDto
+    ): RatingDto
 
     @GET
     suspend fun getUserStatusFromApi(
         @Url url: String
-    ) : SubmissionDto
+    ): SubmissionDto
 }

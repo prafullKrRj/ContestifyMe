@@ -1,7 +1,7 @@
 package com.prafull.contestifyme.startOnBoard.data
 
 import android.content.Context
-import com.prafull.contestifyme.commons.Response
+import com.prafull.contestifyme.commons.Resource
 import com.prafull.contestifyme.constants.Constants
 import com.prafull.contestifyme.constants.Constants.BASE_URL
 import com.prafull.contestifyme.managers.SharedPrefManager
@@ -16,9 +16,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 interface OnBoardContainer {
     val onBoardRepository: OnBoardRepository
 }
-class OnBoardContainerImpl (
+
+class OnBoardContainerImpl(
     private val context: Context
-): OnBoardContainer {
+) : OnBoardContainer {
 
     private val retrofit: Retrofit = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create())
@@ -41,25 +42,25 @@ class OnBoardContainerImpl (
 }
 
 interface OnBoardRepository {
-    suspend fun getUserValidation(handle: String): Flow<Response<userInfo>>
+    suspend fun getUserValidation(handle: String): Flow<Resource<userInfo>>
 }
 
-class OnBoardRepositoryImpl (
+class OnBoardRepositoryImpl(
     private val apiService: ApiService,
     private val sharedPrefManager: SharedPrefManager
 ) : OnBoardRepository {
-    override suspend fun getUserValidation(handle: String): Flow<Response<userInfo>> {
+    override suspend fun getUserValidation(handle: String): Flow<Resource<userInfo>> {
         return callbackFlow {
-            trySend(Response.Loading)
+            trySend(Resource.Loading)
             try {
                 val userInfo = apiService.getUserInfo(Constants.getUserStart(handle))
                 sharedPrefManager.setLoginUserHandle(handle)
                 sharedPrefManager.setLoggedIn(true)
-                trySend(Response.Success(userInfo))
+                trySend(Resource.Success(userInfo))
             } catch (e: Exception) {
-                trySend(Response.Error(e))
+                trySend(Resource.Error(e))
             }
-            awaitClose {  }
+            awaitClose { }
         }
     }
 }

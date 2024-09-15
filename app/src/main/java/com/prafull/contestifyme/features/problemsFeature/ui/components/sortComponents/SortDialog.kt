@@ -61,7 +61,10 @@ fun SortDialog(previousType: Pair<Int, Int>, sortType: (Pair<Int, Int>) -> Unit)
                         },
                         valueRange = 800f..3500f,
                         onValueChangeFinished = {
-                            selected = Pair(sliderPosition.start.toInt(), sliderPosition.endInclusive.toInt())
+                            selected = Pair(
+                                sliderPosition.start.toInt(),
+                                sliderPosition.endInclusive.toInt()
+                            )
                         }
                     )
                 }

@@ -13,6 +13,6 @@ import com.prafull.contestifyme.features.problemsFeature.data.local.entities.Pro
     exportSchema = true
 )
 @TypeConverters(ProblemsTypeConverter::class)
-abstract class ProblemsDatabase: RoomDatabase() {
+abstract class ProblemsDatabase : RoomDatabase() {
     abstract fun problemsDao(): ProblemsDao
 }

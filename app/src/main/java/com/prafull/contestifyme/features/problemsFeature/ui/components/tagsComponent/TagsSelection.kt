@@ -42,7 +42,7 @@ fun TagsDialog(selectedTags: List<String>, updateList: (List<String>) -> Unit) {
                                 .padding(vertical = 4.dp)
                                 .clip(RoundedCornerShape(4.dp))
                                 .clickable {
-                                    selected = if (selected.contains(item)){
+                                    selected = if (selected.contains(item)) {
                                         selected.minus(item)
                                     } else {
                                         selected.plus(item)
@@ -53,7 +53,7 @@ fun TagsDialog(selectedTags: List<String>, updateList: (List<String>) -> Unit) {
                             Checkbox(
                                 checked = selected.contains(item),
                                 onCheckedChange = {
-                                    selected = if (selected.contains(item)){
+                                    selected = if (selected.contains(item)) {
                                         selected.minus(item)
                                     } else {
                                         selected.plus(item)

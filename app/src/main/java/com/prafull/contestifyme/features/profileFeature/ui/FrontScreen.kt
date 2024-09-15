@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.prafull.contestifyme.commons.GetChartData
-import com.prafull.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
 import com.prafull.contestifyme.commons.ui.DetailsDialog
 import com.prafull.contestifyme.commons.ui.ProfileCard
 import com.prafull.contestifyme.commons.ui.QuestionByIndexGraph
@@ -38,6 +37,7 @@ import com.prafull.contestifyme.commons.ui.RankCard
 import com.prafull.contestifyme.commons.ui.RatingGraph
 import com.prafull.contestifyme.commons.ui.SubmissionsGraph
 import com.prafull.contestifyme.commons.ui.VerdictGraph
+import com.prafull.contestifyme.features.profileFeature.data.local.entities.UserInfoEntity
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
@@ -54,7 +54,8 @@ fun FrontScreen(user: UserInfoEntity, swipeToSubmission: () -> Unit = {}) {
     var showQuestionSolvedByIndexDialog by remember {
         mutableStateOf(false)
     }
-    LazyColumn(modifier = Modifier.fillMaxSize(),
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp)
     ) {
         item {
@@ -117,6 +118,7 @@ fun FrontScreen(user: UserInfoEntity, swipeToSubmission: () -> Unit = {}) {
         }
     }
 }
+
 @Composable
 fun ToSubmissionsScreenButton(swipeToSubmission: () -> Unit) {
     Row(
@@ -133,7 +135,10 @@ fun ToSubmissionsScreenButton(swipeToSubmission: () -> Unit) {
 }
 
 @Composable
-fun ShowGraphButtons(showQuestionSolvedByTagsDialog: () -> Unit, showQuestionSolvedByIndexDialog: () -> Unit) {
+fun ShowGraphButtons(
+    showQuestionSolvedByTagsDialog: () -> Unit,
+    showQuestionSolvedByIndexDialog: () -> Unit
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,

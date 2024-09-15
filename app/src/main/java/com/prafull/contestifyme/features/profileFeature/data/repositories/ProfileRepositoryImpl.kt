@@ -10,17 +10,18 @@ import com.prafull.contestifyme.features.profileFeature.domain.model.userInfo.Pr
 import com.prafull.contestifyme.features.profileFeature.domain.repositories.ProfileRepository
 import com.prafull.contestifyme.managers.SharedPrefManager
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 
-class ProfileRepositoryImpl @Inject constructor (
-    private val profileApiService: ProfileApiService,
-    private val profileDao: ProfileDao,
-    private val sharedPrefManager: SharedPrefManager
-) : ProfileRepository {
+class ProfileRepositoryImpl : ProfileRepository, KoinComponent {
 
+    private val profileApiService: ProfileApiService by inject()
+    private val profileDao: ProfileDao by inject()
+    private val sharedPrefManager: SharedPrefManager by inject()
 
     override fun getUserHandle(): String = sharedPrefManager.getLoginUserHandle()
+
     /**
      *  User Info
      * */

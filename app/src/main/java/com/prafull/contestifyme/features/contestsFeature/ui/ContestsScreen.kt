@@ -18,7 +18,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.contestifyme.R
 import com.prafull.contestifyme.commons.ui.Headings
 import com.prafull.contestifyme.commons.ui.SimpleTopAppBar
@@ -27,14 +26,14 @@ import com.prafull.contestifyme.features.contestsFeature.data.local.ContestsEnti
 
 @Composable
 fun ContestsScreen(
-    viewModel: ContestsViewModel = hiltViewModel()
+    viewModel: ContestsViewModel
 ) {
     val state: ContestUiState by viewModel.state.collectAsState()
-    Scaffold (
+    Scaffold(
         topBar = {
-            SimpleTopAppBar (label = R.string.contest)
+            SimpleTopAppBar(label = R.string.contest)
         }
-    ){ paddingValues ->
+    ) { paddingValues ->
         if (state.contests.isNotEmpty()) {
             ContestsMainScreen(contest = state.contests, modifier = Modifier.padding(paddingValues))
         } else {
@@ -72,6 +71,7 @@ fun ContestsMainScreen(contest: List<ContestsEntity>, modifier: Modifier) {
         }
     }
 }
+
 @Composable
 fun ContestItem(contest: ContestsEntity) {
     Card(
@@ -90,11 +90,15 @@ fun ContestItem(contest: ContestsEntity) {
             ContestDetails(type = "Type", detail = contest.type)
             ContestDetails(type = "Phase", detail = contest.phase)
             ContestDetails(type = "Duration", detail = "${contest.durationSeconds / 3600} hours")
-            ContestDetails(type = "Start Time", detail = "${startTime.hour}:${if (startTime.minute < 10) "0"+startTime.minute else startTime.minute}, ${startTime.dayOfMonth}-${startTime.monthValue}-${startTime.year}")
+            ContestDetails(
+                type = "Start Time",
+                detail = "${startTime.hour}:${if (startTime.minute < 10) "0" + startTime.minute else startTime.minute}, ${startTime.dayOfMonth}-${startTime.monthValue}-${startTime.year}"
+            )
 
         }
     }
 }
+
 @Composable
 fun ContestDetails(type: String = "", detail: String) {
     Row {

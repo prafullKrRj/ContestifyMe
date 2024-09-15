@@ -37,10 +37,9 @@ fun SubmissionsScreen(
         item {
             Spacer(modifier = Modifier.height(16.dp))
         }
-        submissions.forEach {userSubmission ->
+        submissions.forEach { userSubmission ->
             item {
-                SubMissionCard(userSubmission) {
-                    contestId, id ->
+                SubMissionCard(userSubmission) { contestId, id ->
                     onClickAction(contestId, id)
                 }
             }
@@ -50,7 +49,10 @@ fun SubmissionsScreen(
 
 
 @Composable
-fun SubMissionCard(userSubmission: UserSubmissions, onClickAction: (Int, Int) -> Unit = { contestId, id -> }) {
+fun SubMissionCard(
+    userSubmission: UserSubmissions,
+    onClickAction: (Int, Int) -> Unit = { contestId, id -> }
+) {
     val cardColor = ProfileConstants.verdictsColors[userSubmission.verdict.uppercase()]?.first
     val textColor = ProfileConstants.verdictsColors[userSubmission.verdict.uppercase()]?.second
     ElevatedCard(
@@ -59,8 +61,7 @@ fun SubMissionCard(userSubmission: UserSubmissions, onClickAction: (Int, Int) ->
             .padding(vertical = 4.dp)
             .clickable {
                 onClickAction(userSubmission.contestId, userSubmission.id)
-            }
-        ,
+            },
         elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
     ) {
         Column(
@@ -71,11 +72,18 @@ fun SubMissionCard(userSubmission: UserSubmissions, onClickAction: (Int, Int) ->
                 )
                 .padding(horizontal = 12.dp, vertical = 8.dp)
         ) {
-            Text(text = userSubmission.index + ". " +userSubmission.name, color = textColor ?: MaterialTheme.colorScheme.onPrimaryContainer)
-            Text(text = userSubmission.verdict.uppercase(), color = textColor ?: MaterialTheme.colorScheme.onPrimaryContainer)
+            Text(
+                text = userSubmission.index + ". " + userSubmission.name,
+                color = textColor ?: MaterialTheme.colorScheme.onPrimaryContainer
+            )
+            Text(
+                text = userSubmission.verdict.uppercase(),
+                color = textColor ?: MaterialTheme.colorScheme.onPrimaryContainer
+            )
         }
     }
 }
+
 @Composable
 fun PaginationButton(image: ImageVector, onClickAction: () -> Unit = {}) {
     FilledIconButton(

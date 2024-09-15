@@ -42,6 +42,7 @@ object GetChartData {
         }
         return verdictsMap
     }
+
     fun getVerdictsList(verdicts: HashMap<String, Int>): List<PieChartData.Slice> {
         val list: List<PieChartData.Slice> = verdicts.keys.map {
             PieChartData.Slice(
@@ -52,6 +53,7 @@ object GetChartData {
         }
         return list
     }
+
     /**
      *      This function returns a PieChartData object for the pie chart (verdicts)
      * */
@@ -61,6 +63,7 @@ object GetChartData {
             plotType = PlotType.Pie,
         )
     }
+
     /**
      *      This function returns a HashMap of tags with value 0
      * */
@@ -72,6 +75,7 @@ object GetChartData {
         }
         return hashMap
     }
+
     fun getQuestionSolvedByTags(user: UserInfoEntity): HashMap<String, Int> {
         if (user.subMissionInfo.isEmpty()) {
             return hashMapOf()
@@ -86,6 +90,7 @@ object GetChartData {
         }
         return questionSolvedByTags
     }
+
     /**
      *      This function returns a PieChartData object for the donut chart (tags)
      * */
@@ -95,6 +100,7 @@ object GetChartData {
             plotType = PlotType.Donut,
         )
     }
+
     /**
      *      This function returns a list of slices for the donut chart (tags)
      * */

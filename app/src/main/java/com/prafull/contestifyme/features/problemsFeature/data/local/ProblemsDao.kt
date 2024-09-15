@@ -12,13 +12,14 @@ interface ProblemsDao {
     suspend fun upsertProblems(problems: List<ProblemsEntity>)
 
     @Query("SELECT * FROM problems_entity")
-    fun getProblemsFromDb() : Flow<List<ProblemsEntity>>
+    fun getProblemsFromDb(): Flow<List<ProblemsEntity>>
 
     @Query("DELETE FROM problems_entity")
     suspend fun deleteALl()
 
     @Query("SELECT * FROM problems_entity WHERE rating = :rating")
-    fun getProblemsByRatingDesc(rating: Int) : Flow<List<ProblemsEntity>>
+    fun getProblemsByRatingDesc(rating: Int): Flow<List<ProblemsEntity>>
+
     @Query("SELECT * FROM problems_entity ORDER BY rating ASC")
-    fun getProblemsByRatingAsc() : List<ProblemsEntity>
+    fun getProblemsByRatingAsc(): List<ProblemsEntity>
 }

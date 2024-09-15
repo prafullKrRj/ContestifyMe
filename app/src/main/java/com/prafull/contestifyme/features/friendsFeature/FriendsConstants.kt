@@ -7,13 +7,19 @@ import java.time.LocalDateTime
 object FriendsConstants {
 
     fun getUserInfo(handle: List<String>): String {
-        return "https://codeforces.com/api/user.info?handles=${handle.joinToString(";")}/"
+        return "https://codeforces.com/api/user.info?handles=${handle.joinToString(";")}"
     }
+
+    fun getUserHandelInfo(handle: String): String {
+        return "https://codeforces.com/api/user.info?handles=$handle"
+    }
+
     fun getFormattedTime(inputTime: Long?): String {
         if (inputTime == null) return ""
         val time: LocalDateTime = getTime(inputTime)
-        return "${time.hour}:${if (time.minute < 10) "0"+time.minute else time.minute}, ${time.dayOfMonth}-${time.monthValue}-${time.year}"
+        return "${time.hour}:${if (time.minute < 10) "0" + time.minute else time.minute}, ${time.dayOfMonth}-${time.monthValue}-${time.year}"
     }
+
     fun getRatingColor(rating: Int): Color {
         return when {
             rating < 1200 -> Color(0xFF808080)

@@ -19,41 +19,32 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.contestifyme.R
 import com.prafull.contestifyme.ContestifyApplication
-import com.prafull.contestifyme.features.codeAssistantFeature.ui.CodeAssistanceScreen
-import com.prafull.contestifyme.features.codeAssistantFeature.ui.CodeAssistanceViewModel
 import com.prafull.contestifyme.features.contestsFeature.ui.ContestsScreen
 import com.prafull.contestifyme.features.friendsFeature.ui.FriendsScreen
 import com.prafull.contestifyme.features.problemsFeature.ui.ProblemsScreen
 import com.prafull.contestifyme.features.profileFeature.ui.ProfileScreen
-import com.prafull.contestifyme.ui.Screens.CODE_ASSISTANCE
 import com.prafull.contestifyme.ui.Screens.CONTESTS
 import com.prafull.contestifyme.ui.Screens.FRIENDS
 import com.prafull.contestifyme.ui.Screens.PROBLEMS
 import com.prafull.contestifyme.ui.Screens.PROFILE
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ContestifyAPP() {
     val navController: NavHostController = rememberNavController()
-    val viewModels = listOf(
-        viewModel<CodeAssistanceViewModel>(factory = AppViewModelProvider.codeVM),
-    )
-    ContestifyMainApp(navController = navController, viewModels = viewModels)
+    ContestifyMainApp(navController = navController)
 }
 
 @Composable
-fun ContestifyMainApp(navController: NavHostController, viewModels: List<ViewModel>) {
+fun ContestifyMainApp(navController: NavHostController) {
     var selected by rememberSaveable {
         mutableStateOf(PROFILE.name)
     }
@@ -73,53 +64,49 @@ fun ContestifyMainApp(navController: NavHostController, viewModels: List<ViewMod
             NavHost(navController = navController, startDestination = PROFILE.name) {
 
                 composable(route = PROFILE.name) {
-                    ProfileScreen()
+                    ProfileScreen(koinViewModel())
                 }
                 composable(route = CONTESTS.name) {
-                    ContestsScreen()
+                    ContestsScreen(koinViewModel())
                 }
-                composable(route = CODE_ASSISTANCE.name) {
-                    CodeAssistanceScreen(viewModel = viewModels[0] as CodeAssistanceViewModel)
-                }
+
                 composable(route = FRIENDS.name) {
-                    FriendsScreen()
+                    FriendsScreen(koinViewModel())
                 }
                 composable(route = PROBLEMS.name) {
-                    ProblemsScreen()
+                    ProblemsScreen(koinViewModel())
                 }
             }
         }
     }
 }
 
-fun CreationExtras.contestifyApplication() : ContestifyApplication =
+fun CreationExtras.contestifyApplication(): ContestifyApplication =
     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as ContestifyApplication)
 
 @Composable
 fun ContestifyNavigationBar(navigateTo: (Screens) -> Unit) {
-    val array = listOf(PROFILE, CONTESTS, CODE_ASSISTANCE, FRIENDS, PROBLEMS)
+    val array = listOf(PROFILE, CONTESTS, FRIENDS, PROBLEMS)
 
     var selectedItem by rememberSaveable { mutableStateOf(0) }
     val unSelectedItems = listOf(
         Pair(R.string.profile, R.drawable.profile),
         Pair(R.string.contest, R.drawable.contest),
-        Pair(R.string.code_assistance, R.drawable.baseline_android_24),
         Pair(R.string.friends, R.drawable.friend),
         Pair(R.string.problems, R.drawable.problems)
     )
     val selectedItems = listOf(
         Pair(R.string.profile, R.drawable.profile_filled),
         Pair(R.string.contest, R.drawable.contest),
-        Pair(R.string.code_assistance, R.drawable.baseline_android_24),
         Pair(R.string.friends, R.drawable.friends_filled),
         Pair(R.string.problems, R.drawable.problems)
     )
 
-    NavigationBar (
+    NavigationBar(
         modifier = Modifier.clip(shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)),
     ) {
         unSelectedItems.forEachIndexed { index, item ->
-            NavigationBarItem (
+            NavigationBarItem(
                 icon = {
                     Icon(
                         painter = painterResource(
@@ -142,6 +129,7 @@ fun ContestifyNavigationBar(navigateTo: (Screens) -> Unit) {
         }
     }
 }
+
 /**
  *  Enum class for the screens in the app
  * */
@@ -151,16 +139,4 @@ enum class Screens {
     CODE_ASSISTANCE,
     FRIENDS,
     PROBLEMS
-}
-
-/**
- *  ViewModels for the app
- * */
-object AppViewModelProvider {
-
-    val codeVM = viewModelFactory {
-        initializer {
-            CodeAssistanceViewModel(/*contestifyApplication().compareContainer.compareRepository*/)
-        }
-    }
 }

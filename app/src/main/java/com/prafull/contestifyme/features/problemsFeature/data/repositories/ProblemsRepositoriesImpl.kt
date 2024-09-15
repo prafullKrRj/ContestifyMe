@@ -7,22 +7,28 @@ import com.prafull.contestifyme.features.problemsFeature.domain.model.ProblemsDt
 import com.prafull.contestifyme.features.problemsFeature.domain.repositories.ProblemsRepository
 import com.prafull.contestifyme.features.problemsFeature.problemsConstants.ProblemsConstants
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 
-class ProblemsRepositoryImpl @Inject constructor(
-    private val problemsApiService: ProblemsApiService,
-    private val problemsDao: ProblemsDao
-) : ProblemsRepository {
+class ProblemsRepositoryImpl() : ProblemsRepository, KoinComponent {
+    private val problemsApiService: ProblemsApiService by inject()
+    private val dao: ProblemsDao by inject()
     override suspend fun getProblemsFromApi(): ProblemsDto = problemsApiService.getProblems(
         ProblemsConstants.getProblemsByTags(
-        emptyList()
-    ))
-    override fun getProblemsFromDb(): Flow<List<ProblemsEntity>> = problemsDao.getProblemsFromDb()
+            emptyList()
+        )
+    )
 
-    override suspend fun deleteAll() = problemsDao.deleteALl()
-    override suspend fun upsertProblems(problems: List<ProblemsEntity>) = problemsDao.upsertProblems(problems = problems)
-    override fun getSortedByDesc(rating: Int): Flow<List<ProblemsEntity>> = problemsDao.getProblemsByRatingDesc(rating)
-    override suspend fun getSortedByAsc(): List<ProblemsEntity> = problemsDao.getProblemsByRatingAsc()
+    override fun getProblemsFromDb(): Flow<List<ProblemsEntity>> = dao.getProblemsFromDb()
+
+    override suspend fun deleteAll() = dao.deleteALl()
+    override suspend fun upsertProblems(problems: List<ProblemsEntity>) =
+        dao.upsertProblems(problems = problems)
+
+    override fun getSortedByDesc(rating: Int): Flow<List<ProblemsEntity>> =
+        dao.getProblemsByRatingDesc(rating)
+
+    override suspend fun getSortedByAsc(): List<ProblemsEntity> = dao.getProblemsByRatingAsc()
 
 }

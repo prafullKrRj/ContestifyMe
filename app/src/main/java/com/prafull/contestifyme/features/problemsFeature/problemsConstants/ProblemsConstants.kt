@@ -5,19 +5,23 @@ object ProblemsConstants {
     fun getProblems(): String {
         return "https://codeforces.com/api/problemset.problems"
     }
-    fun getProblemsByTags(tags: List<String>) : String {
+
+    fun getProblemsByTags(tags: List<String>): String {
         var tagsString = ""
         tags.forEach {
             tagsString += "$it;"
         }
         return "https://codeforces.com/api/problemset.problems?tags=$tagsString"
     }
-    fun getProblemsByRating(rating: Int) : String {
+
+    fun getProblemsByRating(rating: Int): String {
         return "https://codeforces.com/api/problemset.problems?minRating=$rating"
     }
-    fun getProblemUrl(contestId: Int, index: String) : String {
+
+    fun getProblemUrl(contestId: Int, index: String): String {
         return "https://codeforces.com/problemset/problem/$contestId/$index"
     }
+
     val tags: List<String> = listOf<String>(
         "2-sat",
         "binary search",

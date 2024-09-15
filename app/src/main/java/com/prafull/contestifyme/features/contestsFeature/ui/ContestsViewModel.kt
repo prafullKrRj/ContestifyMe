@@ -3,17 +3,17 @@ package com.prafull.contestifyme.features.contestsFeature.ui
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.prafull.contestifyme.features.contestsFeature.domain.repositories.ContestsRepository
 import com.prafull.contestifyme.features.contestsFeature.data.local.ContestsEntity
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.prafull.contestifyme.features.contestsFeature.domain.repositories.ContestsRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import retrofit2.HttpException
 import java.io.IOException
-import javax.inject.Inject
 
 data class ContestUiState(
     val isLoading: Boolean = false,
@@ -21,20 +21,20 @@ data class ContestUiState(
     val error: Boolean = false,
 )
 
-@HiltViewModel
-class ContestsViewModel @Inject constructor(
-    private val contestsRepository: ContestsRepository,
-) : ViewModel() {
-    val state: StateFlow<ContestUiState> = contestsRepository.getContests().map {list ->
+class ContestsViewModel() : ViewModel(), KoinComponent {
+    private val contestsRepository: ContestsRepository by inject()
+    val state: StateFlow<ContestUiState> = contestsRepository.getContests().map { list ->
         ContestUiState(false, list, false)
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         ContestUiState(false, emptyList(), false)
     )
+
     init {
         getContests()
     }
+
     private fun getContests() {
         viewModelScope.launch {
             try {

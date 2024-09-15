@@ -26,7 +26,9 @@ fun DetailsDialog(content: @Composable () -> Unit, dismiss: () -> Unit = {}) {
     ) {
         ElevatedCard(modifier = Modifier.padding(vertical = 8.dp)) {
             Column(
-                modifier = Modifier.padding(vertical = 16.dp, horizontal = 12.dp).verticalScroll(scrollState)
+                modifier = Modifier
+                    .padding(vertical = 16.dp, horizontal = 12.dp)
+                    .verticalScroll(scrollState)
             ) {
                 content()
                 TextButton(onClick = { dismiss() }, modifier = Modifier.align(Alignment.End)) {

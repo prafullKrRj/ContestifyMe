@@ -16,15 +16,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.prafull.contestifyme.ui.theme.ContestifyMeTheme
 import com.prafull.contestifyme.managers.SharedPrefManager
 import com.prafull.contestifyme.ui.ContestifyAPP
 import com.prafull.contestifyme.ui.OnBoardingScreen
 import com.prafull.contestifyme.ui.OnBoardingVM
 import com.prafull.contestifyme.ui.contestifyApplication
-import dagger.hilt.android.AndroidEntryPoint
+import com.prafull.contestifyme.ui.theme.ContestifyMeTheme
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +35,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val context = LocalContext.current
                     val navController = rememberNavController()
-                    val startDestination = if (SharedPrefManager(this).isLoggedIn()) "contestifyApp" else "onBoarding"
+                    val startDestination =
+                        if (SharedPrefManager(this).isLoggedIn()) "contestifyApp" else "onBoarding"
                     NavHost(navController = navController, startDestination = startDestination) {
                         composable("contestifyApp") {
                             ContestifyAPP()
@@ -60,6 +59,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 fun NavController.goBackStack() {
     if (currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
         popBackStack()

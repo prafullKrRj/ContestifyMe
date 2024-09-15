@@ -1,6 +1,5 @@
 package com.prafull.contestifyme.features.problemsFeature.di
 
-import android.app.Application
 import androidx.room.Room
 import com.prafull.contestifyme.constants.Constants
 import com.prafull.contestifyme.features.problemsFeature.data.local.ProblemsDao
@@ -8,46 +7,36 @@ import com.prafull.contestifyme.features.problemsFeature.data.local.ProblemsData
 import com.prafull.contestifyme.features.problemsFeature.data.remote.ProblemsApiService
 import com.prafull.contestifyme.features.problemsFeature.data.repositories.ProblemsRepositoryImpl
 import com.prafull.contestifyme.features.problemsFeature.domain.repositories.ProblemsRepository
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import com.prafull.contestifyme.features.problemsFeature.ui.ProblemsViewModel
+import org.koin.android.ext.koin.androidApplication
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
 
-@Module
-@InstallIn(SingletonComponent::class)
-object ProblemsModule {
-
-    @Provides
-    @Singleton
-        fun provideApiService(): ProblemsApiService {
-        return Retrofit.Builder()
+val problemsModule = module {
+    viewModel { ProblemsViewModel() }
+    single<ProblemsApiService> {
+        Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ProblemsApiService::class.java)
     }
-     @Provides
-     @Singleton
-     fun provideProblemsDatabase(application: Application): ProblemsDatabase {
-         return Room.databaseBuilder(
-             application,
-             ProblemsDatabase::class.java,
-             "problems_database"
-         ).build()
-     }
-     @Provides
-     @Singleton
-     fun providesProblemsDao(appDatabase: ProblemsDatabase): ProblemsDao {
-         return appDatabase.problemsDao()
-     }
 
-    @Provides
-    fun providesProblemsRepository(dao: ProblemsDao, api: ProblemsApiService): ProblemsRepository {
-        return ProblemsRepositoryImpl(
-            api, dao
-        )
+    single<ProblemsDatabase> {
+        Room.databaseBuilder(
+            androidApplication(),
+            ProblemsDatabase::class.java,
+            "problems_database"
+        ).build()
+    }
+
+    single<ProblemsDao> {
+        get<ProblemsDatabase>().problemsDao()
+    }
+
+    single<ProblemsRepository> {
+        ProblemsRepositoryImpl()
     }
 }

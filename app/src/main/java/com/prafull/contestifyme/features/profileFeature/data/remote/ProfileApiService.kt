@@ -10,15 +10,15 @@ interface ProfileApiService {
     @GET
     suspend fun getUserInfoFromApi(
         @Url url: String
-    ) : ProfileUserDto
+    ): ProfileUserDto
 
     @GET
     suspend fun getUserRatingFromApi(
         @Url url: String
-    ) : RatingDto
+    ): RatingDto
 
     @GET
     suspend fun getUserStatusFromApi(
         @Url url: String
-    ) : SubmissionDto
+    ): SubmissionDto
 }

@@ -10,5 +10,5 @@ interface ContestsApiService {
     suspend fun getContestsList(
         @Query("gym") gym: Boolean = false,
         @Query("page") page: Int = 1,
-    ) : ContestsDto
+    ): ContestsDto
 }

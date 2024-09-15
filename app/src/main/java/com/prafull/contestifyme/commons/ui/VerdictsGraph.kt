@@ -32,30 +32,30 @@ fun VerdictGraph(
     pieChartConfig: PieChartConfig
 ) {
     Column(modifier = modifier) {
-    Headings(label = R.string.verdicts)
-    PieChart(
-        modifier = Modifier
-            .width(400.dp)
-            .height(400.dp),
-        pieChartData,
-        pieChartConfig
-    )
-    FlowRow {
-        verdicts.keys.forEach {
-            Card(
-                Modifier
-                    .padding(vertical = 8.dp)
-                    .padding(end = 4.dp)
-            ) {
-                Row(
-                    verticalAlignment = CenterVertically,
-                    modifier = Modifier.padding(end = 4.dp)
+        Headings(label = R.string.verdicts)
+        PieChart(
+            modifier = Modifier
+                .width(400.dp)
+                .height(400.dp),
+            pieChartData,
+            pieChartConfig
+        )
+        FlowRow {
+            verdicts.keys.forEach {
+                Card(
+                    Modifier
+                        .padding(vertical = 8.dp)
+                        .padding(end = 4.dp)
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .width(20.dp)
-                            .height(20.dp)
-                            .background(ProfileConstants.verdictsColors[it.uppercase()]!!.first)
+                    Row(
+                        verticalAlignment = CenterVertically,
+                        modifier = Modifier.padding(end = 4.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .width(20.dp)
+                                .height(20.dp)
+                                .background(ProfileConstants.verdictsColors[it.uppercase()]!!.first)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(text = it, fontSize = 12.sp)

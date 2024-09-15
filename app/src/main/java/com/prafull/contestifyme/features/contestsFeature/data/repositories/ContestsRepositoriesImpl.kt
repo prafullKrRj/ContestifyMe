@@ -1,20 +1,19 @@
 package com.prafull.contestifyme.features.contestsFeature.data.repositories
 
-import android.content.Context
 import com.prafull.contestifyme.features.contestsFeature.data.local.ContestsDao
 import com.prafull.contestifyme.features.contestsFeature.data.local.ContestsEntity
 import com.prafull.contestifyme.features.contestsFeature.data.remote.ContestsApiService
 import com.prafull.contestifyme.features.contestsFeature.domain.model.ContestsDto
 import com.prafull.contestifyme.features.contestsFeature.domain.repositories.ContestsRepository
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 
-class ContestsRepositoryImpl @Inject constructor (
-    private val context: Context,
-    private val contestsDao: ContestsDao,
-    private val contestsApi: ContestsApiService
-) : ContestsRepository {
+class ContestsRepositoryImpl() : ContestsRepository, KoinComponent {
+
+    private val contestsApi: ContestsApiService by inject()
+    private val contestsDao: ContestsDao by inject()
     override suspend fun insertContests(contestsEntity: ContestsEntity) {
         contestsDao.insertContests(contestsEntity)
     }

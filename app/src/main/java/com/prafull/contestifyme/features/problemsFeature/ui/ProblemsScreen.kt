@@ -46,7 +46,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -61,7 +60,7 @@ import okhttp3.internal.filterList
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun ProblemsScreen(viewModel: ProblemsViewModel = hiltViewModel()) {
+fun ProblemsScreen(viewModel: ProblemsViewModel) {
 
     val problemsNavController = rememberNavController()
     NavHost(navController = problemsNavController, startDestination = "problems") {
@@ -102,7 +101,7 @@ fun ProblemsMain(viewModel: ProblemsViewModel, navController: NavController) {
         ProblemsUI(
             list = state.entity.filter {
                 if (sortType.first != 0 && sortType.second != 0) {                      // Filter List based on Rating
-                    it.rating>=sortType.first && it.rating <= sortType.second
+                    it.rating >= sortType.first && it.rating <= sortType.second
                 } else {
                     true
                 }
@@ -125,6 +124,7 @@ fun ProblemsMain(viewModel: ProblemsViewModel, navController: NavController) {
         )
     }
 }
+
 @Composable
 fun ProblemsUI(
     list: List<ProblemsEntity>,
@@ -135,7 +135,7 @@ fun ProblemsUI(
     previousType: Pair<Int, Int>,// Previous Sort Type
     navController: NavController
 ) {
-    Column (modifier.fillMaxSize()){
+    Column(modifier.fillMaxSize()) {
         SearchBar {
             TODO()
         }
@@ -144,13 +144,13 @@ fun ProblemsUI(
             selectedTags,
             previousType = previousType,
             sortType = {
-                       ratingSelected(it)
+                ratingSelected(it)
             },
             updateList = {
                 updateList(it)
             }
         )
-        SelectedTagsRow(selectedTags = selectedTags) {removedTag ->
+        SelectedTagsRow(selectedTags = selectedTags) { removedTag ->
             updateList(selectedTags.filterList {
                 this != removedTag
             })
@@ -190,6 +190,7 @@ fun SelectedTagsRow(selectedTags: List<String>, removeTag: (String) -> Unit) {
         }
     }
 }
+
 @Composable
 fun EmptyListBox() {
     Box(
@@ -204,9 +205,10 @@ fun EmptyListBox() {
         )
     }
 }
+
 @Composable
 fun ProblemsList(list: List<ProblemsEntity>, navController: NavController) {
-    LazyColumn (modifier = Modifier.padding(horizontal = 12.dp)) {
+    LazyColumn(modifier = Modifier.padding(horizontal = 12.dp)) {
         list.forEach {
             item {
                 ProblemItemCard(it) {
@@ -216,15 +218,16 @@ fun ProblemsList(list: List<ProblemsEntity>, navController: NavController) {
         }
     }
 }
+
 @Composable
-fun TagsSection (
+fun TagsSection(
     selectedTags: List<String>,
     sortType: (Pair<Int, Int>) -> Unit,
     updateList: (List<String>) -> Unit = {},
     previousType: Pair<Int, Int>
 ) {
     var tagsSelected by remember {
-         mutableStateOf(false)
+        mutableStateOf(false)
     }
     var sortSelected by remember {
         mutableStateOf(false)
@@ -250,7 +253,7 @@ fun TagsSection (
         })
     }
     if (sortSelected) {
-        SortDialog(previousType) {rating ->
+        SortDialog(previousType) { rating ->
             sortSelected = false
             sortType(rating)
         }
@@ -287,6 +290,7 @@ fun SearchBar(searchUpdate: (String) -> Unit = {}) {
         }
     )
 }
+
 @Composable
 fun ProblemItemCard(entity: ProblemsEntity, onClick: () -> Unit) {
     Card(
@@ -297,13 +301,13 @@ fun ProblemItemCard(entity: ProblemsEntity, onClick: () -> Unit) {
             .clickable {
                 onClick()
             },
-    ){
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 12.dp, vertical = 12.dp)
         ) {
-            Text(text = entity.index+". "+entity.name)
+            Text(text = entity.index + ". " + entity.name)
             Text(text = "${entity.rating}", fontWeight = FontWeight.Light)
         }
     }

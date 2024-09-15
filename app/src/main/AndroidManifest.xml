@@ -9,8 +9,10 @@
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+
     <application
         android:name="com.prafull.contestifyme.ContestifyApplication"
         android:allowBackup="true"
@@ -35,7 +37,7 @@
         </activity>
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-2793481331485078~8722893702"/>
+            android:value="ca-app-pub-2793481331485078~8722893702" />
     </application>
 
 </manifest>

@@ -24,11 +24,13 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CustomVerticalBarChart(xData: List<String>, yData: List<Int>) {
     val scrollState = rememberScrollState()
-    val oneQuestionHeight: Double = 300.0/yData.max()
-    Column(modifier = Modifier
-        .padding(20.dp)
-        .horizontalScroll(scrollState)
-        .fillMaxWidth()) {
+    val oneQuestionHeight: Double = 300.0 / yData.max()
+    Column(
+        modifier = Modifier
+            .padding(20.dp)
+            .horizontalScroll(scrollState)
+            .fillMaxWidth()
+    ) {
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.Bottom,
@@ -36,19 +38,22 @@ fun CustomVerticalBarChart(xData: List<String>, yData: List<Int>) {
                 .fillMaxWidth()
         ) {
             yData.forEachIndexed { index, it ->
-                Column(modifier = Modifier
-                    .padding(2.dp)
-                    .height(350.dp)
-                    .fillMaxWidth(),
+                Column(
+                    modifier = Modifier
+                        .padding(2.dp)
+                        .height(350.dp)
+                        .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Bottom,
                 ) {
-                    Box(modifier = Modifier
-                        .clip(RoundedCornerShape(5.dp))
-                        .width(35.dp)
-                        .height((it * oneQuestionHeight).dp)
-                        .background(MaterialTheme.colorScheme.inversePrimary)
-                        , contentAlignment = Alignment.BottomCenter) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(5.dp))
+                            .width(35.dp)
+                            .height((it * oneQuestionHeight).dp)
+                            .background(MaterialTheme.colorScheme.inversePrimary),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
                         Text(
                             modifier = Modifier.padding(2.dp),
                             text = "${(it)}",

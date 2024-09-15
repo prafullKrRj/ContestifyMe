@@ -6,7 +6,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,7 +14,7 @@ import com.prafull.contestifyme.features.profileFeature.ui.SubmissionAnswer
 
 @Composable
 fun FriendsScreen(
-    viewModel: FriendsViewModel = hiltViewModel()
+    viewModel: FriendsViewModel
 ) {
 
     val navController: NavHostController = rememberNavController()
@@ -24,11 +23,9 @@ fun FriendsScreen(
         composable("list") {
             FriendsListScreen(viewModel, onFriendClicked = {
                 navController.navigate("detail/$it")
-            }) {
-
-            }
+            })
         }
-        composable("detail/{handle}") {navBackStackEntry ->
+        composable("detail/{handle}") { navBackStackEntry ->
             navBackStackEntry.arguments?.getString("handle")?.let {
                 /*if (viewModel.loading) {
                     LoadingScreen()
@@ -49,6 +46,7 @@ fun FriendsScreen(
         }
     }
 }
+
 @Composable
 fun LoadingScreen() {
     Box(

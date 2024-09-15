@@ -1,6 +1,7 @@
 package com.prafull.contestifyme.features.friendsFeature.domain.model
 
 import com.google.gson.annotations.SerializedName
+import com.prafull.contestifyme.features.friendsFeature.data.local.FriendsDataEntity
 
 data class FriendsInfoResultDto(
     @SerializedName("avatar") val avatar: String?,
@@ -18,5 +19,22 @@ data class FriendsInfoResultDto(
     @SerializedName("registrationTimeSeconds") val registrationTimeSeconds: Int?,
     @SerializedName("titlePhoto") val titlePhoto: String?
 ) {
-
+    fun toFriendsDataEntity(): FriendsDataEntity {
+        return FriendsDataEntity(
+            avatar = avatar,
+            contribution = contribution,
+            country = country,
+            firstName = firstName,
+            friendOfCount = friendOfCount,
+            handle = handle,
+            lastOnlineTimeSeconds = lastOnlineTimeSeconds,
+            maxRank = maxRank,
+            maxRating = maxRating,
+            organization = organization,
+            rank = rank,
+            rating = rating,
+            registrationTimeSeconds = registrationTimeSeconds,
+            titlePhoto = titlePhoto
+        )
+    }
 }

@@ -9,5 +9,5 @@ interface ApiService {
     @GET
     suspend fun getUserInfo(
         @Url url: String,
-    ) : userInfo
+    ): userInfo
 }

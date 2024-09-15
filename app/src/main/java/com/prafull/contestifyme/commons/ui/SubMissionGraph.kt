@@ -24,7 +24,7 @@ fun SubmissionsGraph() {
     val state = rememberLazyListState()
     val scope = rememberCoroutineScope()
     scope.launch {
-        state.animateScrollToItem(6*30)
+        state.animateScrollToItem(6 * 30)
     }
     LazyRow(state = state) {
         repeat(6) {

@@ -30,7 +30,7 @@ import com.example.contestifyme.R
 import com.prafull.contestifyme.features.friendsFeature.ui.LoadingScreen
 
 @Composable
-fun OnBoardingScreen (viewModel: OnBoardingVM, sendLoggedInUser: (String) -> Unit) {
+fun OnBoardingScreen(viewModel: OnBoardingVM, sendLoggedInUser: (String) -> Unit) {
     val scrollState = rememberScrollState()
     var handle by rememberSaveable {
         mutableStateOf("")
@@ -44,13 +44,16 @@ fun OnBoardingScreen (viewModel: OnBoardingVM, sendLoggedInUser: (String) -> Uni
             LoadingScreen()
             buttonEnabled = false
         }
+
         is OnBoardingState.Success -> {
             sendLoggedInUser(handle)
             buttonEnabled = false
         }
+
         is OnBoardingState.Error -> {
             buttonEnabled = true
         }
+
         else -> {
 
         }
@@ -72,9 +75,10 @@ fun OnBoardingScreen (viewModel: OnBoardingVM, sendLoggedInUser: (String) -> Uni
             fontSize = 28.sp
         )
         Spacer(modifier = Modifier.height(16.dp))
-        HandleInput(modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+        HandleInput(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
         ) {
             handle = it
         }
@@ -92,6 +96,7 @@ fun OnBoardingScreen (viewModel: OnBoardingVM, sendLoggedInUser: (String) -> Uni
         }
     }
 }
+
 @Composable
 fun HandleInput(modifier: Modifier, updateText: (String) -> Unit) {
     var text by rememberSaveable {

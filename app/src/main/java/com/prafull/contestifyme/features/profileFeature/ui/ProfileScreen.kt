@@ -36,7 +36,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -50,9 +49,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun ProfileScreen(
-    viewModel: ProfileViewModel = hiltViewModel()
-) {
+fun ProfileScreen(viewModel: ProfileViewModel) {
     val state: ProfileUiState by viewModel.profileUiState.collectAsState()
     val navHostController: NavHostController = rememberNavController()
     var url by rememberSaveable {
@@ -61,7 +58,7 @@ fun ProfileScreen(
     val dbData = viewModel.dataFromDb.collectAsState().value.user
     val context: Context = LocalContext.current
 
-    Column (
+    Column(
         Modifier
             .fillMaxSize()
     ) {
@@ -71,6 +68,7 @@ fun ProfileScreen(
                     is ProfileUiState.Loading -> {
                         LoadingScreen()
                     }
+
                     is ProfileUiState.Success -> {
                         MainProfileScreen(
                             viewModel,
@@ -80,6 +78,7 @@ fun ProfileScreen(
                             navHostController.navigate("answer")
                         }
                     }
+
                     is ProfileUiState.Error -> {
                         MainProfileScreen(viewModel = viewModel, user = dbData, navigate = {
                             url = it
@@ -88,7 +87,8 @@ fun ProfileScreen(
                     }
 
                     else -> {
-                        Toast.makeText(context, "Error In Loading Refresh", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Error In Loading Refresh", Toast.LENGTH_SHORT)
+                            .show()
                         MainProfileScreen(viewModel, user = dbData, navigate = {
                             url = it
                             navHostController.navigate("answer")
@@ -105,6 +105,7 @@ fun ProfileScreen(
         }
     }
 }
+
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun MainProfileScreen(
@@ -125,24 +126,34 @@ fun MainProfileScreen(
     var refreshing by remember {
         mutableStateOf(false)
     }
+
     fun refresh() = scope.launch {
         refreshing = true
         viewModel.updateUserInfo()
         delay(1500)
         refreshing = false
     }
+
     val refreshState = rememberPullRefreshState(refreshing, ::refresh)
     Scaffold(
         topBar = {
-            SimpleTopAppBar (
+            SimpleTopAppBar(
                 labelRow = {
                     Row {
-                        Image(painter = painterResource(id = R.drawable.logo2), contentDescription = null, Modifier.size(32.dp))
+                        Image(
+                            painter = painterResource(id = R.drawable.logo2),
+                            contentDescription = null,
+                            Modifier.size(32.dp)
+                        )
                         Spacer(modifier = Modifier.padding(8.dp))
                         Text(
                             text =
-                            if (pagerState.currentPage == 0) stringResource(id = R.string.app_name) else stringResource(id = R.string.submissions),
-                            maxLines = 1, overflow = TextOverflow.Ellipsis, fontFamily = FontFamily.SansSerif,
+                            if (pagerState.currentPage == 0) stringResource(id = R.string.app_name) else stringResource(
+                                id = R.string.submissions
+                            ),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            fontFamily = FontFamily.SansSerif,
                         )
                     }
                 },

@@ -13,7 +13,7 @@ import com.prafull.contestifyme.features.profileFeature.data.local.entities.User
     exportSchema = false
 )
 @TypeConverters(ProfileTypeConverters::class)
-abstract class ProfileDatabase: RoomDatabase() {
+abstract class ProfileDatabase : RoomDatabase() {
     abstract fun profileDao(): ProfileDao
 
 }

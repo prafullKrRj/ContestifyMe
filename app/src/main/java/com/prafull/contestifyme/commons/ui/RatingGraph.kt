@@ -24,6 +24,7 @@ import co.yml.charts.ui.linechart.model.ShadowUnderLine
 fun RatingGraph(modifier: Modifier = Modifier) {
 
 }
+
 @Composable
 fun RatingGraph(pointsData: List<Point>, modifier: Modifier = Modifier) {
     val xAxisData = AxisData.Builder()
@@ -65,6 +66,7 @@ fun RatingGraph(pointsData: List<Point>, modifier: Modifier = Modifier) {
         lineChartData = lineChartData
     )
 }
+
 @Preview
 @Composable
 fun RatingGraphPreview() {
@@ -79,6 +81,6 @@ fun RatingGraphPreview() {
             Point(7f, 7f),
             Point(8f, 8f),
 
-        )
+            )
     )
 }
