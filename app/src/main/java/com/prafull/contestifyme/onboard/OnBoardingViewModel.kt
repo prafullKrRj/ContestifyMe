@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.prafull.contestifyme.app.commons.BaseClass
-import com.prafull.contestifyme.onboard.model.UserInfo
+import com.prafull.contestifyme.onboard.model.UsersInfo
 import com.prafull.contestifyme.utils.Constants
 import com.prafull.contestifyme.utils.managers.SharedPrefManager
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +28,7 @@ class OnBoardingViewModel : ViewModel(), KoinComponent {
     private val sharedPrefManager by inject<SharedPrefManager>()
 
 
-    private val _loginState = MutableStateFlow<BaseClass<UserInfo>>(BaseClass.Initial)
+    private val _loginState = MutableStateFlow<BaseClass<UsersInfo>>(BaseClass.Initial)
     val loginState = _loginState.asStateFlow()
 
     var searchedId by mutableStateOf("")

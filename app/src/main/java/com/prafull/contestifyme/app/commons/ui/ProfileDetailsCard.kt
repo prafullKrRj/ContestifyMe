@@ -25,24 +25,25 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.contestifyme.R
-import com.prafull.contestifyme.app.profileFeature.data.local.entities.UserInfoEntity
+import com.prafull.contestifyme.app.commons.UserData
+import com.prafull.contestifyme.onboard.model.UserResult
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 
 @Composable
-fun ProfileCard(modifier: Modifier, user: UserInfoEntity) {
+fun ProfileCard(modifier: Modifier, user: UserData) {
     ElevatedCard {
         Column(
             modifier = modifier.padding(horizontal = 12.dp, vertical = 8.dp)
         ) {
             Row(Modifier.fillMaxWidth()) {
-                DetailsSection(modifier = Modifier.weight(.7f), user = user)
+                DetailsSection(modifier = Modifier.weight(.7f), user = user.usersInfo)
                 ImageSection(
                     modifier = Modifier
                         .weight(.3f)
                         .fillMaxSize(),
-                    user = user
+                    user = user.usersInfo
                 )
             }
         }
@@ -50,7 +51,7 @@ fun ProfileCard(modifier: Modifier, user: UserInfoEntity) {
 }
 
 @Composable
-fun DetailsSection(modifier: Modifier, user: UserInfoEntity) {
+fun DetailsSection(modifier: Modifier, user: UserResult) {
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center
@@ -97,7 +98,7 @@ fun DetailItem(text: String) {
 }
 
 @Composable
-fun ImageSection(modifier: Modifier, user: UserInfoEntity) {
+fun ImageSection(modifier: Modifier, user: UserResult) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
@@ -105,7 +106,7 @@ fun ImageSection(modifier: Modifier, user: UserInfoEntity) {
     ) {
         ProfilePicture(photoUrl = user.titlePhoto)
         Text(
-            text = "${user.name}",
+            text = "${user.firstName}",
             fontSize = 16.sp,
             fontFamily = FontFamily.SansSerif,
             overflow = TextOverflow.Ellipsis,

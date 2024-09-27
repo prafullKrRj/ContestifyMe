@@ -1,7 +1,6 @@
 package com.prafull.contestifyme.app.commons.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -24,7 +23,6 @@ import co.yml.charts.ui.piechart.models.PieChartData
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun VerdictGraph(
-    modifier: Modifier = Modifier,
     verdicts: HashMap<String, Int>,
     pieChartData: PieChartData,
     pieChartConfig: PieChartConfig
@@ -49,12 +47,12 @@ fun VerdictGraph(
                     verticalAlignment = CenterVertically,
                     modifier = Modifier.padding(end = 4.dp)
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .width(20.dp)
-                            .height(20.dp)
-                            .background(com.prafull.contestifyme.app.profileFeature.constants.ProfileConstants.verdictsColors[it.uppercase()]!!.first)
-                    )
+                    /*  Box(
+                          modifier = Modifier
+                              .width(20.dp)
+                              .height(20.dp)
+                              .background(ProfileConstants.verdictsColors[it.uppercase()]!!.first)
+                      )*/
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(text = it, fontSize = 12.sp)
                     Spacer(modifier = Modifier.width(8.dp))

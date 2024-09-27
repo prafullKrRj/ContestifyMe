@@ -1,13 +1,10 @@
 package com.prafull.contestifyme.app.problemsFeature.data.local.entities
 
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 
-@Entity("problems_entity")
+@Entity("problems_entity", primaryKeys = ["unique"])
 data class ProblemsEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 1,
     val unique: String,
     val index: String,
     val points: Double,

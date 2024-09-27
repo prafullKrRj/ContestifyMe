@@ -2,7 +2,7 @@ package com.prafull.contestifyme.onboard.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Result(
+data class UserResult(
     @SerializedName("avatar") val avatar: String?,
     @SerializedName("contribution") val contribution: Int?,
     @SerializedName("country") val country: String?,

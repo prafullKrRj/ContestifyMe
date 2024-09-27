@@ -1,6 +1,7 @@
 package com.prafull.contestifyme.app.profileFeature.domain.model.ratingInfo
 
 import com.google.gson.annotations.SerializedName
+import com.prafull.contestifyme.app.profileFeature.domain.model.UserRating
 
 data class RatingResult(
     @SerializedName("contestId") val contestId: Int,
@@ -10,4 +11,14 @@ data class RatingResult(
     @SerializedName("oldRating") val oldRating: Int,
     @SerializedName("rank") val rank: Int,
     @SerializedName("ratingUpdateTimeSeconds") val ratingUpdateTimeSeconds: Int
-)
+) {
+    fun toUserRating(): UserRating = UserRating(
+        contestId = contestId,
+        contestName = contestName,
+        handle = handle,
+        newRating = newRating,
+        oldRating = oldRating,
+        rank = rank,
+        ratingUpdateTimeSeconds = ratingUpdateTimeSeconds
+    )
+}

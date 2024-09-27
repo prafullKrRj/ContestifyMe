@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -46,10 +45,10 @@ import com.prafull.contestifyme.app.profileFeature.data.local.entities.UserInfoE
 @Composable
 fun FrontScreen(user: UserInfoEntity, swipeToSubmission: () -> Unit = {}) {
     val verdicts by rememberSaveable {
-        mutableStateOf(GetChartData.getVerdicts(user))
+        mutableStateOf(GetChartData.getVerdictsFromUserEntity(user))
     }
     val solvedByTags by rememberSaveable {
-        mutableStateOf(GetChartData.getQuestionSolvedByTags(user))
+        mutableStateOf(GetChartData.getQuestionSolvedByTags(user.subMissionInfo))
     }
     var showQuestionSolvedByTags by remember {
         mutableStateOf(false)
@@ -74,10 +73,10 @@ fun FrontScreen(user: UserInfoEntity, swipeToSubmission: () -> Unit = {}) {
                 handle = user.handle,
                 country = "India"
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            ProfileCard(modifier = Modifier.fillMaxWidth(), user = user)
         }
-
+        item {
+            ProfileCard(modifier = Modifier.fillMaxWidth(), user = user.toUserData())
+        }
         item("ratingGraph") {
             RatingGraph()
         }
@@ -132,7 +131,7 @@ fun FrontScreen(user: UserInfoEntity, swipeToSubmission: () -> Unit = {}) {
                 expanded = showQuestionSolvedByIndex,
                 title = "Questions Solved by index",
                 content = {
-                    QuestionByIndexGraph(GetChartData.getQuestionSolvedByIndexData(user))
+                    QuestionByIndexGraph(GetChartData.getQuestionSolvedByIndexData(user.subMissionInfo))
                 }) {
                 showQuestionSolvedByIndex = !showQuestionSolvedByIndex
             }

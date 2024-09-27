@@ -2,8 +2,8 @@
 
 package com.prafull.contestifyme.app.problemsFeature.ui
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,33 +24,34 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.example.contestifyme.R
+import com.prafull.contestifyme.app.App
+import com.prafull.contestifyme.app.commons.BaseClass
+import com.prafull.contestifyme.app.commons.ui.ErrorScreen
 import com.prafull.contestifyme.app.commons.ui.SimpleTopAppBar
 import com.prafull.contestifyme.app.problemsFeature.data.local.entities.ProblemsEntity
 import com.prafull.contestifyme.app.problemsFeature.ui.components.SelectionChip
@@ -58,69 +59,67 @@ import com.prafull.contestifyme.app.problemsFeature.ui.components.sortComponents
 import com.prafull.contestifyme.app.problemsFeature.ui.components.tagsComponent.TagsDialog
 import okhttp3.internal.filterList
 
-@SuppressLint("CoroutineCreationDuringComposition")
-@Composable
-fun ProblemsScreen(viewModel: ProblemsViewModel) {
-
-    val problemsNavController = rememberNavController()
-    NavHost(navController = problemsNavController, startDestination = "problems") {
-        composable("problems") {
-            ProblemsMain(viewModel, problemsNavController)
-        }
-        composable("problem/{problemId}") { backStackEntry ->
-            val problemId = backStackEntry.arguments?.getString("problemId")
-            ProblemScreen(problemId = problemId ?: "www.codeforces.com")
-        }
-    }
-}
-
 @Composable
 fun ProblemsMain(viewModel: ProblemsViewModel, navController: NavController) {
-    val state by viewModel.problemsUiState.collectAsState()
-    rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
 
+    val state by viewModel.uiState.collectAsState()
     var selectedTags by rememberSaveable { mutableStateOf(emptyList<String>()) }    // List of selected tags
-    var sortType by rememberSaveable {                                      // Sort Type (Rating)
+    var ratingRanges by rememberSaveable {                                      // Sort Type (Rating)
         mutableStateOf(Pair(0, 0))
     }
-    Scaffold(
-        snackbarHost = {
-            SnackbarHost(snackbarHostState) {
-                // TODO: Add snackbar
+    Scaffold(topBar = {
+        SimpleTopAppBar(
+            label = R.string.problems, navIcon = Icons.Default.Menu, navIconClicked = {
+
             }
-        },
-        topBar = {
-            SimpleTopAppBar(
-                label = R.string.problems,
-                navIcon = Icons.Default.Menu
-            )
-        }
-    ) { paddingValues ->
-        ProblemsUI(
-            list = state.entity.filter {
-                if (sortType.first != 0 && sortType.second != 0) {                      // Filter List based on Rating
-                    it.rating >= sortType.first && it.rating <= sortType.second
-                } else {
-                    true
-                }
-            }.filterList {                                              // Filter List based on Tags
-                if (selectedTags.isNotEmpty()) {
-                    this.tags.containsAll(selectedTags)
-                } else {
-                    true
-                }
-            },                          // Sort List based on Rating
-            modifier = Modifier.padding(paddingValues = paddingValues),
-            ratingSelected = {
-                sortType = it
-            }, selectedTags = selectedTags,
-            previousType = sortType,
-            updateList = {
-                selectedTags = it
-            },
-            navController = navController
         )
+    }) { paddingValues ->
+        Column(
+            Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            when (state) {
+                is BaseClass.Error -> {
+                    ErrorScreen {
+                        viewModel.getProblemsFromInternet()
+                    }
+                }
+
+                BaseClass.Initial -> TODO()
+                BaseClass.Loading -> {
+                    CircularProgressIndicator()
+                }
+
+                is BaseClass.Success -> {
+                    ProblemsUI(list = (state as BaseClass.Success<ProblemState>).data.entity.filter {
+                        if (ratingRanges.first != 0 && ratingRanges.second != 0) {
+                            it.rating >= ratingRanges.first && it.rating <= ratingRanges.second
+                        } else {
+                            true
+                        }
+                    }.filterList {
+                        if (selectedTags.isNotEmpty()) {
+                            this.tags.containsAll(selectedTags)
+                        } else {
+                            true
+                        }
+                    },
+                        modifier = Modifier.padding(paddingValues = paddingValues),
+                        ratingSelected = {
+                            ratingRanges = it
+                        },
+                        selectedTags = selectedTags,
+                        previousType = ratingRanges,
+                        updateList = {
+                            selectedTags = it
+                        },
+                        navController = navController
+                    )
+                }
+            }
+        }
+
     }
 }
 
@@ -132,23 +131,47 @@ fun ProblemsUI(
     selectedTags: List<String>,                 // List of selected tags
     updateList: (List<String>) -> Unit,         // Update List based on Tags
     previousType: Pair<Int, Int>,// Previous Sort Type
-    navController: NavController
+    navController: NavController,
 ) {
+    val focusManager = LocalFocusManager.current
+    var query by rememberSaveable {
+        mutableStateOf("")
+    }
+    var isSearched by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var isSortSelected by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var sortType by rememberSaveable {
+        mutableStateOf(0)
+    }
     Column(modifier.fillMaxSize()) {
-        SearchBar {
-            TODO()
-        }
+        SearchBar(
+            query = query,
+            isSearched = isSearched,
+            onValueChange = {
+                query = it
+                isSearched = true
+            }, cancelSearch = {
+                isSearched = false
+                query = ""
+                focusManager.clearFocus()
+            })
         Spacer(modifier = Modifier.padding(vertical = 2.dp))
-        TagsSection(
-            selectedTags,
-            previousType = previousType,
-            sortType = {
-                ratingSelected(it)
-            },
-            updateList = {
-                updateList(it)
-            }
-        )
+        TagsSection(selectedTags, previousType = previousType, sortType = {
+            ratingSelected(it)
+        }, updateList = {
+            updateList(it)
+        }, onAscSort = {
+            isSortSelected = true
+            sortType = 0
+        }, onDescSort = {
+            isSortSelected = true
+            sortType = 1
+        }, removeSorting = {
+            isSortSelected = false
+        })
         SelectedTagsRow(selectedTags = selectedTags) { removedTag ->
             updateList(selectedTags.filterList {
                 this != removedTag
@@ -158,7 +181,22 @@ fun ProblemsUI(
         if (list.isEmpty()) {
             EmptyListBox()
         } else {
-            ProblemsList(list = list, navController)
+            ProblemsList(list = list.filter {
+                it.name.contains(query, ignoreCase = true) || it.index.contains(
+                    query,
+                    ignoreCase = true
+                )
+            }.sortedBy {
+                if (isSortSelected) {
+                    if (sortType == 0) {
+                        it.rating
+                    } else {
+                        -it.rating
+                    }
+                } else {
+                    -it.unique.split("|").first().toInt()
+                }
+            }, navController)
         }
     }
 }
@@ -170,21 +208,17 @@ fun SelectedTagsRow(selectedTags: List<String>, removeTag: (String) -> Unit) {
         contentPadding = PaddingValues(horizontal = 8.dp) // 8.dp between each item
     ) {
         items(items = selectedTags) { item ->
-            AssistChip(
-                onClick = {
-                    removeTag(item)
-                },
-                label = {
-                    Text(item)
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Clear,
-                        contentDescription = "Remove Tag",
-                        modifier = Modifier.size(AssistChipDefaults.IconSize)
-                    )
-                },
-                modifier = Modifier.padding(end = 4.dp)
+            AssistChip(onClick = {
+                removeTag(item)
+            }, label = {
+                Text(item)
+            }, leadingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.Clear,
+                    contentDescription = "Remove Tag",
+                    modifier = Modifier.size(AssistChipDefaults.IconSize)
+                )
+            }, modifier = Modifier.padding(end = 4.dp)
             )
         }
     }
@@ -211,7 +245,13 @@ fun ProblemsList(list: List<ProblemsEntity>, navController: NavController) {
         list.forEach {
             item {
                 ProblemItemCard(it) {
-                    navController.navigate("problem/${it.unique}")
+                    val item = it.unique.split("|")
+                    navController.navigate(
+                        App.WebViewScreen(
+                            url = "https://codeforces.com/problemset/problem/${item[0]}/${item[1]}",
+                            heading = it.index + ". " + it.name
+                        )
+                    )
                 }
             }
         }
@@ -223,25 +263,55 @@ fun TagsSection(
     selectedTags: List<String>,
     sortType: (Pair<Int, Int>) -> Unit,
     updateList: (List<String>) -> Unit = {},
-    previousType: Pair<Int, Int>
+    previousType: Pair<Int, Int>,
+    onAscSort: () -> Unit = {},
+    onDescSort: () -> Unit = {},
+    removeSorting: () -> Unit
 ) {
     var tagsSelected by remember {
         mutableStateOf(false)
     }
-    var sortSelected by remember {
+    var rangeSelected by remember {
         mutableStateOf(false)
     }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        SelectionChip(selected = tagsSelected, title = "Tags", icon = R.drawable.filter_icon) {
-            tagsSelected = true
+        Row {
+            SelectionChip(selected = tagsSelected, title = "Tags", icon = R.drawable.filter_icon) {
+                tagsSelected = true
+            }
+            Spacer(modifier = Modifier.padding(horizontal = 4.dp))
+            SelectionChip(selected = rangeSelected, title = "Sort", icon = R.drawable.sort_icon) {
+                rangeSelected = true
+            }
         }
-        Spacer(modifier = Modifier.padding(horizontal = 4.dp))
-        SelectionChip(selected = sortSelected, title = "Sort", icon = R.drawable.sort_icon) {
-            sortSelected = true
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            IconButton(onClick = removeSorting) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.baseline_access_time_filled_24),
+                    contentDescription = "Clear"
+                )
+            }
+            IconButton(onClick = onDescSort) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.baseline_arrow_upward_24),
+                    contentDescription = "Clear"
+                )
+            }
+            IconButton(onClick = onAscSort) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.baseline_arrow_downward_24),
+                    contentDescription = "Clear"
+                )
+            }
         }
     }
     if (tagsSelected) {
@@ -251,43 +321,43 @@ fun TagsSection(
             println("one$it")
         })
     }
-    if (sortSelected) {
+    if (rangeSelected) {
         SortDialog(previousType) { rating ->
-            sortSelected = false
+            rangeSelected = false
             sortType(rating)
         }
     }
 }
 
 @Composable
-fun SearchBar(searchUpdate: (String) -> Unit = {}) {
-    var text by rememberSaveable { mutableStateOf("") }
-    OutlinedTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        value = text,
-        onValueChange = { text = it },
+fun SearchBar(
+    query: String,
+    isSearched: Boolean,
+    onValueChange: (String) -> Unit,
+    cancelSearch: () -> Unit
+) {
+    OutlinedTextField(modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp),
+        value = query,
+        onValueChange = onValueChange,
         label = { Text("Search") },
         singleLine = true,
         shape = RoundedCornerShape(50),
         trailingIcon = {
-            if (text.isNotEmpty()) {
-                IconButton(onClick = { text = "" }) {
+            if (isSearched) {
+                IconButton(onClick = cancelSearch) {
                     Icon(
-                        imageVector = Icons.Filled.Clear,
-                        contentDescription = "Clear"
+                        imageVector = Icons.Filled.Clear, contentDescription = "Clear"
                     )
                 }
             }
         },
         leadingIcon = {
             Icon(
-                imageVector = Icons.Filled.Search,
-                contentDescription = "Search Icon"
+                imageVector = Icons.Filled.Search, contentDescription = "Search Icon"
             )
-        }
-    )
+        })
 }
 
 @Composable

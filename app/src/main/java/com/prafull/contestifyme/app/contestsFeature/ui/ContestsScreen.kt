@@ -18,7 +18,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.contestifyme.R
+import com.prafull.contestifyme.app.App
 import com.prafull.contestifyme.app.commons.ui.Headings
 import com.prafull.contestifyme.app.commons.ui.SimpleTopAppBar
 import com.prafull.contestifyme.app.commons.ui.getTime
@@ -26,7 +28,8 @@ import com.prafull.contestifyme.app.contestsFeature.data.local.ContestsEntity
 
 @Composable
 fun ContestsScreen(
-    viewModel: ContestsViewModel
+    viewModel: ContestsViewModel,
+    navController: NavController
 ) {
     val state: ContestUiState by viewModel.state.collectAsState()
     Scaffold(
@@ -35,7 +38,11 @@ fun ContestsScreen(
         }
     ) { paddingValues ->
         if (state.contests.isNotEmpty()) {
-            ContestsMainScreen(contest = state.contests, modifier = Modifier.padding(paddingValues))
+            ContestsMainScreen(
+                contest = state.contests,
+                modifier = Modifier.padding(paddingValues),
+                navController = navController
+            )
         } else {
             Headings(modifier = Modifier.padding(start = 16.dp), label = R.string.no_contests)
         }
@@ -43,7 +50,11 @@ fun ContestsScreen(
 }
 
 @Composable
-fun ContestsMainScreen(contest: List<ContestsEntity>, modifier: Modifier) {
+fun ContestsMainScreen(
+    contest: List<ContestsEntity>,
+    modifier: Modifier,
+    navController: NavController
+) {
     LazyColumn(modifier) {
         item {
             Headings(modifier = Modifier.padding(start = 16.dp), label = R.string.upcoming_contests)
@@ -54,7 +65,7 @@ fun ContestsMainScreen(contest: List<ContestsEntity>, modifier: Modifier) {
             it.startTimeSeconds
         }.forEach {
             item {
-                ContestItem(contest = it)
+                ContestItem(contest = it, navController = navController, false)
             }
         }
         item {
@@ -66,20 +77,31 @@ fun ContestsMainScreen(contest: List<ContestsEntity>, modifier: Modifier) {
             it.startTimeSeconds
         }.forEach {
             item {
-                ContestItem(contest = it)
+                ContestItem(contest = it, navController = navController, true)
             }
         }
     }
 }
 
 @Composable
-fun ContestItem(contest: ContestsEntity) {
+fun ContestItem(
+    contest: ContestsEntity,
+    navController: NavController,
+    clickableView: Boolean = true
+) {
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 12.dp)
-            .clickable { },
+            .clickable(enabled = clickableView) {
+                navController.navigate(
+                    App.WebViewScreen(
+                        url = "https://codeforces.com/contest/${contest.id}",
+                        heading = contest.name
+                    )
+                )
+            },
         shape = RoundedCornerShape(8.dp)
     ) {
         Column(

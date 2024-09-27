@@ -5,8 +5,10 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.prafull.contestifyme.app.commons.UserData
 import com.prafull.contestifyme.app.profileFeature.domain.model.UserRating
 import com.prafull.contestifyme.app.profileFeature.domain.model.UserSubmissions
+import com.prafull.contestifyme.onboard.model.UserResult
 
 @Entity(tableName = "user_info")
 data class UserInfoEntity(
@@ -27,7 +29,29 @@ data class UserInfoEntity(
     val titlePhoto: String?,
     val ratingInfo: List<UserRating>,
     val subMissionInfo: List<UserSubmissions>
-)
+) {
+    fun toUserData() = UserData(
+        handle = handle,
+        usersInfo = UserResult(
+            avatar = avatar,
+            contribution = contribution,
+            country = country,
+            firstName = name,
+            friendOfCount = friendOfCount,
+            handle = handle,
+            lastOnlineTimeSeconds = lastOnlineTimeSeconds,
+            maxRank = maxRank,
+            maxRating = maxRating,
+            organization = organization,
+            rank = rank,
+            rating = rating,
+            registrationTimeSeconds = registrationTimeSeconds,
+            titlePhoto = titlePhoto
+        ),
+        userSubmissions = subMissionInfo,
+        userRating = ratingInfo
+    )
+}
 
 class ProfileTypeConverters {
     private val gson = Gson()

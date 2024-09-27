@@ -2,8 +2,10 @@ package com.prafull.contestifyme.onboard.model
 
 import com.google.gson.annotations.SerializedName
 
-data class UserInfo(
-    val result: List<Result>,
+data class UsersInfo(
+    val userResult: List<UserResult>,
     @SerializedName("status")
     val status: String
-)
+) {
+
+}

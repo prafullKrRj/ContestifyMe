@@ -7,4 +7,6 @@ data class SubmissionDto(
     val submissions: List<Submissions>,
     @SerializedName("status")
     val status: String
-)
+) {
+
+}

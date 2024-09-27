@@ -1,5 +1,7 @@
 package com.prafull.contestifyme.app
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +13,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -22,41 +25,50 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.contestifyme.R
-import com.prafull.contestifyme.App
 import com.prafull.contestifyme.app.contestsFeature.ui.ContestsScreen
 import com.prafull.contestifyme.app.contestsFeature.ui.ContestsViewModel
-import com.prafull.contestifyme.app.friendsFeature.ui.FriendsScreen
+import com.prafull.contestifyme.app.friendsFeature.friends
 import com.prafull.contestifyme.app.friendsFeature.ui.FriendsViewModel
-import com.prafull.contestifyme.app.problemsFeature.ui.ProblemsScreen
+import com.prafull.contestifyme.app.problemsFeature.ui.ProblemsMain
 import com.prafull.contestifyme.app.problemsFeature.ui.ProblemsViewModel
 import com.prafull.contestifyme.app.profileFeature.ui.ProfileScreen
 import com.prafull.contestifyme.app.profileFeature.ui.ProfileViewModel
+import com.prafull.contestifyme.app.webview.WebViewComposable
 import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun ContestifyAPP() {
     val navController = rememberNavController()
+
     ContestifyMainApp(navController = navController)
 }
 
+@SuppressLint("RestrictedApi")
 @Composable
 fun ContestifyMainApp(navController: NavHostController) {
     val viewModelStoreOwner = LocalViewModelStoreOwner.current!!
+    val currDestination = navController.currentBackStackEntryAsState().value?.destination?.route
 
-
+    LaunchedEffect(key1 = currDestination) {
+        Log.d("ContestifyMainApp", "Current Destination: $currDestination")
+    }
     val profileViewModel: ProfileViewModel = getViewModel(viewModelStoreOwner = viewModelStoreOwner)
     val contestsViewModel: ContestsViewModel =
         getViewModel(viewModelStoreOwner = viewModelStoreOwner)
     val friendsViewModel: FriendsViewModel = getViewModel(viewModelStoreOwner = viewModelStoreOwner)
     val problemsViewModel: ProblemsViewModel =
         getViewModel(viewModelStoreOwner = viewModelStoreOwner)
-
+    val selected = rememberSaveable { mutableIntStateOf(0) }
     Scaffold(
         bottomBar = {
-            val selected = rememberSaveable { mutableIntStateOf(0) }
-            AppBottomAppBar(navController = navController, selected = selected.intValue) {
+            if (canShowBottomBar(
+                    currDestination ?: ""
+                )
+            ) AppBottomAppBar(navController = navController, selected = selected.intValue) {
                 selected.intValue = it
             }
         },
@@ -72,13 +84,15 @@ fun ContestifyMainApp(navController: NavHostController) {
                 ProfileScreen(viewModel = profileViewModel, navController)
             }
             composable<App.Contests> {
-                ContestsScreen(viewModel = contestsViewModel)
+                ContestsScreen(viewModel = contestsViewModel, navController)
             }
-            composable<App.Friends> {
-                FriendsScreen(viewModel = friendsViewModel)
+            friends(navController, friendsViewModel)
+            composable<App.WebViewScreen> {
+                val item = it.toRoute<App.WebViewScreen>()
+                WebViewComposable(item.url, item.heading, navController)
             }
             composable<App.Problems> {
-                ProblemsScreen(viewModel = problemsViewModel)
+                ProblemsMain(viewModel = problemsViewModel, navController = navController)
             }
         }
     }
@@ -121,16 +135,14 @@ enum class ContestifyScreens(
     @DrawableRes val unSelectedIcon: Int
 ) {
     PROFILE(
-        "Profile",
-        App.Profile,
-        R.drawable.profile_filled,
-        R.drawable.profile
+        "Profile", App.Profile, R.drawable.profile_filled, R.drawable.profile
     ),
     CONTESTS("Contests", App.Contests, R.drawable.contest, R.drawable.contest), FRIENDS(
-        "Friends",
-        App.Friends,
-        R.drawable.friends_filled,
-        R.drawable.friend
+        "Friends", App.Friends, R.drawable.friends_filled, R.drawable.friend
     ),
     PROBLEMS("Problems", App.Problems, R.drawable.problems, R.drawable.problems)
+}
+
+fun canShowBottomBar(currRoute: String): Boolean {
+    return currRoute != "com.prafull.contestifyme.app.friendsFeature.FriendsRoutes.FriendScreen/{handle}" && currRoute != "com.prafull.contestifyme.app.App.WebViewScreen/{url}/{heading}"
 }

@@ -1,5 +1,6 @@
 package com.prafull.contestifyme.app.profileFeature.data.repositories
 
+import com.prafull.contestifyme.app.profileFeature.constants.ProfileConstants
 import com.prafull.contestifyme.app.profileFeature.data.local.ProfileDao
 import com.prafull.contestifyme.app.profileFeature.data.local.entities.UserInfoEntity
 import com.prafull.contestifyme.app.profileFeature.data.remote.ProfileApiService
@@ -35,7 +36,7 @@ class ProfileRepositoryImpl : ProfileRepository, KoinComponent {
 
     override suspend fun getUserInfoFromApi(handle: String): ProfileUserDto =
         profileApiService.getUserInfoFromApi(
-            com.prafull.contestifyme.app.profileFeature.constants.ProfileConstants.getUserInfo(
+            ProfileConstants.getUserInfo(
                 handle
             )
         )
@@ -43,7 +44,7 @@ class ProfileRepositoryImpl : ProfileRepository, KoinComponent {
 
     override suspend fun getUserRatingFromApi(handle: String): RatingDto {
         return profileApiService.getUserRatingFromApi(
-            com.prafull.contestifyme.app.profileFeature.constants.ProfileConstants.getUserRating(
+            ProfileConstants.getUserRating(
                 handle
             )
         )
@@ -55,7 +56,7 @@ class ProfileRepositoryImpl : ProfileRepository, KoinComponent {
 
     override suspend fun getUserStatusFromApi(handle: String): SubmissionDto {
         return profileApiService.getUserStatusFromApi(
-            com.prafull.contestifyme.app.profileFeature.constants.ProfileConstants.getUserStatus(
+            ProfileConstants.getUserStatus(
                 handle
             )
         )

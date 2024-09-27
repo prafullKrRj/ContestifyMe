@@ -8,6 +8,7 @@ import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
 import com.prafull.contestifyme.app.problemsFeature.constants.ProblemsConstants
 import com.prafull.contestifyme.app.profileFeature.data.local.entities.UserInfoEntity
+import com.prafull.contestifyme.app.profileFeature.domain.model.UserSubmissions
 
 object GetChartData {
     /**
@@ -27,12 +28,28 @@ object GetChartData {
      *    This function returns a list of slices for the pie chart (verdicts)
      * */
     @SuppressLint("MutableCollectionMutableState")
-    fun getVerdicts(user: UserInfoEntity): HashMap<String, Int> {
+    fun getVerdictsFromUserEntity(user: UserInfoEntity): HashMap<String, Int> {
         if (user.subMissionInfo.isEmpty()) {
             return hashMapOf()
         }
         val verdictsMap: HashMap<String, Int> by mutableStateOf(hashMapOf())
         user.subMissionInfo.forEach {
+            if (verdictsMap.containsKey(it.verdict)) {
+                verdictsMap[it.verdict] = verdictsMap[it.verdict]!! + 1
+            } else {
+                verdictsMap[it.verdict] = 1
+            }
+        }
+        return verdictsMap
+    }
+
+    @SuppressLint("MutableCollectionMutableState")
+    fun getVerdictsFromUserResult(submissions: List<UserSubmissions>): HashMap<String, Int> {
+        if (submissions.isEmpty()) {
+            return hashMapOf()
+        }
+        val verdictsMap: HashMap<String, Int> by mutableStateOf(hashMapOf())
+        submissions.forEach {
             if (verdictsMap.containsKey(it.verdict)) {
                 verdictsMap[it.verdict] = verdictsMap[it.verdict]!! + 1
             } else {
@@ -75,12 +92,12 @@ object GetChartData {
         return hashMap
     }
 
-    fun getQuestionSolvedByTags(user: UserInfoEntity): HashMap<String, Int> {
-        if (user.subMissionInfo.isEmpty()) {
+    fun getQuestionSolvedByTags(submissions: List<UserSubmissions>): HashMap<String, Int> {
+        if (submissions.isEmpty()) {
             return hashMapOf()
         }
         val questionSolvedByTags: HashMap<String, Int> = getMap()
-        user.subMissionInfo.forEach {
+        submissions.forEach {
             it.tags.forEach { tag ->
                 if (questionSolvedByTags.containsKey(tag.lowercase())) {
                     questionSolvedByTags[tag] = questionSolvedByTags[tag]!! + 1
@@ -115,12 +132,12 @@ object GetChartData {
     }
 
     @SuppressLint("MutableCollectionMutableState")
-    fun getQuestionSolvedByIndexData(user: UserInfoEntity): HashMap<String, Int> {
-        if (user.subMissionInfo.isEmpty()) {
+    fun getQuestionSolvedByIndexData(submissions: List<UserSubmissions>): HashMap<String, Int> {
+        if (submissions.isEmpty()) {
             return hashMapOf()
         }
         val questionSolvedByIndex: HashMap<String, Int> by mutableStateOf(hashMapOf())
-        user.subMissionInfo.forEach {
+        submissions.forEach {
             if (questionSolvedByIndex.containsKey(it.index)) {
                 questionSolvedByIndex[it.index] = questionSolvedByIndex[it.index]!! + 1
             } else {
