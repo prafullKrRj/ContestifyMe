@@ -16,12 +16,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.prafull.contestifyme.R
 import com.prafull.contestifyme.app.ContestRoutes
-import com.prafull.contestifyme.app.commons.ui.Headings
 import com.prafull.contestifyme.app.commons.ui.SimpleTopAppBar
 import com.prafull.contestifyme.app.commons.ui.getTime
 import com.prafull.contestifyme.app.contestsFeature.data.local.ContestsEntity
@@ -47,6 +48,18 @@ fun ContestsScreen(
             Headings(modifier = Modifier.padding(start = 16.dp), label = R.string.no_contests)
         }
     }
+}
+
+@Composable
+fun Headings(modifier: Modifier = Modifier, label: Int) {
+    Text(
+        modifier = modifier,
+        text = stringResource(id = label),
+        style = MaterialTheme.typography.headlineSmall,
+        textAlign = TextAlign.Start,
+        color = MaterialTheme.colorScheme.onSurface,
+        fontWeight = FontWeight.Bold
+    )
 }
 
 @Composable

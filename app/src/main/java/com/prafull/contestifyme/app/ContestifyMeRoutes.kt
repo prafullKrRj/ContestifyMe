@@ -21,7 +21,10 @@ sealed interface App {
     data class WebViewScreen(val url: String, val heading: String) : App
 
     @Serializable
-    data class SubmissionScreen(val submissions: String) : App
+    data class SubmissionScreen(
+        val handle: String,
+        val isFriend: Boolean
+    ) : App
 }
 
 sealed interface ContestRoutes {

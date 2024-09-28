@@ -49,7 +49,7 @@ import com.prafull.contestifyme.goBackStack
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Submissions(viewModel: SubmissionViewModel, navController: NavController) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.submissions.collectAsState()
 
     Scaffold(topBar = {
         TopAppBar(title = { Text("Submissions") }, navigationIcon = {

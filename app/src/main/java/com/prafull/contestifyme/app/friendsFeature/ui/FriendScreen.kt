@@ -63,7 +63,8 @@ fun FriendScreen(viewModel: FriendScreenViewModel, navController: NavController)
                     UserProfileScreen(
                         userData = (friendState as BaseClass.Success<FriendData>).data.toUserData(),
                         modifier = Modifier,
-                        navController = navController
+                        navController = navController,
+                        true
                     )
                 }
 

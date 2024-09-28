@@ -18,25 +18,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.google.gson.Gson
 import com.prafull.contestifyme.app.App
 import com.prafull.contestifyme.app.commons.UserData
 import com.prafull.contestifyme.app.commons.ui.ProfileCard
@@ -51,9 +45,6 @@ import ir.ehsannarmani.compose_charts.models.HorizontalIndicatorProperties
 import ir.ehsannarmani.compose_charts.models.LabelProperties
 import ir.ehsannarmani.compose_charts.models.Line
 import ir.ehsannarmani.compose_charts.models.Pie
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -63,9 +54,9 @@ fun getVerdictFrequency(userSubmissions: List<UserSubmissions>): Map<String, Int
 }
 
 @Composable
-fun UserProfileScreen(userData: UserData, modifier: Modifier, navController: NavController) {
-    var isLoading by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
+fun UserProfileScreen(
+    userData: UserData, modifier: Modifier, navController: NavController, isFriend: Boolean = false
+) {
 
     LazyColumn(
         modifier.fillMaxSize(),
@@ -87,25 +78,17 @@ fun UserProfileScreen(userData: UserData, modifier: Modifier, navController: Nav
                         userData.usersInfo.country?.let { Text(text = it) }
                     }
                 }
-                if (isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.weight(.4f))
-                } else {
-                    TextButton(
-                        onClick = {
-                            isLoading = true
-                            scope.launch(Dispatchers.Default) {
-                                val submissions = Gson().toJson(userData.userSubmissions)
-                                withContext(Dispatchers.Main) {
-                                    isLoading = false
-                                    navController.navigate(App.SubmissionScreen(submissions))
-                                }
-                            }
-                        },
-                        modifier = Modifier.weight(.4f),
-                        enabled = !isLoading
-                    ) {
-                        Text(text = "Submissions")
-                    }
+                TextButton(
+                    onClick = {
+                        navController.navigate(
+                            App.SubmissionScreen(
+                                userData.handle, isFriend
+                            )
+                        )
+                    },
+                    modifier = Modifier.weight(.4f),
+                ) {
+                    Text(text = "Submissions")
                 }
             }
         }
@@ -163,6 +146,7 @@ fun QuestionSolvedByIndexRowChart(
             label = index,
             values = listOf(
                 Bars.Data(
+                    label = "Indexes",
                     value = count.toDouble(),
                     color = Brush.radialGradient(listOf(Color(0xFF23af92), Color(0xFF2BC0A1)))
                 )
@@ -173,7 +157,7 @@ fun QuestionSolvedByIndexRowChart(
     RowChart(
         modifier = modifier
             .fillMaxWidth()
-            .height(300.dp)
+            .height((data.size * 40).dp)
             .padding(horizontal = 22.dp),
         data = data,
         barProperties = BarProperties(
@@ -221,7 +205,12 @@ fun UserTagsDoughnutChart(userSubmissions: List<UserSubmissions>, modifier: Modi
         spaceDegreeAnimExitSpec = tween(300),
         style = Pie.Style.Stroke(42.dp)
     )
-    FlowRow(modifier.fillMaxWidth().padding(horizontal = 8.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+    FlowRow(
+        modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
         tagsFrequency.forEach { (tag, frequency) ->
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
@@ -230,48 +219,11 @@ fun UserTagsDoughnutChart(userSubmissions: List<UserSubmissions>, modifier: Modi
                         .background(doughnutData.find { it.label == tag }?.color ?: Color.Gray)
                 )
                 Text(
-                    text = "$tag: $frequency",
-                    modifier = Modifier.padding(start = 8.dp)
+                    text = "$tag: $frequency", modifier = Modifier.padding(start = 8.dp)
                 )
             }
         }
-    }/*
-    Row(modifier = modifier.fillMaxWidth()) {
-        PieChart(
-            modifier = Modifier.size(200.dp),
-            data = doughnutData,
-            onPieClick = {
-                println("Pie Clicked: $it")
-                val pieIndex = doughnutData.indexOf(it)
-                doughnutData =
-                    doughnutData.mapIndexed { mapIndex, pie -> pie.copy(selected = pieIndex == mapIndex) }
-            },
-            selectedScale = 1.2f,
-            scaleAnimEnterSpec = spring<Float>(
-                dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
-            ),
-            colorAnimEnterSpec = tween(300),
-            colorAnimExitSpec = tween(300),
-            scaleAnimExitSpec = tween(300),
-            spaceDegreeAnimExitSpec = tween(300),
-            style = Pie.Style.Stroke(42.dp)
-        )
-        Column(modifier = Modifier.padding(start = 16.dp)) {
-            tagsFrequency.forEach { (tag, frequency) ->
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .size(16.dp)
-                            .background(doughnutData.find { it.label == tag }?.color ?: Color.Gray)
-                    )
-                    Text(
-                        text = "$tag: $frequency",
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-            }
-        }
-    }*/
+    }
 }
 
 fun getRandomMaterialColor(): Color {
@@ -315,27 +267,52 @@ fun UserLanguagesGraph(userSubmissions: List<UserSubmissions>, modifier: Modifie
             selectedColor = Color.Green
         )
     }
-    PieChart(
-        modifier = modifier.size(200.dp),
-        data = pieData,
-        onPieClick = {
-            println("Pie Clicked: $it")
-            val pieIndex = pieData.indexOf(it)
-            pieData =
-                pieData.mapIndexed { mapIndex, pie -> pie.copy(selected = pieIndex == mapIndex) }
-        },
-        selectedScale = 1.2f,
-        scaleAnimEnterSpec = spring<Float>(
-            dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
-        ),
-        colorAnimEnterSpec = tween(300),
-        colorAnimExitSpec = tween(300),
-        scaleAnimExitSpec = tween(300),
-        spaceDegreeAnimExitSpec = tween(300),
-        style = Pie.Style.Fill
-    )
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        PieChart(
+            modifier = modifier.size(200.dp),
+            data = pieData,
+            onPieClick = {
+                println("Pie Clicked: $it")
+                val pieIndex = pieData.indexOf(it)
+                pieData =
+                    pieData.mapIndexed { mapIndex, pie -> pie.copy(selected = pieIndex == mapIndex) }
+            },
+            selectedScale = 1.2f,
+            scaleAnimEnterSpec = spring<Float>(
+                dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
+            ),
+            colorAnimEnterSpec = tween(300),
+            colorAnimExitSpec = tween(300),
+            scaleAnimExitSpec = tween(300),
+            spaceDegreeAnimExitSpec = tween(300),
+            style = Pie.Style.Fill
+        )
+        Column {
+            languageFrequency.forEach { (language, frequency) ->
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(12.dp)
+                            .background(getRandomMaterialColor())
+                    )
+                    Text(
+                        text = "$language: $frequency",
+                        modifier = Modifier.padding(start = 8.dp),
+                        fontSize = 14.sp
+                    )
+                }
+            }
+        }
+    }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun UserVerdictsGraph(userSubmissions: List<UserSubmissions>, modifier: Modifier = Modifier) {
     HeadingSection("Verdict Frequency", Modifier.padding(8.dp))
@@ -348,25 +325,49 @@ fun UserVerdictsGraph(userSubmissions: List<UserSubmissions>, modifier: Modifier
             selectedColor = Color.Green
         )
     }
-    PieChart(
-        modifier = modifier.size(200.dp),
-        data = pieData,
-        onPieClick = {
-            println("Pie Clicked: $it")
-            val pieIndex = pieData.indexOf(it)
-            pieData =
-                pieData.mapIndexed { mapIndex, pie -> pie.copy(selected = pieIndex == mapIndex) }
-        },
-        selectedScale = 1.2f,
-        scaleAnimEnterSpec = spring<Float>(
-            dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
-        ),
-        colorAnimEnterSpec = tween(300),
-        colorAnimExitSpec = tween(300),
-        scaleAnimExitSpec = tween(300),
-        spaceDegreeAnimExitSpec = tween(300),
-        style = Pie.Style.Fill
-    )
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        PieChart(
+            modifier = modifier.size(200.dp),
+            data = pieData,
+            onPieClick = {
+                println("Pie Clicked: $it")
+                val pieIndex = pieData.indexOf(it)
+                pieData =
+                    pieData.mapIndexed { mapIndex, pie -> pie.copy(selected = pieIndex == mapIndex) }
+            },
+            selectedScale = 1.2f,
+            scaleAnimEnterSpec = spring<Float>(
+                dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
+            ),
+            colorAnimEnterSpec = tween(300),
+            colorAnimExitSpec = tween(300),
+            scaleAnimExitSpec = tween(300),
+            spaceDegreeAnimExitSpec = tween(300),
+            style = Pie.Style.Fill
+        )
+        Column(modifier = Modifier) {
+            verdictFrequency.forEach { (verdict, frequency) ->
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(12.dp)
+                            .background(getColorForVerdict(verdict.uppercase()))
+                    )
+                    Text(
+                        text = "$verdict: $frequency",
+                        modifier = Modifier.padding(start = 8.dp),
+                        fontSize = 14.sp
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -377,6 +378,7 @@ fun UserRatingGraph(userRatings: List<UserRating>, modifier: Modifier = Modifier
     val dates = userRatings.map { dateFormat.format(Date(it.ratingUpdateTimeSeconds * 1000L)) }
     Column {
         LineChart(
+            animationDelay = 20,
             modifier = modifier
                 .fillMaxWidth()
                 .height(200.dp)
@@ -389,11 +391,10 @@ fun UserRatingGraph(userRatings: List<UserRating>, modifier: Modifier = Modifier
                 )
             ),
             labelProperties = LabelProperties(
-                labels = dates, enabled = true
+                labels = dates, enabled = false
             ),
-            indicatorProperties = HorizontalIndicatorProperties(
-                enabled = true,
-                count = 5,
+            indicatorProperties = HorizontalIndicatorProperties(enabled = true,
+                count = 7,
                 contentBuilder = { indicator ->
                     indicator.toInt().toString()
                 })

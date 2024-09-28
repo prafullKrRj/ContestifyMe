@@ -87,7 +87,7 @@ fun ContestifyMainApp(navController: NavHostController) {
                 ProfileScreen(viewModel = profileViewModel, navController)
             }
             composable<App.SubmissionScreen> {
-                val submissions: String = it.toRoute<App.SubmissionScreen>().submissions
+                val submissions = it.toRoute<App.SubmissionScreen>()
                 Submissions(getViewModel { parametersOf(submissions) }, navController)
             }
             friends(navController, friendsViewModel)
@@ -162,5 +162,5 @@ enum class ContestifyScreens(
 fun canShowBottomBar(currRoute: String): Boolean {
     return currRoute != "com.prafull.contestifyme.app.friendsFeature.FriendsRoutes.FriendScreen/{handle}" && currRoute != "com.prafull.contestifyme.app.App.WebViewScreen/{url}/{heading}"
             && currRoute != "com.prafull.contestifyme.app.ContestRoutes.ContestScreen/{contestId}/{contestName}"
-            && currRoute != "com.prafull.contestifyme.app.App.SubmissionScreen/{submissions}"
+            && currRoute != "com.prafull.contestifyme.app.App.SubmissionScreen/{handle}/{isFriend}"
 }
