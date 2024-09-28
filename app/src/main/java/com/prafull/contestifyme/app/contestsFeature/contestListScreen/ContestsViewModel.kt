@@ -1,4 +1,4 @@
-package com.prafull.contestifyme.app.contestsFeature.ui
+package com.prafull.contestifyme.app.contestsFeature.contestListScreen
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -39,7 +39,7 @@ class ContestsViewModel() : ViewModel(), KoinComponent {
         viewModelScope.launch {
             try {
                 val contests = contestsRepository.getContestsFromApi()
-                contests.result.forEach {
+                contests.contestsResult.forEach {
                     contestsRepository.insertContests(
                         ContestsEntity(
                             it.id,

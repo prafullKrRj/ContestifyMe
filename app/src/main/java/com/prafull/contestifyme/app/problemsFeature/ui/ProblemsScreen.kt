@@ -48,7 +48,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.contestifyme.R
+import com.prafull.contestifyme.R
 import com.prafull.contestifyme.app.App
 import com.prafull.contestifyme.app.commons.BaseClass
 import com.prafull.contestifyme.app.commons.ui.ErrorScreen
@@ -86,7 +86,6 @@ fun ProblemsMain(viewModel: ProblemsViewModel, navController: NavController) {
                     }
                 }
 
-                BaseClass.Initial -> TODO()
                 BaseClass.Loading -> {
                     CircularProgressIndicator()
                 }

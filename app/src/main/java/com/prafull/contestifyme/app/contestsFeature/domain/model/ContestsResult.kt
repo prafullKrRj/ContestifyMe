@@ -2,7 +2,7 @@ package com.prafull.contestifyme.app.contestsFeature.domain.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Result(
+data class ContestsResult(
     @SerializedName("durationSeconds")
     val durationSeconds: Int,
 

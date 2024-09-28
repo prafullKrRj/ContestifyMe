@@ -19,4 +19,7 @@ interface ProfileDao {
 
     @Update
     suspend fun updateUserInfo(userInfoEntity: UserInfoEntity)
+
+    @Query("SELECT * FROM user_info WHERE handle = :userHandle")
+    suspend fun getUser(userHandle: String): UserInfoEntity
 }

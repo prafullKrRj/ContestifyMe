@@ -15,13 +15,5 @@ fun RankCard(
     handle: String,
     country: String
 ) {
-    ElevatedCard {
-        Column(
-            modifier = modifier.padding(horizontal = 12.dp, vertical = 8.dp)
-        ) {
-            Text(text = rank)
-            Text(text = handle)
-            Text(text = country)
-        }
-    }
+
 }

@@ -26,24 +26,28 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.contestifyme.R
-import com.prafull.contestifyme.app.contestsFeature.ui.ContestsScreen
-import com.prafull.contestifyme.app.contestsFeature.ui.ContestsViewModel
+import com.prafull.contestifyme.R
+import com.prafull.contestifyme.app.contestsFeature.contestListScreen.ContestsScreen
+import com.prafull.contestifyme.app.contestsFeature.contestListScreen.ContestsViewModel
+import com.prafull.contestifyme.app.contestsFeature.contestScreen.ContestScreen
 import com.prafull.contestifyme.app.friendsFeature.friends
 import com.prafull.contestifyme.app.friendsFeature.ui.FriendsViewModel
 import com.prafull.contestifyme.app.problemsFeature.ui.ProblemsMain
 import com.prafull.contestifyme.app.problemsFeature.ui.ProblemsViewModel
 import com.prafull.contestifyme.app.profileFeature.ui.ProfileScreen
 import com.prafull.contestifyme.app.profileFeature.ui.ProfileViewModel
+import com.prafull.contestifyme.app.userscreen.submissions.Submissions
 import com.prafull.contestifyme.app.webview.WebViewComposable
 import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun ContestifyAPP() {
     val navController = rememberNavController()
-
     ContestifyMainApp(navController = navController)
 }
 
@@ -52,7 +56,6 @@ fun ContestifyAPP() {
 fun ContestifyMainApp(navController: NavHostController) {
     val viewModelStoreOwner = LocalViewModelStoreOwner.current!!
     val currDestination = navController.currentBackStackEntryAsState().value?.destination?.route
-
     LaunchedEffect(key1 = currDestination) {
         Log.d("ContestifyMainApp", "Current Destination: $currDestination")
     }
@@ -83,8 +86,9 @@ fun ContestifyMainApp(navController: NavHostController) {
             composable<App.Profile> {
                 ProfileScreen(viewModel = profileViewModel, navController)
             }
-            composable<App.Contests> {
-                ContestsScreen(viewModel = contestsViewModel, navController)
+            composable<App.SubmissionScreen> {
+                val submissions: String = it.toRoute<App.SubmissionScreen>().submissions
+                Submissions(getViewModel { parametersOf(submissions) }, navController)
             }
             friends(navController, friendsViewModel)
             composable<App.WebViewScreen> {
@@ -93,6 +97,18 @@ fun ContestifyMainApp(navController: NavHostController) {
             }
             composable<App.Problems> {
                 ProblemsMain(viewModel = problemsViewModel, navController = navController)
+            }
+            navigation<App.Contests>(ContestRoutes.ContestList) {
+                composable<ContestRoutes.ContestList> {
+                    ContestsScreen(viewModel = contestsViewModel, navController)
+                }
+                composable<ContestRoutes.ContestScreen> {
+                    val item = it.toRoute<ContestRoutes.ContestScreen>()
+                    ContestScreen(
+                        viewModel = koinViewModel { parametersOf(item) },
+                        navController = navController
+                    )
+                }
             }
         }
     }
@@ -145,4 +161,6 @@ enum class ContestifyScreens(
 
 fun canShowBottomBar(currRoute: String): Boolean {
     return currRoute != "com.prafull.contestifyme.app.friendsFeature.FriendsRoutes.FriendScreen/{handle}" && currRoute != "com.prafull.contestifyme.app.App.WebViewScreen/{url}/{heading}"
+            && currRoute != "com.prafull.contestifyme.app.ContestRoutes.ContestScreen/{contestId}/{contestName}"
+            && currRoute != "com.prafull.contestifyme.app.App.SubmissionScreen/{submissions}"
 }

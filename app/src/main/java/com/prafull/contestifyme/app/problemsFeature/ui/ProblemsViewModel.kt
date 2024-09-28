@@ -51,7 +51,6 @@ class ProblemsViewModel(
                             .show()
                     }
 
-                    BaseClass.Initial -> TODO()
                     BaseClass.Loading -> {
                         _uiState.update { BaseClass.Loading }
                     }

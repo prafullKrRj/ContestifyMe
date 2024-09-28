@@ -87,7 +87,6 @@ fun FriendListScreen(viewModel: FriendsViewModel, navController: NavController) 
                     }
                 }
 
-                BaseClass.Initial -> TODO()
                 BaseClass.Loading -> {
                     item {
                         LoadingScreen()

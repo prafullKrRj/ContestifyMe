@@ -1,30 +1,46 @@
 package com.prafull.contestifyme.app.commons.ui
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import co.yml.charts.axis.AxisData
-import co.yml.charts.common.model.Point
-import co.yml.charts.ui.linechart.LineChart
-import co.yml.charts.ui.linechart.model.GridLines
-import co.yml.charts.ui.linechart.model.IntersectionPoint
-import co.yml.charts.ui.linechart.model.Line
-import co.yml.charts.ui.linechart.model.LineChartData
-import co.yml.charts.ui.linechart.model.LinePlotData
-import co.yml.charts.ui.linechart.model.LineStyle
-import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
-import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
-import co.yml.charts.ui.linechart.model.ShadowUnderLine
+import com.prafull.contestifyme.app.profileFeature.domain.model.UserRating
+import ir.ehsannarmani.compose_charts.LineChart
+import ir.ehsannarmani.compose_charts.models.DrawStyle
+import ir.ehsannarmani.compose_charts.models.Line
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
-fun RatingGraph(modifier: Modifier = Modifier) {
+fun RatingGraph(userRatings: List<UserRating>) {
+    val dateFormat = SimpleDateFormat("MMM yyyy", Locale.getDefault())
+    val ratings = userRatings.map { it.newRating.toDouble() }
+    val dates = userRatings.map { dateFormat.format(Date(it.ratingUpdateTimeSeconds * 1000L)) }
 
+    LineChart(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 22.dp),
+        data = listOf(
+            Line(
+                label = "User Ratings",
+                values = ratings,
+                color = Brush.radialGradient(
+                    colors = listOf(
+                        Color(0xFF00FF00),
+                        Color(0xFF0000FF)
+                    )
+                ),
+                drawStyle = DrawStyle.Stroke(width = 2.dp)
+            )
+        )
+    )
 }
-
+/*
 @Composable
 fun RatingGraph(pointsData: List<Point>, modifier: Modifier = Modifier) {
     val xAxisData = AxisData.Builder()
@@ -83,4 +99,4 @@ fun RatingGraphPreview() {
 
             )
     )
-}
+}*/

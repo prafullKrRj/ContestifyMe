@@ -1,7 +1,6 @@
 package com.prafull.contestifyme.app.commons.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,7 +27,6 @@ fun CustomVerticalBarChart(xData: List<String>, yData: List<Int>) {
     Column(
         modifier = Modifier
             .padding(20.dp)
-            .horizontalScroll(scrollState)
             .fillMaxWidth()
     ) {
         Row(

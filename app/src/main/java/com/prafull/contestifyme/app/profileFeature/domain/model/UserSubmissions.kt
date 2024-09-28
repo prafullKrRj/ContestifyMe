@@ -7,6 +7,7 @@ data class UserSubmissions(
     val time: Int = 0,
     val contestId: Int = 0,
     val index: String = "",
+    val programmingLanguage: String = "",
     val rating: Int = 0,
     val tags: List<String> = emptyList()
 )

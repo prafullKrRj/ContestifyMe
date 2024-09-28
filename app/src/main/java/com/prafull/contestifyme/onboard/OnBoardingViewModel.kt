@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.prafull.contestifyme.app.commons.BaseClass
 import com.prafull.contestifyme.onboard.model.UsersInfo
 import com.prafull.contestifyme.utils.Constants
 import com.prafull.contestifyme.utils.managers.SharedPrefManager
@@ -19,6 +18,13 @@ import org.koin.core.component.inject
 import retrofit2.HttpException
 import java.io.IOException
 
+sealed interface OnBoardingState {
+    data object Loading : OnBoardingState
+    data object Empty : OnBoardingState
+    data class Success(val user: UsersInfo) : OnBoardingState
+    data class Error(val e: Throwable) : OnBoardingState
+}
+
 class OnBoardingViewModel : ViewModel(), KoinComponent {
 
     private val _succeeded = MutableStateFlow(false)
@@ -28,19 +34,21 @@ class OnBoardingViewModel : ViewModel(), KoinComponent {
     private val sharedPrefManager by inject<SharedPrefManager>()
 
 
-    private val _loginState = MutableStateFlow<BaseClass<UsersInfo>>(BaseClass.Initial)
+    private val _loginState = MutableStateFlow<OnBoardingState>(
+        OnBoardingState.Empty
+    )
     val loginState = _loginState.asStateFlow()
 
     var searchedId by mutableStateOf("")
     fun login(handle: String) {
         searchedId = handle
         viewModelScope.launch(Dispatchers.IO) {
-            _loginState.update { BaseClass.Loading }
+            _loginState.update { OnBoardingState.Loading }
             try {
                 val user = apiService.getUserInfo(Constants.getUserInfo(handle))
                 if (user.status == "FAILED") {
                     _loginState.update {
-                        BaseClass.Error(
+                        OnBoardingState.Error(
                             UserNotFoundException()
                         )
                     }
@@ -51,20 +59,20 @@ class OnBoardingViewModel : ViewModel(), KoinComponent {
                         _succeeded.update {
                             true
                         }
-                        BaseClass.Success(user)
+                        OnBoardingState.Success(user)
                     }
                 }
             } catch (e: IOException) {
                 _loginState.update {
-                    BaseClass.Error(e)
+                    OnBoardingState.Error(e)
                 }
             } catch (e: HttpException) {
                 _loginState.update {
-                    BaseClass.Error(e)
+                    OnBoardingState.Error(e)
                 }
             } catch (e: Exception) {
                 _loginState.update {
-                    BaseClass.Error(e)
+                    OnBoardingState.Error(e)
                 }
             }
         }

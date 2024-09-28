@@ -1,4 +1,4 @@
-package com.prafull.contestifyme.app.contestsFeature.ui
+package com.prafull.contestifyme.app.contestsFeature.contestListScreen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -19,8 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.contestifyme.R
-import com.prafull.contestifyme.app.App
+import com.prafull.contestifyme.R
+import com.prafull.contestifyme.app.ContestRoutes
 import com.prafull.contestifyme.app.commons.ui.Headings
 import com.prafull.contestifyme.app.commons.ui.SimpleTopAppBar
 import com.prafull.contestifyme.app.commons.ui.getTime
@@ -96,10 +96,7 @@ fun ContestItem(
             .padding(vertical = 8.dp, horizontal = 12.dp)
             .clickable(enabled = clickableView) {
                 navController.navigate(
-                    App.WebViewScreen(
-                        url = "https://codeforces.com/contest/${contest.id}",
-                        heading = contest.name
-                    )
+                    ContestRoutes.ContestScreen(contest.id.toString(), contest.name)
                 )
             },
         shape = RoundedCornerShape(8.dp)

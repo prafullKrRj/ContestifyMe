@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.contestifyme.R
+import com.prafull.contestifyme.R
 import com.prafull.contestifyme.app.commons.UserData
 import com.prafull.contestifyme.onboard.model.UserResult
 import java.time.Instant

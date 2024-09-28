@@ -9,13 +9,14 @@ import com.prafull.contestifyme.app.profileFeature.domain.repositories.ProfileRe
 import com.prafull.contestifyme.app.profileFeature.ui.ProfileViewModel
 import com.prafull.contestifyme.utils.Constants
 import org.koin.android.ext.koin.androidApplication
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 val profileModule = module {
-    viewModel { ProfileViewModel() }
+    viewModel { ProfileViewModel(androidContext()) }
     single<ProfileApiService> {
         Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)

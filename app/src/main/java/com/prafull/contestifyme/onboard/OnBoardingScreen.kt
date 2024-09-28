@@ -33,7 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.contestifyme.R
+import com.prafull.contestifyme.R
 import com.prafull.contestifyme.Routes
 import com.prafull.contestifyme.app.commons.BaseClass
 import retrofit2.HttpException
@@ -88,9 +88,9 @@ fun OnBoardingScreen(
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Send
                 ),
-                enabled = loginState !is BaseClass.Loading
+                enabled = loginState !is OnBoardingState.Loading
             )
-            if (loginState is BaseClass.Error) {
+            if (loginState is OnBoardingState.Error) {
                 when ((loginState as BaseClass.Error).exception) {
                     UserNotFoundException() -> {
                         Text(
@@ -122,12 +122,11 @@ fun OnBoardingScreen(
                 }
             }
         }
-        if (loginState is BaseClass.Loading) {
+        if (loginState is OnBoardingState.Loading) {
             CircularProgressIndicator()
         }
     }
 }
-
 
 @Composable
 fun ContestifyImage(modifier: Modifier) {

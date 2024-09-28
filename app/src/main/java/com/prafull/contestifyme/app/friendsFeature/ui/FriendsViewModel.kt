@@ -61,10 +61,6 @@ class FriendsViewModel(
                         _showAddFriendDialog.update { false }
                     }
 
-                    BaseClass.Initial -> {
-
-                    }
-
                     BaseClass.Loading -> {
                         loading = true
                     }

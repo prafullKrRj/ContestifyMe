@@ -5,6 +5,7 @@ import com.prafull.contestifyme.app.contestsFeature.di.contestModule
 import com.prafull.contestifyme.app.friendsFeature.di.friendsModule
 import com.prafull.contestifyme.app.problemsFeature.di.problemsModule
 import com.prafull.contestifyme.app.profileFeature.di.profileModule
+import com.prafull.contestifyme.app.userscreen.submissionModule
 import com.prafull.contestifyme.onboard.OnBoardApiService
 import com.prafull.contestifyme.onboard.OnBoardingViewModel
 import com.prafull.contestifyme.utils.Constants
@@ -23,19 +24,25 @@ class ContestifyApplication : Application() {
         startKoin {
             androidContext(this@ContestifyApplication)
             androidLogger()
-            modules(contestModule, profileModule, friendsModule, problemsModule, module {
-                viewModel {
-                    OnBoardingViewModel()
-                }
-                single<OnBoardApiService> {
-                    Retrofit.Builder().baseUrl(Constants.BASE_URL)
-                        .addConverterFactory(GsonConverterFactory.create()).build()
-                        .create(OnBoardApiService::class.java)
-                }
-                single {
-                    SharedPrefManager(androidContext())
-                }
-            })
+            modules(
+                contestModule,
+                profileModule,
+                friendsModule,
+                problemsModule,
+                submissionModule,
+                module {
+                    viewModel {
+                        OnBoardingViewModel()
+                    }
+                    single<OnBoardApiService> {
+                        Retrofit.Builder().baseUrl(Constants.BASE_URL)
+                            .addConverterFactory(GsonConverterFactory.create()).build()
+                            .create(OnBoardApiService::class.java)
+                    }
+                    single {
+                        SharedPrefManager(androidContext())
+                    }
+                })
         }
     }
 }

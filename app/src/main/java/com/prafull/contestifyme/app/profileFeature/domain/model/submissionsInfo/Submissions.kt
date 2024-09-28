@@ -22,6 +22,7 @@ data class Submissions(
             id = id,
             name = problem.name,
             verdict = verdict,
+            programmingLanguage = programmingLanguage,
             time = creationTimeSeconds,
             contestId = contestId,
             index = problem.index,
