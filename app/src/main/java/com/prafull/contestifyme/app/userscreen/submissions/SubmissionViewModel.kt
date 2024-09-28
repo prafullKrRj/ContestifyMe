@@ -33,7 +33,7 @@ class SubmissionViewModel(
     private fun getSubmissions() = viewModelScope.launch(Dispatchers.IO) {
 
         if (args.isFriend) {
-            val response = friendRepo.getFriendData(args.handle).collectLatest { response ->
+            friendRepo.getFriendData(args.handle).collectLatest { response ->
                 when (response) {
                     is BaseClass.Error -> {
                         _submissions.update { BaseClass.Error(response.exception) }
@@ -54,7 +54,7 @@ class SubmissionViewModel(
 
             }
         } else {
-            val response = profileRepo.getUserInfo().collectLatest { response ->
+            profileRepo.getUserInfo().collectLatest { response ->
                 when (response) {
                     is BaseClass.Error -> {
                         _submissions.update { BaseClass.Error(response.exception) }
