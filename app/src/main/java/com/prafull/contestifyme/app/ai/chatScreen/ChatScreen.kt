@@ -21,16 +21,24 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -50,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichText
 import com.valentinilk.shimmer.shimmer
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,40 +73,91 @@ fun ChatScreen(viewModel: ChatViewModel) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
-
-    // Scroll to the bottom when a new message is added
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     LaunchedEffect(state.messages.size) {
         listState.animateScrollToItem(0)
     }
-
-    Scaffold(bottomBar = {
-        PromptField(promptValue.value, {
-            promptValue.value = it
-        }) {
-            viewModel.sendMessage(promptValue.value)
-            promptValue.value = ""
-            focusManager.clearFocus()
+    val historyState by viewModel.historyState.collectAsState()
+    ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
+        ModalDrawerSheet(drawerState = drawerState, Modifier.padding(end = 48.dp)) {
+            Column(Modifier.fillMaxWidth()) {
+                Row(Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Chats",
+                        Modifier.padding(16.dp),
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                }
+                LazyColumn(Modifier.fillMaxSize()) {
+                    item {
+                        HorizontalDivider()
+                    }
+                    item {
+                        NavigationDrawerItem(
+                            label = { Text("New Chat") },
+                            selected = false,
+                            onClick = {
+                                viewModel.resetChat()
+                                scope.launch { drawerState.close() }
+                            })
+                    }
+                    item {
+                        HorizontalDivider()
+                    }
+                    items(historyState) { chatEntity ->
+                        NavigationDrawerItem(
+                            label = {
+                                Text(text = chatEntity.chatHeading)
+                            },
+                            selected = chatEntity.chatId == viewModel.chatId,
+                            onClick = {
+                                viewModel.resetChat(chatEntity.chatId)
+                                scope.launch { drawerState.close() }
+                            })
+                    }
+                }
+            }
         }
-    }) { paddingValues ->
-        LazyColumn(
-            state = listState,
-            contentPadding = PaddingValues(
-                top = paddingValues.calculateTopPadding(),
-                bottom = paddingValues.calculateBottomPadding(),
-                start = 8.dp,
-                end = 8.dp
-            ),
-            modifier = Modifier
-                .fillMaxSize(),
-            reverseLayout = true,
-        ) {
-            items(state.messages.reversed(), key = {
-                it.id
+    }) {
+        Scaffold(bottomBar = {
+            PromptField(promptValue.value, {
+                promptValue.value = it
             }) {
-                ChatMessageBubble(it, clipboardManager, context)
+                viewModel.sendMessage(promptValue.value)
+                promptValue.value = ""
+                focusManager.clearFocus()
+            }
+        }, topBar = {
+            CenterAlignedTopAppBar(
+                title = { Text(text = "ContestifyMe Bot") },
+                navigationIcon = {
+                    IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                        Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
+                    }
+                }
+            )
+        }) { paddingValues ->
+            LazyColumn(
+                state = listState,
+                contentPadding = PaddingValues(
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = paddingValues.calculateBottomPadding(),
+                    start = 8.dp,
+                    end = 8.dp
+                ),
+                modifier = Modifier
+                    .fillMaxSize(),
+                reverseLayout = true,
+            ) {
+                items(state.messages.reversed(), key = {
+                    it.id
+                }) {
+                    ChatMessageBubble(it, clipboardManager, context)
+                }
             }
         }
     }
+
 }
 
 @Composable

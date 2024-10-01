@@ -1,8 +1,10 @@
 package com.prafull.contestifyme.app.ai.di
 
 import android.content.Context
+import androidx.room.Room
 import com.prafull.contestifyme.app.ai.chatScreen.AiConst
 import com.prafull.contestifyme.app.ai.chatScreen.ChatViewModel
+import com.prafull.contestifyme.app.ai.data.AIDatabase
 import com.prafull.contestifyme.app.ai.enrollToAI.ApiKeyViewModel
 import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.koin.androidContext
@@ -19,6 +21,13 @@ val aiModule = module {
     }
     viewModel {
         ApiKeyViewModel(androidContext())
+    }
+    single<AIDatabase> {
+        Room.databaseBuilder(androidContext(), AIDatabase::class.java, AiConst.DB_NAME)
+            .build()
+    }
+    single {
+        get<AIDatabase>().chatDao()
     }
 }
 

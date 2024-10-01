@@ -3,11 +3,7 @@ package com.prafull.contestifyme.app.ai
 import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,34 +37,20 @@ fun AiScreen(navController: NavController) {
             }
         )
     }
-    Scaffold(
-        topBar = {
-            TopAppBar(title = {
-                if (currScreen == AiScreens.CHAT_SCREEN) {
-                    Text("ContestifyMe Bot")
-                } else {
-                    Text("Enter API Key")
-                }
-            })
-        }
-    ) { paddingValues ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            when (currScreen) {
-                AiScreens.CHAT_SCREEN -> {
-                    ChatScreen(getViewModel())
-                }
+    Column(
+        Modifier
+            .fillMaxSize()
+    ) {
+        when (currScreen) {
+            AiScreens.CHAT_SCREEN -> {
+                ChatScreen(getViewModel())
+            }
 
-                AiScreens.ENROLLMENT_SCREEN -> {
-                    EnrollingScreen(getViewModel()) {
-                        currScreen = AiScreens.CHAT_SCREEN
-                    }
+            AiScreens.ENROLLMENT_SCREEN -> {
+                EnrollingScreen(getViewModel()) {
+                    currScreen = AiScreens.CHAT_SCREEN
                 }
             }
         }
-
     }
 }

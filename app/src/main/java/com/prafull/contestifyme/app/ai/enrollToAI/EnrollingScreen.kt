@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Scaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -53,74 +54,86 @@ fun EnrollingScreen(viewModel: ApiKeyViewModel, keyAdded: () -> Unit) {
     }
     val context = LocalContext.current
     val scrollState = rememberScrollState()
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(scrollState),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        if (loading) {
-            Spacer(modifier = Modifier.height(16.dp))
-            CircularProgressIndicator()
-            Spacer(modifier = Modifier.height(16.dp))
+    Scaffold(
+        topBar = {
+            Text(
+                text = "Enroll to AI",
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier.padding(16.dp)
+            )
         }
-        Text(
-            text = "Enter your API Key", style = MaterialTheme.typography.headlineMedium
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = apiKey,
-            onValueChange = { apiKey = it },
-            label = { Text("API Key") },
-            visualTransformation = if (isKeyVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = {
-                IconButton(onClick = { isKeyVisible = !isKeyVisible }) {
-                    Icon(
-                        painter = painterResource(id = if (isKeyVisible) R.drawable.baseline_visibility_24 else R.drawable.baseline_visibility_off_24),
-                        contentDescription = "Toggle key visibility"
-                    )
-                }
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    viewModel.saveApiKey(apiKey, context)
-                    keyBoardController?.hide()
-                }
-            ),
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !loading
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "Enter Your Gemini API key is stored securely on your device and is not shared with anyone.",
-            style = MaterialTheme.typography.bodyMedium
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = { viewModel.saveApiKey(apiKey, context) },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !loading
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp)
+                .verticalScroll(scrollState),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Save API Key")
+            if (loading) {
+                Spacer(modifier = Modifier.height(16.dp))
+                CircularProgressIndicator()
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+            Text(
+                text = "Enter your API Key", style = MaterialTheme.typography.headlineMedium
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = apiKey,
+                onValueChange = { apiKey = it },
+                label = { Text("API Key") },
+                visualTransformation = if (isKeyVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = { isKeyVisible = !isKeyVisible }) {
+                        Icon(
+                            painter = painterResource(id = if (isKeyVisible) R.drawable.baseline_visibility_24 else R.drawable.baseline_visibility_off_24),
+                            contentDescription = "Toggle key visibility"
+                        )
+                    }
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        viewModel.saveApiKey(apiKey, context)
+                        keyBoardController?.hide()
+                    }
+                ),
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !loading
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Enter Your Gemini API key is stored securely on your device and is not shared with anyone.",
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = { viewModel.saveApiKey(apiKey, context) },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !loading
+            ) {
+                Text("Save API Key")
+            }
+            /*  FilledTonalButton(modifier = Modifier.fillMaxWidth(), onClick = {
+                  navController.navigate(EnrollToAIRoutes.HowToCreateApiKey)
+              }) {
+                  Text(text = "How to create API Key?")
+              }*/
         }
-        /*  FilledTonalButton(modifier = Modifier.fillMaxWidth(), onClick = {
-              navController.navigate(EnrollToAIRoutes.HowToCreateApiKey)
-          }) {
-              Text(text = "How to create API Key?")
-          }*/
+
     }
 
 }
