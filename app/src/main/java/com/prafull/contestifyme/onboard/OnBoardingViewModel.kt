@@ -1,12 +1,12 @@
 package com.prafull.contestifyme.onboard
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.prafull.contestifyme.onboard.model.UsersInfo
-import com.prafull.contestifyme.utils.Constants
+import com.prafull.contestifyme.network.model.userinfo.UsersInfo
 import com.prafull.contestifyme.utils.managers.SharedPrefManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,7 +45,9 @@ class OnBoardingViewModel : ViewModel(), KoinComponent {
         viewModelScope.launch(Dispatchers.IO) {
             _loginState.update { OnBoardingState.Loading }
             try {
-                val user = apiService.getUserInfo(Constants.getUserInfo(handle))
+                Log.d("OnBoardingViewModel", "login: $handle")
+                val user = apiService.getUser(handle)
+                Log.d("OnBoardingViewModel", "login: $user")
                 if (user.status == "FAILED") {
                     _loginState.update {
                         OnBoardingState.Error(
@@ -59,7 +61,8 @@ class OnBoardingViewModel : ViewModel(), KoinComponent {
                         _succeeded.update {
                             true
                         }
-                        OnBoardingState.Success(user)
+                        Log.d("OnBoardingViewModel", "login: $user")
+                        user.let { OnBoardingState.Success(it) }
                     }
                 }
             } catch (e: IOException) {

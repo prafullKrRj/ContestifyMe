@@ -11,31 +11,40 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.prafull.contestifyme.app.App
+import com.prafull.contestifyme.R
 import com.prafull.contestifyme.app.commons.UserData
+import com.prafull.contestifyme.app.commons.Utils
 import com.prafull.contestifyme.app.commons.ui.ProfileCard
-import com.prafull.contestifyme.app.profileFeature.domain.model.UserRating
-import com.prafull.contestifyme.app.profileFeature.domain.model.UserSubmissions
+import com.prafull.contestifyme.network.model.UserRating
+import com.prafull.contestifyme.network.model.UserSubmissions
+import com.prafull.contestifyme.network.model.userinfo.UserResult
 import ir.ehsannarmani.compose_charts.LineChart
 import ir.ehsannarmani.compose_charts.PieChart
 import ir.ehsannarmani.compose_charts.RowChart
@@ -55,81 +64,119 @@ fun getVerdictFrequency(userSubmissions: List<UserSubmissions>): Map<String, Int
 
 @Composable
 fun UserProfileScreen(
-    userData: UserData, modifier: Modifier, navController: NavController, isFriend: Boolean = false
+    userData: UserData, modifier: Modifier, toSubmissions: () -> Unit
 ) {
-
     LazyColumn(
         modifier.fillMaxSize(),
         contentPadding = PaddingValues(12.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        item("rankCard") {
+        item {
             Row(
                 Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = Arrangement.End
             ) {
-                ElevatedCard(Modifier.weight(.6f)) {
-                    Column(
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
-                    ) {
-                        userData.usersInfo.rank?.let { Text(text = it) }
-                        userData.usersInfo.handle?.let { Text(text = it) }
-                        userData.usersInfo.country?.let { Text(text = it) }
-                    }
-                }
-                TextButton(
-                    onClick = {
-                        navController.navigate(
-                            App.SubmissionScreen(
-                                userData.handle, isFriend
-                            )
-                        )
-                    },
-                    modifier = Modifier.weight(.4f),
+                FilledTonalButton(
+                    onClick = toSubmissions
                 ) {
                     Text(text = "Submissions")
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.baseline_navigate_next_24),
+                        contentDescription = "toSubmissions"
+                    )
                 }
             }
+        }
+        item("rankCard") {
+            RankCard(usersInfo = userData.usersInfo)
         }
         item("profileCard") {
             ProfileCard(modifier = Modifier, user = userData)
         }
-        item("ratingGraph") {
-            Card(Modifier.fillMaxWidth()) {
-                UserRatingGraph(userData.userRating, modifier = Modifier.padding(vertical = 8.dp))
+        if (userData.userRating.isNotEmpty()) {
+            item("ratingGraph") {
+                Card(Modifier.fillMaxWidth()) {
+                    UserRatingGraph(
+                        userData.userRating, modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
+            }
+        } else {
+            item {
+                Text("No Ratings Found or No internet", modifier = Modifier.padding(8.dp))
             }
         }
-        item("verdictsGraph") {
-            Card(Modifier.fillMaxWidth()) {
-                UserVerdictsGraph(
-                    userSubmissions = userData.userSubmissions,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
+        if (userData.userSubmissions.isNotEmpty()) {
+            item("verdictsGraph") {
+                Card(Modifier.fillMaxWidth()) {
+                    UserVerdictsGraph(
+                        userSubmissions = userData.userSubmissions,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
+            }
+            item("tagsGraph") {
+                Card(Modifier.fillMaxWidth()) {
+                    UserTagsDoughnutChart(
+                        userSubmissions = userData.userSubmissions,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
+            }
+            item("languagesGraph") {
+                Card(Modifier.fillMaxWidth()) {
+                    UserLanguagesGraph(
+                        userSubmissions = userData.userSubmissions,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
+            }
+            item("indexGraph") {
+                Card(Modifier.fillMaxWidth()) {
+                    QuestionSolvedByIndexRowChart(
+                        submissions = userData.userSubmissions,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
+            }
+        } else {
+            item {
+                Text("No Submissions Found or No internet", modifier = Modifier.padding(8.dp))
             }
         }
-        item("tagsGraph") {
-            Card(Modifier.fillMaxWidth()) {
-                UserTagsDoughnutChart(
-                    userSubmissions = userData.userSubmissions,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-            }
-        }
-        item("languagesGraph") {
-            Card(Modifier.fillMaxWidth()) {
-                UserLanguagesGraph(
-                    userSubmissions = userData.userSubmissions,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-            }
-        }
-        item("indexGraph") {
-            Card(Modifier.fillMaxWidth()) {
-                QuestionSolvedByIndexRowChart(
-                    submissions = userData.userSubmissions,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
+    }
+}
+
+@Composable
+fun RankCard(usersInfo: UserResult) {
+    Row(
+        Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        ElevatedCard(Modifier.wrapContentSize()) {
+            Column(Modifier.padding(12.dp)) {
+                usersInfo.rank?.let {
+                    Text(
+                        text = it.capitalize(),
+                        color = Utils.getRankColor(it.lowercase()),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+                usersInfo.handle.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Utils.getRankColor(usersInfo.rank.toString().lowercase()),
+                        fontWeight = FontWeight.W700
+                    )
+                }
+                usersInfo.country?.let {
+                    Text(
+                        text = it
+                    )
+                }
             }
         }
     }
@@ -196,7 +243,7 @@ fun UserTagsDoughnutChart(userSubmissions: List<UserSubmissions>, modifier: Modi
                 doughnutData.mapIndexed { mapIndex, pie -> pie.copy(selected = pieIndex == mapIndex) }
         },
         selectedScale = 1.2f,
-        scaleAnimEnterSpec = spring<Float>(
+        scaleAnimEnterSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
         ),
         colorAnimEnterSpec = tween(300),
@@ -284,7 +331,7 @@ fun UserLanguagesGraph(userSubmissions: List<UserSubmissions>, modifier: Modifie
                     pieData.mapIndexed { mapIndex, pie -> pie.copy(selected = pieIndex == mapIndex) }
             },
             selectedScale = 1.2f,
-            scaleAnimEnterSpec = spring<Float>(
+            scaleAnimEnterSpec = spring(
                 dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
             ),
             colorAnimEnterSpec = tween(300),
@@ -312,7 +359,6 @@ fun UserLanguagesGraph(userSubmissions: List<UserSubmissions>, modifier: Modifie
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun UserVerdictsGraph(userSubmissions: List<UserSubmissions>, modifier: Modifier = Modifier) {
     HeadingSection("Verdict Frequency", Modifier.padding(8.dp))
@@ -342,7 +388,7 @@ fun UserVerdictsGraph(userSubmissions: List<UserSubmissions>, modifier: Modifier
                     pieData.mapIndexed { mapIndex, pie -> pie.copy(selected = pieIndex == mapIndex) }
             },
             selectedScale = 1.2f,
-            scaleAnimEnterSpec = spring<Float>(
+            scaleAnimEnterSpec = spring(
                 dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
             ),
             colorAnimEnterSpec = tween(300),
@@ -393,7 +439,8 @@ fun UserRatingGraph(userRatings: List<UserRating>, modifier: Modifier = Modifier
             labelProperties = LabelProperties(
                 labels = dates, enabled = false
             ),
-            indicatorProperties = HorizontalIndicatorProperties(enabled = true,
+            indicatorProperties = HorizontalIndicatorProperties(
+                enabled = true,
                 count = 7,
                 contentBuilder = { indicator ->
                     indicator.toInt().toString()

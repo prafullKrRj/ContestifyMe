@@ -41,10 +41,10 @@ import com.prafull.contestifyme.R
 import com.prafull.contestifyme.app.App
 import com.prafull.contestifyme.app.commons.BaseClass
 import com.prafull.contestifyme.app.commons.ui.ErrorScreen
-import com.prafull.contestifyme.app.friendsFeature.ui.LoadingScreen
-import com.prafull.contestifyme.app.profileFeature.domain.model.UserSubmissions
+import com.prafull.contestifyme.app.friendsFeature.ui.friendList.LoadingScreen
 import com.prafull.contestifyme.app.userscreen.getColorForVerdict
 import com.prafull.contestifyme.goBackStack
+import com.prafull.contestifyme.network.model.UserSubmissions
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -87,10 +87,20 @@ fun SubmissionList(
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        items(submissions, key = {
-            "${it.id} ${it.contestId} ${it.index}"
-        }) { submission ->
-            SubmissionCard(submission, navController)
+        if (submissions.isNotEmpty()) {
+            items(submissions, key = {
+                "${it.id} ${it.contestId} ${it.index}"
+            }) { submission ->
+                SubmissionCard(submission, navController)
+            }
+        } else {
+            item {
+                Text(
+                    text = "No submissions found",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }

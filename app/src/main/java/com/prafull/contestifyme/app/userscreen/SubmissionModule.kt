@@ -6,7 +6,6 @@ import org.koin.dsl.module
 
 val submissionModule = module {
     viewModel {
-        SubmissionViewModel(get())
+        SubmissionViewModel()
     }
-
 }

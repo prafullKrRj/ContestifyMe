@@ -30,13 +30,16 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.prafull.contestifyme.R
+import com.prafull.contestifyme.app.ai.AiScreen
 import com.prafull.contestifyme.app.contestsFeature.contestListScreen.ContestsScreen
 import com.prafull.contestifyme.app.contestsFeature.contestListScreen.ContestsViewModel
 import com.prafull.contestifyme.app.contestsFeature.contestScreen.ContestScreen
 import com.prafull.contestifyme.app.friendsFeature.friends
-import com.prafull.contestifyme.app.friendsFeature.ui.FriendsViewModel
+import com.prafull.contestifyme.app.friendsFeature.ui.friendList.FriendsViewModel
+import com.prafull.contestifyme.app.problemsFeature.ProblemRoutes
 import com.prafull.contestifyme.app.problemsFeature.ui.ProblemsMain
 import com.prafull.contestifyme.app.problemsFeature.ui.ProblemsViewModel
+import com.prafull.contestifyme.app.problemsFeature.ui.acsmsguru.AcmsScreen
 import com.prafull.contestifyme.app.profileFeature.ui.ProfileScreen
 import com.prafull.contestifyme.app.profileFeature.ui.ProfileViewModel
 import com.prafull.contestifyme.app.userscreen.submissions.Submissions
@@ -87,17 +90,25 @@ fun ContestifyMainApp(navController: NavHostController) {
                 ProfileScreen(viewModel = profileViewModel, navController)
             }
             composable<App.SubmissionScreen> {
-                val submissions = it.toRoute<App.SubmissionScreen>()
-                Submissions(getViewModel { parametersOf(submissions) }, navController)
+                Submissions(getViewModel(), navController)
             }
             friends(navController, friendsViewModel)
             composable<App.WebViewScreen> {
                 val item = it.toRoute<App.WebViewScreen>()
                 WebViewComposable(item.url, item.heading, navController)
             }
-            composable<App.Problems> {
-                ProblemsMain(viewModel = problemsViewModel, navController = navController)
+            composable<App.AI> {
+                AiScreen(navController)
             }
+            navigation<App.Problems>(ProblemRoutes.ProblemsMain) {
+                composable<ProblemRoutes.ProblemsMain> {
+                    ProblemsMain(viewModel = problemsViewModel, navController = navController)
+                }
+                composable<ProblemRoutes.AcmsGuru> {
+                    AcmsScreen(viewModel = getViewModel(), navController)
+                }
+            }
+
             navigation<App.Contests>(ContestRoutes.ContestList) {
                 composable<ContestRoutes.ContestList> {
                     ContestsScreen(viewModel = contestsViewModel, navController)
@@ -153,7 +164,9 @@ enum class ContestifyScreens(
     PROFILE(
         "Profile", App.Profile, R.drawable.profile_filled, R.drawable.profile
     ),
-    CONTESTS("Contests", App.Contests, R.drawable.contest, R.drawable.contest), FRIENDS(
+    CONTESTS("Contests", App.Contests, R.drawable.contest, R.drawable.contest),
+    AI("AI", App.AI, R.drawable.ai_icon, R.drawable.ai_icon),
+    FRIENDS(
         "Friends", App.Friends, R.drawable.friends_filled, R.drawable.friend
     ),
     PROBLEMS("Problems", App.Problems, R.drawable.problems, R.drawable.problems)
@@ -162,5 +175,7 @@ enum class ContestifyScreens(
 fun canShowBottomBar(currRoute: String): Boolean {
     return currRoute != "com.prafull.contestifyme.app.friendsFeature.FriendsRoutes.FriendScreen/{handle}" && currRoute != "com.prafull.contestifyme.app.App.WebViewScreen/{url}/{heading}"
             && currRoute != "com.prafull.contestifyme.app.ContestRoutes.ContestScreen/{contestId}/{contestName}"
-            && currRoute != "com.prafull.contestifyme.app.App.SubmissionScreen/{handle}/{isFriend}"
+            && currRoute != "com.prafull.contestifyme.app.App.SubmissionScreen"
+            && currRoute != "com.prafull.contestifyme.app.problemsFeature.ProblemRoutes.AcmsGuru"
+            && currRoute != "com.prafull.contestifyme.app.friendsFeature.FriendsRoutes.CompareScreen"
 }

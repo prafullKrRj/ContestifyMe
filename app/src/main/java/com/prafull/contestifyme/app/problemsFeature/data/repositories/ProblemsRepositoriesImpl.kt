@@ -7,6 +7,7 @@ import com.prafull.contestifyme.app.problemsFeature.data.local.ProblemsDao
 import com.prafull.contestifyme.app.problemsFeature.data.local.entities.ProblemsEntity
 import com.prafull.contestifyme.app.problemsFeature.data.remote.ProblemsApiService
 import com.prafull.contestifyme.app.problemsFeature.domain.model.ProblemsDto
+import com.prafull.contestifyme.app.problemsFeature.domain.model.acmsguru.AcmsguruDto
 import com.prafull.contestifyme.app.problemsFeature.domain.repositories.ProblemsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -54,5 +55,20 @@ class ProblemsRepositoryImpl() : ProblemsRepository, KoinComponent {
         dao.getProblemsByRatingDesc(rating)
 
     override suspend fun getSortedByAsc(): List<ProblemsEntity> = dao.getProblemsByRatingAsc()
+    override suspend fun getAcmsGuruProblems(): Flow<BaseClass<AcmsguruDto>> = flow {
+
+        try {
+            val response =
+                problemsApiService.getAcmsGuruProblems(ProblemsConstants.getAcmsGuruProblems())
+            if (response.status == "FAILED") {
+                emit(BaseClass.Error(Exception("Failed to fetch data")))
+            } else {
+                emit(BaseClass.Success(response))
+            }
+        } catch (e: Exception) {
+            emit(BaseClass.Error(e))
+        }
+
+    }
 
 }

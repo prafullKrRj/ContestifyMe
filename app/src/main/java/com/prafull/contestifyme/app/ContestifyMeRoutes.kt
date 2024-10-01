@@ -18,13 +18,14 @@ sealed interface App {
     data object Problems : App
 
     @Serializable
+    data object AI : App
+
+
+    @Serializable
     data class WebViewScreen(val url: String, val heading: String) : App
 
     @Serializable
-    data class SubmissionScreen(
-        val handle: String,
-        val isFriend: Boolean
-    ) : App
+    data object SubmissionScreen : App
 }
 
 sealed interface ContestRoutes {

@@ -26,10 +26,11 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.prafull.contestifyme.R
 import com.prafull.contestifyme.app.commons.UserData
-import com.prafull.contestifyme.onboard.model.UserResult
+import com.prafull.contestifyme.network.model.userinfo.UserResult
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.util.Locale
 
 @Composable
 fun ProfileCard(modifier: Modifier, user: UserData) {
@@ -58,12 +59,17 @@ fun DetailsSection(modifier: Modifier, user: UserResult) {
     ) {
         val registeredDate = getTime(user.registrationTimeSeconds!!.toLong())
         val lastActiveTime = getTime(user.lastOnlineTimeSeconds!!.toLong())
-        val lastActive: String = if (LocalDateTime.now().hour - lastActiveTime.hour == 0) {
-            "Online"
-        } else if (LocalDateTime.now().dayOfMonth - lastActiveTime.dayOfMonth <= 24) {
-            "${LocalDateTime.now().hour - lastActiveTime.hour} hours ago"
-        } else {
-            "${lastActiveTime.dayOfMonth} ${lastActiveTime.month} ${lastActiveTime.year}\".lowercase()"
+        val now = LocalDateTime.now()
+        val lastActive: String = when {
+            now.toLocalDate() == lastActiveTime.toLocalDate() -> {
+                val hoursAgo = now.hour - lastActiveTime.hour
+                "Active $hoursAgo hours ago"
+            }
+
+            now.toLocalDate().minusDays(1) == lastActiveTime.toLocalDate() -> "Active yesterday"
+            else -> "${lastActiveTime.dayOfMonth} ${
+                lastActiveTime.month.name.lowercase().capitalize(Locale.ROOT)
+            } ${lastActiveTime.year}"
         }
         DetailItem(text = "Contest Rating: ${user.rating}")
         DetailItem(text = "Max Rank: ${user.maxRank}")
@@ -105,12 +111,28 @@ fun ImageSection(modifier: Modifier, user: UserResult) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ProfilePicture(photoUrl = user.titlePhoto)
-        Text(
-            text = "${user.firstName}",
-            fontSize = 16.sp,
-            fontFamily = FontFamily.SansSerif,
-            overflow = TextOverflow.Ellipsis,
-        )
+        if (user.firstName != null && user.lastName != null) {
+            Text(
+                text = "${user.firstName} ${user.lastName}".capitalize(Locale.ROOT),
+                fontSize = 16.sp,
+                fontFamily = FontFamily.SansSerif,
+                overflow = TextOverflow.Ellipsis,
+            )
+        } else if (user.firstName != null) {
+            Text(
+                text = user.firstName.capitalize(Locale.ROOT),
+                fontSize = 16.sp,
+                fontFamily = FontFamily.SansSerif,
+                overflow = TextOverflow.Ellipsis,
+            )
+        } else {
+            Text(
+                text = "User",
+                fontSize = 16.sp,
+                fontFamily = FontFamily.SansSerif,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
     }
 }
 

@@ -92,7 +92,7 @@ dependencies {
     // Retrofit with Kotlin serialization Converter
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
     // Coil
     implementation("io.coil-kt:coil-compose:2.4.0")
 
@@ -114,4 +114,10 @@ dependencies {
 
     implementation("com.google.devtools.ksp:symbol-processing-api:2.0.20-1.0.24")
 
+
+    implementation("dev.snipme:highlights:0.9.1")
+    implementation("dev.snipme:kodeview:0.8.0")
+    implementation("com.valentinilk.shimmer:compose-shimmer:1.3.1")
+    implementation("com.mohamedrejeb.richeditor:richeditor-compose:1.0.0-rc05")
+    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
 }

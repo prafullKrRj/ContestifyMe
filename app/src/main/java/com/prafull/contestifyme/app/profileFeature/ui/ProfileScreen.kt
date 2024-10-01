@@ -2,7 +2,7 @@ package com.prafull.contestifyme.app.profileFeature.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -23,10 +23,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.prafull.contestifyme.R
+import com.prafull.contestifyme.app.App
 import com.prafull.contestifyme.app.commons.BaseClass
 import com.prafull.contestifyme.app.commons.ui.ErrorScreen
-import com.prafull.contestifyme.app.friendsFeature.ui.LoadingScreen
-import com.prafull.contestifyme.app.profileFeature.data.local.entities.UserInfoEntity
+import com.prafull.contestifyme.app.friendsFeature.ui.friendList.LoadingScreen
 import com.prafull.contestifyme.app.userscreen.UserProfileScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,14 +50,19 @@ fun ProfileScreen(viewModel: ProfileViewModel, navController: NavController) {
             }
         })
     }) { paddingValues ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
-            contentAlignment = Alignment.Center
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            when (state) {
+            when (val response = state) {
                 is BaseClass.Error -> {
+                    Text(
+                        text = response.exception.toString(),
+                        color = androidx.compose.ui.graphics.Color.Red
+                    )
                     ErrorScreen {
                         viewModel.updateUserInfo()
                     }
@@ -69,10 +74,11 @@ fun ProfileScreen(viewModel: ProfileViewModel, navController: NavController) {
 
                 is BaseClass.Success -> {
                     UserProfileScreen(
-                        userData = (state as BaseClass.Success<UserInfoEntity>).data.toUserData(),
-                        Modifier,
-                        navController
-                    )
+                        userData = response.data,
+                        Modifier
+                    ) {
+                        navController.navigate(App.SubmissionScreen)
+                    }
                 }
             }
         }

@@ -1,13 +1,13 @@
 package com.prafull.contestifyme.onboard
 
-import com.prafull.contestifyme.onboard.model.UsersInfo
+import com.prafull.contestifyme.network.model.userinfo.UsersInfo
 import retrofit2.http.GET
-import retrofit2.http.Url
+import retrofit2.http.Query
 
 interface OnBoardApiService {
 
-    @GET
-    suspend fun getUserInfo(
-        @Url url: String,
+    @GET("user.info")
+    suspend fun getUser(
+        @Query("handles") handle: String,
     ): UsersInfo
 }

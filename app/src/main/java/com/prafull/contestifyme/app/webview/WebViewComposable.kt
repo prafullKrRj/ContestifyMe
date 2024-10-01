@@ -2,6 +2,7 @@ package com.prafull.contestifyme.app.webview
 
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -31,6 +32,7 @@ fun WebViewComposable(url: String, heading: String, navController: NavController
     var loading by rememberSaveable {
         mutableStateOf(true)
     }
+    val isSystemDark = isSystemInDarkTheme()
     Scaffold(Modifier.fillMaxSize(), topBar = {
         TopAppBar(
             title = { Text(text = heading) },
@@ -47,9 +49,11 @@ fun WebViewComposable(url: String, heading: String, navController: NavController
                 .padding(paddingValues),
             contentAlignment = Alignment.Center
         ) {
+
             AndroidView(factory = { context ->
                 WebView(context).apply {
                     settings.javaScriptEnabled = true
+
                     webViewClient = object : WebViewClient() {
 
                         override fun onPageFinished(view: WebView?, url: String?) {

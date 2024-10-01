@@ -22,6 +22,10 @@ object ProblemsConstants {
         return "https://codeforces.com/problemset/problem/$contestId/$index"
     }
 
+    fun getAcmsGuruProblems(): String {
+        return "https://codeforces.com/api/problemset.problems?problemsetName=acmsguru"
+    }
+
     val tags: List<String> = listOf<String>(
         "2-sat",
         "binary search",

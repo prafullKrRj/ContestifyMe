@@ -5,21 +5,26 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.prafull.contestifyme.onboard.model.UserResult
+import androidx.room.Upsert
+import com.prafull.contestifyme.app.profileFeature.data.local.entities.UserInfoEntity
 
 
 @Dao
 interface FriendsDao {
 
-    @Delete
-    suspend fun deleteFriend(friendEntity: FriendEntity)
+    @Upsert
+    suspend fun insertUserInfo(userInfoEntity: UserInfoEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFriend(friendEntity: FriendEntity)
+    suspend fun insertUsersInfo(infos: List<UserInfoEntity>)
 
-    @Query("SELECT friendInfo from FriendEntity order by rating DESC")
-    suspend fun getFriendsList(): List<UserResult>
+    @Query("SELECT * FROM user_info WHERE handle = :handle")
+    suspend fun getUserInfo(handle: String): UserInfoEntity?
 
-    @Query("SELECT * from FriendEntity where handle = :requiredHandle")
-    suspend fun getFriendData(requiredHandle: String): FriendEntity
+    @Query("select * from user_info order by rating DESC")
+    suspend fun getFriendsData(): List<UserInfoEntity>
+
+    @Delete
+    suspend fun deleteFriend(userInfoEntity: UserInfoEntity)
+
 }

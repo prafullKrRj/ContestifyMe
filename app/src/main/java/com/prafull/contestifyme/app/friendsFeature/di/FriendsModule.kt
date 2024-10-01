@@ -1,19 +1,16 @@
 package com.prafull.contestifyme.app.friendsFeature.di
 
 import androidx.room.Room
-import com.prafull.contestifyme.app.friendsFeature.data.FriendsRepoImpl
+import com.prafull.contestifyme.app.friendsFeature.data.local.FriendsDB
 import com.prafull.contestifyme.app.friendsFeature.data.local.FriendsDao
-import com.prafull.contestifyme.app.friendsFeature.data.local.FriendsDatabase
-import com.prafull.contestifyme.app.friendsFeature.data.network.FriendApiService
-import com.prafull.contestifyme.app.friendsFeature.domain.FriendsRepo
-import com.prafull.contestifyme.app.friendsFeature.ui.FriendScreenViewModel
-import com.prafull.contestifyme.app.friendsFeature.ui.FriendsViewModel
-import com.prafull.contestifyme.utils.Constants
+import com.prafull.contestifyme.app.friendsFeature.data.repo.FriendRepoImpl
+import com.prafull.contestifyme.app.friendsFeature.domain.FriendRepo
+import com.prafull.contestifyme.app.friendsFeature.ui.comparehandles.CompareViewModel
+import com.prafull.contestifyme.app.friendsFeature.ui.friendList.FriendsViewModel
+import com.prafull.contestifyme.app.friendsFeature.ui.friendscreen.FriendScreenViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 val friendsModule = module {
 
@@ -21,21 +18,18 @@ val friendsModule = module {
         FriendsViewModel(androidContext())
     }
     viewModel {
-        FriendScreenViewModel(get())
+        FriendScreenViewModel(get(), androidContext())
     }
-    single<FriendsDatabase> {
-        Room.databaseBuilder(androidContext(), FriendsDatabase::class.java, "friends_database")
-            .build()
+    viewModel {
+        CompareViewModel()
+    }
+    single {
+        Room.databaseBuilder(androidContext(), FriendsDB::class.java, "friends_db").build()
     }
     single<FriendsDao> {
-        get<FriendsDatabase>().friendsDao()
+        get<FriendsDB>().friendsDao()
     }
-    single<FriendsRepo> {
-        FriendsRepoImpl(androidContext())
-    }
-    single<FriendApiService> {
-        Retrofit.Builder().baseUrl(Constants.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create()).build()
-            .create(FriendApiService::class.java)
+    single<FriendRepo> {
+        FriendRepoImpl()
     }
 }

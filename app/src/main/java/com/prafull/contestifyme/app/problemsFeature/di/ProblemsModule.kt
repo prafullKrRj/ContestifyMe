@@ -7,6 +7,7 @@ import com.prafull.contestifyme.app.problemsFeature.data.remote.ProblemsApiServi
 import com.prafull.contestifyme.app.problemsFeature.data.repositories.ProblemsRepositoryImpl
 import com.prafull.contestifyme.app.problemsFeature.domain.repositories.ProblemsRepository
 import com.prafull.contestifyme.app.problemsFeature.ui.ProblemsViewModel
+import com.prafull.contestifyme.app.problemsFeature.ui.acsmsguru.AcmsGuruViewModel
 import com.prafull.contestifyme.utils.Constants
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
@@ -39,5 +40,8 @@ val problemsModule = module {
 
     single<ProblemsRepository> {
         ProblemsRepositoryImpl()
+    }
+    viewModel<AcmsGuruViewModel> {
+        AcmsGuruViewModel()
     }
 }

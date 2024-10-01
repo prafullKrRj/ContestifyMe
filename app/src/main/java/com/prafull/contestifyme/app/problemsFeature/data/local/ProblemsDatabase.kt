@@ -10,7 +10,7 @@ import com.prafull.contestifyme.app.problemsFeature.data.local.entities.Problems
 @Database(
     entities = [ProblemsEntity::class],
     version = 1,
-    exportSchema = true
+    exportSchema = false
 )
 @TypeConverters(ProblemsTypeConverter::class)
 abstract class ProblemsDatabase : RoomDatabase() {

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -69,15 +70,24 @@ fun ContestsMainScreen(
     navController: NavController
 ) {
     LazyColumn(modifier) {
-        item {
-            Headings(modifier = Modifier.padding(start = 16.dp), label = R.string.upcoming_contests)
-        }
+
         contest.filter {
             it.relativeTimeSeconds <= 0
         }.sortedBy {
             it.startTimeSeconds
-        }.forEach {
+        }.isNotEmpty().let {
+            val upcomingContests = contest.filter {
+                it.relativeTimeSeconds <= 0
+            }.sortedBy {
+                it.startTimeSeconds
+            }
             item {
+                Headings(
+                    modifier = Modifier.padding(start = 16.dp),
+                    label = R.string.upcoming_contests
+                )
+            }
+            items(upcomingContests) {
                 ContestItem(contest = it, navController = navController, false)
             }
         }

@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.prafull.contestifyme.R
 import com.prafull.contestifyme.Routes
-import com.prafull.contestifyme.app.commons.BaseClass
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -91,7 +90,7 @@ fun OnBoardingScreen(
                 enabled = loginState !is OnBoardingState.Loading
             )
             if (loginState is OnBoardingState.Error) {
-                when ((loginState as BaseClass.Error).exception) {
+                when ((loginState as OnBoardingState.Error).e) {
                     UserNotFoundException() -> {
                         Text(
                             "* User not found. Enter valid handle",

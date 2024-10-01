@@ -1,9 +1,8 @@
 package com.prafull.contestifyme.app.commons
 
-import com.prafull.contestifyme.app.friendsFeature.domain.FriendData
-import com.prafull.contestifyme.app.profileFeature.domain.model.UserRating
-import com.prafull.contestifyme.app.profileFeature.domain.model.UserSubmissions
-import com.prafull.contestifyme.onboard.model.UserResult
+import com.prafull.contestifyme.network.model.UserRating
+import com.prafull.contestifyme.network.model.UserSubmissions
+import com.prafull.contestifyme.network.model.userinfo.UserResult
 
 data class UserData(
     val handle: String,
@@ -11,12 +10,6 @@ data class UserData(
     val userSubmissions: List<UserSubmissions>,
     val userRating: List<UserRating>
 ) {
-    fun toFriendData(): FriendData {
-        return FriendData(
-            handle = handle,
-            usersInfo = usersInfo,
-            userSubmissions = userSubmissions,
-            userRating = userRating
-        )
-    }
+    fun toUserRatingEntities() = userRating.map { it.toUserRatingEntity() }
+    fun toUserSubmissionEntities() = userSubmissions.map { it.toUserSubmissionEntity() }
 }
