@@ -77,7 +77,7 @@ class FriendsViewModel(
     fun addFriend(handle: String) {
         loading = true
         viewModelScope.launch {
-            repo.insertFriend(handle).collectLatest { response ->
+            repo.insertFriend(handle.trim()).collectLatest { response ->
                 when (response) {
                     is BaseClass.Error -> {
                         showToast("Unable to add friend")

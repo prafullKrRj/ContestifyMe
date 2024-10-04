@@ -42,7 +42,7 @@ class ApiKeyViewModel(
                 }
             }
             pref.apply {
-                edit().putBoolean("isKeySaved", true).apply()
+                edit().putBoolean(AiConst.IS_KEY_SAVED, true).apply()
                 edit().putString(AiConst.PREF_KEY, apiKey).apply()
             }
             _keyAdded.update { true }

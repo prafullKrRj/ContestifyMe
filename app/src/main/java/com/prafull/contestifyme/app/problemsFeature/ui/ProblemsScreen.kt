@@ -402,14 +402,14 @@ fun ProblemItemCard(entity: ProblemsEntity, onClick: () -> Unit) {
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp)
-            .clickable {
-                onClick()
-            },
+            .padding(vertical = 4.dp),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .clickable {
+                    onClick()
+                }
                 .padding(horizontal = 12.dp, vertical = 12.dp)
         ) {
             Text(text = entity.index + ". " + entity.name)

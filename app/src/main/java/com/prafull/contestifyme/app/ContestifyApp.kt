@@ -1,6 +1,7 @@
 package com.prafull.contestifyme.app
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +19,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
@@ -30,7 +32,10 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.prafull.contestifyme.R
-import com.prafull.contestifyme.app.ai.AiScreen
+import com.prafull.contestifyme.app.ai.aiSettings.SettingsScreen
+import com.prafull.contestifyme.app.ai.chatScreen.AiConst
+import com.prafull.contestifyme.app.ai.chatScreen.ChatScreen
+import com.prafull.contestifyme.app.ai.enrollToAI.EnrollingScreen
 import com.prafull.contestifyme.app.contestsFeature.contestListScreen.ContestsScreen
 import com.prafull.contestifyme.app.contestsFeature.contestListScreen.ContestsViewModel
 import com.prafull.contestifyme.app.contestsFeature.contestScreen.ContestScreen
@@ -44,6 +49,7 @@ import com.prafull.contestifyme.app.profileFeature.ui.ProfileScreen
 import com.prafull.contestifyme.app.profileFeature.ui.ProfileViewModel
 import com.prafull.contestifyme.app.userscreen.submissions.Submissions
 import com.prafull.contestifyme.app.webview.WebViewComposable
+import com.prafull.contestifyme.goBackStack
 import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -69,6 +75,7 @@ fun ContestifyMainApp(navController: NavHostController) {
     val problemsViewModel: ProblemsViewModel =
         getViewModel(viewModelStoreOwner = viewModelStoreOwner)
     val selected = rememberSaveable { mutableIntStateOf(0) }
+    val context = LocalContext.current
     Scaffold(
         bottomBar = {
             if (canShowBottomBar(
@@ -97,8 +104,28 @@ fun ContestifyMainApp(navController: NavHostController) {
                 val item = it.toRoute<App.WebViewScreen>()
                 WebViewComposable(item.url, item.heading, navController)
             }
-            composable<App.AI> {
-                AiScreen(navController)
+            navigation<App.AI>(
+                startDestination = if (context.getSharedPreferences(
+                        AiConst.API_PREF_KEY, Context.MODE_PRIVATE
+                    ).getBoolean(
+                        AiConst.IS_KEY_SAVED, false
+                    )
+                ) AiRoutes.ChatScreen else AiRoutes.EnrollAi
+            ) {
+                composable<AiRoutes.ChatScreen> {
+                    ChatScreen(viewModel = getViewModel(), navController)
+                }
+                composable<AiRoutes.EnrollAi> {
+                    EnrollingScreen(
+                        viewModel = getViewModel()
+                    ) {
+                        navController.goBackStack()
+                        navController.navigate(AiRoutes.ChatScreen)
+                    }
+                }
+                composable<AiRoutes.ApiSettings> {
+                    SettingsScreen(getViewModel(), navController)
+                }
             }
             navigation<App.Problems>(ProblemRoutes.ProblemsMain) {
                 composable<ProblemRoutes.ProblemsMain> {
@@ -164,8 +191,12 @@ enum class ContestifyScreens(
     PROFILE(
         "Profile", App.Profile, R.drawable.profile_filled, R.drawable.profile
     ),
-    CONTESTS("Contests", App.Contests, R.drawable.contest, R.drawable.contest),
-    AI("AI", App.AI, R.drawable.ai_icon, R.drawable.ai_icon),
+    CONTESTS("Contests", App.Contests, R.drawable.contest, R.drawable.contest), AI(
+        "AI",
+        App.AI,
+        R.drawable.ai_icon,
+        R.drawable.ai_icon
+    ),
     FRIENDS(
         "Friends", App.Friends, R.drawable.friends_filled, R.drawable.friend
     ),
@@ -173,9 +204,11 @@ enum class ContestifyScreens(
 }
 
 fun canShowBottomBar(currRoute: String): Boolean {
-    return currRoute != "com.prafull.contestifyme.app.friendsFeature.FriendsRoutes.FriendScreen/{handle}" && currRoute != "com.prafull.contestifyme.app.App.WebViewScreen/{url}/{heading}"
-            && currRoute != "com.prafull.contestifyme.app.ContestRoutes.ContestScreen/{contestId}/{contestName}"
+    return currRoute != "com.prafull.contestifyme.app.friendsFeature.FriendsRoutes.FriendScreen/{handle}"
+            && currRoute != "com.prafull.contestifyme.app.App.WebViewScreen/{url}/{heading}" &&
+            currRoute != "com.prafull.contestifyme.app.ContestRoutes.ContestScreen/{contestId}/{contestName}"
             && currRoute != "com.prafull.contestifyme.app.App.SubmissionScreen"
             && currRoute != "com.prafull.contestifyme.app.problemsFeature.ProblemRoutes.AcmsGuru"
             && currRoute != "com.prafull.contestifyme.app.friendsFeature.FriendsRoutes.CompareScreen"
+            && currRoute != "com.prafull.contestifyme.app.AiRoutes.ApiSettings"
 }

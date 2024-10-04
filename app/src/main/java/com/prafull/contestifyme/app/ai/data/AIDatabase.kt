@@ -32,6 +32,9 @@ interface ChatDao {
 
     @Query("SELECT * FROM chats order by lastModified desc")
     fun getAllChats(): Flow<List<ChatEntity>>
+
+    @Query("DELETE FROM chats")
+    suspend fun deleteAll()
 }
 
 class ChatMessageTypeConverter {

@@ -46,7 +46,8 @@ class FriendRepoImpl : FriendRepo, KoinComponent {
         return flow {
             try {
                 val friends = dao.getFriendsData().map { it.handle }
-                if (friends.isNullOrEmpty()) {
+                if (friends.isEmpty()) {
+                    emit(BaseClass.Success(emptyList()))
                     return@flow
                 }
                 val results = api.getUserInfo(CodeforcesUtil.getUserInfoUrl(friends))

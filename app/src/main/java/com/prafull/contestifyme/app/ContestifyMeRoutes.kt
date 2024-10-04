@@ -28,6 +28,19 @@ sealed interface App {
     data object SubmissionScreen : App
 }
 
+sealed interface AiRoutes {
+
+    @Serializable
+    data object ChatScreen : AiRoutes
+
+    @Serializable
+    data object EnrollAi : AiRoutes
+
+    @Serializable
+    data object ApiSettings : AiRoutes
+
+}
+
 sealed interface ContestRoutes {
     @Serializable
     data class ContestScreen(val contestId: String, val contestName: String) : ContestRoutes

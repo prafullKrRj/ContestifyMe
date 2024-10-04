@@ -2,6 +2,7 @@ package com.prafull.contestifyme.app.problemsFeature.ui.acsmsguru
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,6 +22,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.prafull.contestifyme.app.App
 import com.prafull.contestifyme.app.commons.BaseClass
@@ -57,7 +59,9 @@ fun AcmsScreen(viewModel: AcmsGuruViewModel, navController: NavController) {
                 }
 
                 is BaseClass.Success -> {
-                    LazyColumn {
+                    LazyColumn(
+                        contentPadding = PaddingValues(horizontal = 12.dp)
+                    ) {
                         items(
                             (state as BaseClass.Success<AcmsguruDto>).data
                                 .result.problems

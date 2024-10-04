@@ -2,6 +2,7 @@ package com.prafull.contestifyme.app.ai.di
 
 import android.content.Context
 import androidx.room.Room
+import com.prafull.contestifyme.app.ai.aiSettings.SettingsViewModel
 import com.prafull.contestifyme.app.ai.chatScreen.AiConst
 import com.prafull.contestifyme.app.ai.chatScreen.ChatViewModel
 import com.prafull.contestifyme.app.ai.data.AIDatabase
@@ -28,6 +29,9 @@ val aiModule = module {
     }
     single {
         get<AIDatabase>().chatDao()
+    }
+    viewModel<SettingsViewModel> {
+        SettingsViewModel()
     }
 }
 
