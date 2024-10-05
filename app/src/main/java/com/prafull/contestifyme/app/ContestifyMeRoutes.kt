@@ -26,6 +26,12 @@ sealed interface App {
 
     @Serializable
     data object SubmissionScreen : App
+
+    @Serializable
+    data object Settings : App
+
+    @Serializable
+    data object LibrariesList : App
 }
 
 sealed interface AiRoutes {

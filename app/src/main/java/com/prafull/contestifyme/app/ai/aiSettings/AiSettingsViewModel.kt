@@ -16,7 +16,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 
-class SettingsViewModel : ViewModel(), KoinComponent {
+class AiSettingsViewModel : ViewModel(), KoinComponent {
 
     private val _keyAdded = MutableStateFlow(true)
     val keyAdded: StateFlow<Boolean> = _keyAdded

@@ -32,7 +32,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.prafull.contestifyme.R
-import com.prafull.contestifyme.app.ai.aiSettings.SettingsScreen
+import com.prafull.contestifyme.app.ai.aiSettings.AiSettingsScreen
 import com.prafull.contestifyme.app.ai.chatScreen.AiConst
 import com.prafull.contestifyme.app.ai.chatScreen.ChatScreen
 import com.prafull.contestifyme.app.ai.enrollToAI.EnrollingScreen
@@ -47,6 +47,7 @@ import com.prafull.contestifyme.app.problemsFeature.ui.ProblemsViewModel
 import com.prafull.contestifyme.app.problemsFeature.ui.acsmsguru.AcmsScreen
 import com.prafull.contestifyme.app.profileFeature.ui.ProfileScreen
 import com.prafull.contestifyme.app.profileFeature.ui.ProfileViewModel
+import com.prafull.contestifyme.app.settings.SettingsScreen
 import com.prafull.contestifyme.app.userscreen.submissions.Submissions
 import com.prafull.contestifyme.app.webview.WebViewComposable
 import com.prafull.contestifyme.goBackStack
@@ -62,7 +63,7 @@ fun ContestifyAPP() {
 
 @SuppressLint("RestrictedApi")
 @Composable
-fun ContestifyMainApp(navController: NavHostController) {
+fun ContestifyMainApp(navController: NavHostController, logout: () -> Unit = {}) {
     val viewModelStoreOwner = LocalViewModelStoreOwner.current!!
     val currDestination = navController.currentBackStackEntryAsState().value?.destination?.route
     LaunchedEffect(key1 = currDestination) {
@@ -96,6 +97,15 @@ fun ContestifyMainApp(navController: NavHostController) {
             composable<App.Profile> {
                 ProfileScreen(viewModel = profileViewModel, navController)
             }
+            composable<App.Settings> {
+                SettingsScreen(
+                    viewModel = getViewModel(),
+                    navController = navController
+                )
+            }
+            composable<App.LibrariesList> {
+                Text(text = "Libraries")
+            }
             composable<App.SubmissionScreen> {
                 Submissions(getViewModel(), navController)
             }
@@ -124,7 +134,7 @@ fun ContestifyMainApp(navController: NavHostController) {
                     }
                 }
                 composable<AiRoutes.ApiSettings> {
-                    SettingsScreen(getViewModel(), navController)
+                    AiSettingsScreen(getViewModel(), navController)
                 }
             }
             navigation<App.Problems>(ProblemRoutes.ProblemsMain) {
@@ -211,4 +221,6 @@ fun canShowBottomBar(currRoute: String): Boolean {
             && currRoute != "com.prafull.contestifyme.app.problemsFeature.ProblemRoutes.AcmsGuru"
             && currRoute != "com.prafull.contestifyme.app.friendsFeature.FriendsRoutes.CompareScreen"
             && currRoute != "com.prafull.contestifyme.app.AiRoutes.ApiSettings"
+            && currRoute != "com.prafull.contestifyme.app.App.Settings"
+            && currRoute != "com.prafull.contestifyme.app.App.LibrariesList"
 }

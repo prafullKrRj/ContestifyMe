@@ -6,6 +6,7 @@ import com.prafull.contestifyme.app.contestsFeature.di.contestModule
 import com.prafull.contestifyme.app.friendsFeature.di.friendsModule
 import com.prafull.contestifyme.app.problemsFeature.di.problemsModule
 import com.prafull.contestifyme.app.profileFeature.di.profileModule
+import com.prafull.contestifyme.app.settings.SettingViewModel
 import com.prafull.contestifyme.app.userscreen.submissionModule
 import com.prafull.contestifyme.network.networkModule
 import com.prafull.contestifyme.onboard.OnBoardApiService
@@ -37,6 +38,9 @@ class ContestifyApplication : Application() {
                 module {
                     viewModel {
                         OnBoardingViewModel()
+                    }
+                    viewModel {
+                        SettingViewModel()
                     }
                     single<OnBoardApiService> {
                         Retrofit.Builder().baseUrl(Constants.BASE_URL)

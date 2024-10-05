@@ -43,9 +43,9 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(settingsViewModel: SettingsViewModel, navController: NavController) {
-    val loading by settingsViewModel.loading.collectAsState()
-    val keyAdded by settingsViewModel.keyAdded.collectAsState()
+fun AiSettingsScreen(aiSettingsViewModel: AiSettingsViewModel, navController: NavController) {
+    val loading by aiSettingsViewModel.loading.collectAsState()
+    val keyAdded by aiSettingsViewModel.keyAdded.collectAsState()
 
     LaunchedEffect(key1 = keyAdded) {
         if (!keyAdded) {
@@ -72,7 +72,7 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel, navController: NavContr
         ) {
             item {
                 DeleteItem(title = "Clear Chat History") {
-                    settingsViewModel.deleteHistory(context)
+                    aiSettingsViewModel.deleteHistory(context)
                 }
             }
             item {
@@ -97,7 +97,7 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel, navController: NavContr
                     Text(text = "Change API Key", Modifier.weight(1f))
                 }
                 DeleteItem(title = "Delete Api Key") {
-                    settingsViewModel.deleteApiKey(context)
+                    aiSettingsViewModel.deleteApiKey(context)
                 }
             }
         }
@@ -110,7 +110,7 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel, navController: NavContr
             onDismiss = {
                 showApiDialog = false
             },
-            viewmodel = settingsViewModel,
+            viewmodel = aiSettingsViewModel,
         )
     }
 }
@@ -121,7 +121,7 @@ fun ChangeKeyDialog(
     text: String,
     title: String,
     onDismiss: () -> Unit,
-    viewmodel: SettingsViewModel
+    viewmodel: AiSettingsViewModel
 ) {
     var apiKey by remember {
         mutableStateOf("")
