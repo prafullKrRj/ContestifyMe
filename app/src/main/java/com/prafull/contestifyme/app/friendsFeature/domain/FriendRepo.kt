@@ -16,4 +16,6 @@ interface FriendRepo {
     fun insertFriend(handle: String): Flow<BaseClass<List<UserInfoEntity>>>
 
     suspend fun getFriendDataFromDb(handle: String): UserInfoEntity?
+    suspend fun deleteAll()
+    suspend fun deleteSelectedFriends(map: List<String>)
 }

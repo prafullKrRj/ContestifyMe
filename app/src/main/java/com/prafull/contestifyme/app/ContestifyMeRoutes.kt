@@ -25,9 +25,6 @@ sealed interface App {
     data class WebViewScreen(val url: String, val heading: String) : App
 
     @Serializable
-    data object SubmissionScreen : App
-
-    @Serializable
     data object Settings : App
 
     @Serializable

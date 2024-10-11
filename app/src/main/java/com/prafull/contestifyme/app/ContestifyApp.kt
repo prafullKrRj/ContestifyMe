@@ -48,7 +48,6 @@ import com.prafull.contestifyme.app.problemsFeature.ui.acsmsguru.AcmsScreen
 import com.prafull.contestifyme.app.profileFeature.ui.ProfileScreen
 import com.prafull.contestifyme.app.profileFeature.ui.ProfileViewModel
 import com.prafull.contestifyme.app.settings.SettingsScreen
-import com.prafull.contestifyme.app.userscreen.submissions.Submissions
 import com.prafull.contestifyme.app.webview.WebViewComposable
 import com.prafull.contestifyme.goBackStack
 import org.koin.androidx.compose.getViewModel
@@ -105,9 +104,6 @@ fun ContestifyMainApp(navController: NavHostController, logout: () -> Unit = {})
             }
             composable<App.LibrariesList> {
                 Text(text = "Libraries")
-            }
-            composable<App.SubmissionScreen> {
-                Submissions(getViewModel(), navController)
             }
             friends(navController, friendsViewModel)
             composable<App.WebViewScreen> {

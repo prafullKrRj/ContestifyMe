@@ -76,4 +76,12 @@ class FriendRepoImpl : FriendRepo, KoinComponent {
     override suspend fun getFriendDataFromDb(handle: String): UserInfoEntity? {
         return dao.getUserInfo(handle)
     }
+
+    override suspend fun deleteAll() {
+        dao.deleteAll()
+    }
+
+    override suspend fun deleteSelectedFriends(map: List<String>) {
+        dao.deleteFriends(map)
+    }
 }

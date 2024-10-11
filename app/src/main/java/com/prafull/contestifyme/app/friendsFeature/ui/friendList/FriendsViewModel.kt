@@ -34,6 +34,31 @@ class FriendsViewModel(
     // for adding friend
     var loading by mutableStateOf(false)
 
+    private val _selectedFriends = MutableStateFlow<MutableSet<UserResult>>(mutableSetOf())
+    val selectedFriends = _selectedFriends
+
+    fun toggleSelectedFriends(friend: UserResult) {
+        if (_selectedFriends.value.contains(friend)) {
+            _selectedFriends.update {
+                it.toMutableSet().apply {
+                    remove(friend)
+                }
+            }
+            return
+        }
+        _selectedFriends.update {
+            it.toMutableSet().apply {
+                add(friend)
+            }
+        }
+    }
+
+    fun clearSelected() {
+        _selectedFriends.update {
+            mutableSetOf()
+        }
+    }
+
     init {
         getFriendsList()
     }
@@ -103,6 +128,22 @@ class FriendsViewModel(
     private suspend fun showToast(message: String) {
         withContext(Dispatchers.Main) {
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun deleteAllFriends() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.deleteSelectedFriends(selectedFriends.value.map { it.handle })
+            _friendsList.update {
+                BaseClass.Success(emptyList())
+            }
+            _selectedFriends.update { mutableSetOf() }
+        }
+    }
+
+    fun addAllFriendsToSelectedList(friends: List<UserResult>) {
+        _selectedFriends.update {
+            friends.toMutableSet()
         }
     }
 }

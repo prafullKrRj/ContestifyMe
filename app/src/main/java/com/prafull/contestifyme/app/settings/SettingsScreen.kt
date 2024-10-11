@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -39,7 +40,7 @@ import com.prafull.contestifyme.goBackStack
 @Composable
 fun SettingsScreen(viewModel: SettingViewModel, navController: NavController) {
 
-
+    val context = LocalContext.current
     val scrollState = rememberScrollState()
     var logout by remember {
         mutableStateOf(false)
@@ -124,6 +125,7 @@ fun SettingsScreen(viewModel: SettingViewModel, navController: NavController) {
             title = "Delete All Friends",
             text = "Are you sure you want to delete all friends?",
             onConfirm = {
+                viewModel.deleteAllFriends()
                 deleteAllFriends = false
             },
             onDismiss = {
@@ -137,6 +139,7 @@ fun SettingsScreen(viewModel: SettingViewModel, navController: NavController) {
             text = "Are you sure you want to delete api key?",
             onConfirm = {
                 deleteApiKey = false
+                viewModel.deleteApiKey(context)
             },
             onDismiss = {
                 deleteApiKey = false

@@ -2,9 +2,10 @@ package com.prafull.contestifyme.app.friendsFeature.ui.friendList
 
 import android.content.Context
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,10 +24,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -42,6 +46,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,6 +64,7 @@ import com.prafull.contestifyme.app.commons.BaseClass
 import com.prafull.contestifyme.app.commons.Utils
 import com.prafull.contestifyme.app.commons.ui.ErrorScreen
 import com.prafull.contestifyme.app.friendsFeature.FriendsRoutes
+import com.prafull.contestifyme.app.settings.AlertBox
 import com.prafull.contestifyme.network.model.userinfo.UserResult
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,15 +73,49 @@ fun FriendListScreen(viewModel: FriendsViewModel, navController: NavController) 
     val friends by viewModel.friendsList.collectAsState()
     val context = LocalContext.current
     val showAddFriendDialog by viewModel.showAddFriendDialog.collectAsState()
+    val selectedFriends by viewModel.selectedFriends.collectAsState()
+    var showDeleteAllFriendsDialog by remember { mutableStateOf(false) }
+    var isSelecting by rememberSaveable {
+        mutableStateOf(false)
+    }
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = {
             Text(text = "Friends", style = MaterialTheme.typography.headlineSmall)
+        }, actions = {
+            if (isSelecting) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = "Delete")
+                    IconButton(onClick = {
+                        showDeleteAllFriendsDialog = false
+                    }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Delete,
+                            contentDescription = "Delete All friends"
+                        )
+                    }
+                }
+            }
+
+        }, navigationIcon = {
+            if (isSelecting) {
+                IconButton(onClick = {
+                    viewModel.clearSelected()
+                    isSelecting = false
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = "Remove selected friends"
+                    )
+                }
+            }
         })
     }, floatingActionButton = {
-        FloatingActionButton(onClick = {
-            viewModel.showAddFriendDialog()
-        }, shape = CircleShape) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = "Add Friend")
+        if (!isSelecting) {
+            FloatingActionButton(onClick = {
+                viewModel.showAddFriendDialog()
+            }, shape = CircleShape) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Friend")
+            }
         }
     }) { paddingValues ->
         LazyColumn(
@@ -117,16 +157,58 @@ fun FriendListScreen(viewModel: FriendsViewModel, navController: NavController) 
                             NoFriendsScreen()
                         }
                     } else {
+                        if (isSelecting) {
+                            item {
+                                Row(
+                                    Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End
+                                ) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Checkbox(
+                                            checked = selectedFriends.size == friendsList.size,
+                                            onCheckedChange = {
+                                                if (it) {
+                                                    viewModel.addAllFriendsToSelectedList(
+                                                        friendsList
+                                                    )
+                                                } else {
+                                                    viewModel.clearSelected()
+                                                }
+                                            })
+                                        Text(text = "Select All")
+                                    }
+                                }
+                            }
+                        }
                         items(friendsList, key = {
                             it.handle
                         }) { friend ->
-                            FriendItem(info = friend, navController = navController, context)
+                            FriendItem(
+                                info = friend,
+                                navController = navController,
+                                context,
+                                isSelecting = isSelecting,
+                                selected = selectedFriends.contains(friend),
+                                onNoteToggled = {
+                                    if (!isSelecting) isSelecting = true
+                                    viewModel.toggleSelectedFriends(friend)
+                                }
+                            )
                         }
                     }
-
                 }
             }
         }
+    }
+    if (showDeleteAllFriendsDialog) {
+        AlertBox(title = "Delete All",
+            text = "Do you want to delete selected Friends friends",
+            onConfirm = {
+                viewModel.deleteAllFriends()
+                isSelecting = false
+                showDeleteAllFriendsDialog = false
+            }, onDismiss = {
+                showDeleteAllFriendsDialog = false
+            })
     }
     if (showAddFriendDialog) {
         var handle by remember {
@@ -170,8 +252,7 @@ fun NoFriendsScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment.Center
+            .padding(16.dp), contentAlignment = Alignment.Center
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -207,11 +288,18 @@ fun formatLastActiveTime(lastOnlineTimeSeconds: Int?): String {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun FriendItem(info: UserResult, navController: NavController, context: Context) {
+fun FriendItem(
+    info: UserResult,
+    navController: NavController,
+    context: Context,
+    isSelecting: Boolean,
+    selected: Boolean,
+    onNoteToggled: () -> Unit = {}
+) {
     Card(
-        Modifier
-            .fillMaxWidth(),
+        Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(
@@ -222,9 +310,19 @@ fun FriendItem(info: UserResult, navController: NavController, context: Context)
         Row(
             Modifier
                 .fillMaxWidth()
-                .clickable {
-                    navController.navigate(FriendsRoutes.FriendScreen(info.handle!!))
-                }
+                .combinedClickable(
+                    onClick = {
+                        if (isSelecting) {
+                            onNoteToggled()
+                        } else {
+                            navController.navigate(FriendsRoutes.FriendScreen(info.handle))
+                        }
+                    },
+                    onLongClick = {
+                        onNoteToggled()
+                    },
+                    enabled = true
+                )
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
@@ -253,8 +351,7 @@ fun FriendItem(info: UserResult, navController: NavController, context: Context)
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = info.handle!!,
-                    style = MaterialTheme.typography.titleMedium
+                    text = info.handle, style = MaterialTheme.typography.titleMedium
                 )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -274,6 +371,11 @@ fun FriendItem(info: UserResult, navController: NavController, context: Context)
                     text = "Last Active: ${formatLastActiveTime(info.lastOnlineTimeSeconds)}",
                     style = MaterialTheme.typography.bodySmall
                 )
+            }
+            if (isSelecting) {
+                Checkbox(checked = selected, onCheckedChange = {
+                    onNoteToggled()
+                })
             }
         }
     }

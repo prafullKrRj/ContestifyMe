@@ -27,4 +27,10 @@ interface FriendsDao {
     @Delete
     suspend fun deleteFriend(userInfoEntity: UserInfoEntity)
 
+    @Query("delete from user_info")
+    suspend fun deleteAll()
+
+    @Query("DELETE FROM user_info WHERE handle IN (:map)")
+    suspend fun deleteFriends(map: List<String>)
+
 }

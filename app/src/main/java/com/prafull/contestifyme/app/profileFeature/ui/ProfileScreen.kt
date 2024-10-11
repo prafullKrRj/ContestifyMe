@@ -31,7 +31,7 @@ import com.prafull.contestifyme.app.App
 import com.prafull.contestifyme.app.commons.BaseClass
 import com.prafull.contestifyme.app.commons.ui.ErrorScreen
 import com.prafull.contestifyme.app.friendsFeature.ui.friendList.LoadingScreen
-import com.prafull.contestifyme.app.userscreen.UserProfileScreen
+import com.prafull.contestifyme.app.userscreen.UserScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,12 +83,10 @@ fun ProfileScreen(viewModel: ProfileViewModel, navController: NavController) {
                 }
 
                 is BaseClass.Success -> {
-                    UserProfileScreen(
+                    UserScreen(
                         userData = response.data,
-                        Modifier
-                    ) {
-                        navController.navigate(App.SubmissionScreen)
-                    }
+                        navController = navController
+                    )
                 }
             }
         }

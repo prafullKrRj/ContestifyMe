@@ -1,9 +1,11 @@
 package com.prafull.contestifyme.app.userscreen
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,15 +20,23 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -37,7 +47,9 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.prafull.contestifyme.R
+import com.prafull.contestifyme.app.App
 import com.prafull.contestifyme.app.commons.UserData
 import com.prafull.contestifyme.app.commons.Utils
 import com.prafull.contestifyme.app.commons.ui.ProfileCard
@@ -53,6 +65,7 @@ import ir.ehsannarmani.compose_charts.models.HorizontalIndicatorProperties
 import ir.ehsannarmani.compose_charts.models.LabelProperties
 import ir.ehsannarmani.compose_charts.models.Line
 import ir.ehsannarmani.compose_charts.models.Pie
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -62,31 +75,69 @@ fun getVerdictFrequency(userSubmissions: List<UserSubmissions>): Map<String, Int
 }
 
 @Composable
+fun UserScreen(userData: UserData, navController: NavController) {
+    val scope = rememberCoroutineScope()
+    val pagerState = rememberPagerState(initialPage = 0) {
+        2
+    }
+    Column(Modifier.fillMaxSize()) {
+        if (userData.userSubmissions.isNotEmpty()) {
+            TabRow(
+                selectedTabIndex = pagerState.currentPage,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Tab(selected = pagerState.currentPage == 0, onClick = {
+                    scope.launch {
+                        pagerState.animateScrollToPage(0)
+                    }
+                }) {
+                    Text(text = "Profile", style = MaterialTheme.typography.bodyLarge)
+                }
+                Tab(selected = pagerState.currentPage == 1, onClick = {
+                    scope.launch {
+                        pagerState.animateScrollToPage(1)
+                    }
+                }) {
+                    Text(
+                        text = "Submissions",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(4.dp)
+                    )
+                }
+            }
+            HorizontalPager(state = pagerState) {
+                when (it) {
+                    0 -> {
+                        UserProfileScreen(userData = userData, modifier = Modifier)
+                    }
+
+                    1 -> {
+                        SubmissionList(
+                            submissions = userData.userSubmissions,
+                            paddingValues = PaddingValues(),
+                            navController = navController
+                        )
+                    }
+                }
+
+            }
+        } else {
+            UserProfileScreen(userData = userData, modifier = Modifier)
+        }
+    }
+}
+
+@Composable
 fun UserProfileScreen(
-    userData: UserData, modifier: Modifier, toSubmissions: () -> Unit
+    userData: UserData, modifier: Modifier
 ) {
     LazyColumn(
         modifier.fillMaxSize(),
         contentPadding = PaddingValues(12.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        item {
-            Row(
-                Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                FilledTonalButton(
-                    onClick = toSubmissions
-                ) {
-                    Text(text = "Submissions")
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.baseline_navigate_next_24),
-                        contentDescription = "toSubmissions"
-                    )
-                }
-            }
-        }
         item("rankCard") {
             RankCard(usersInfo = userData.usersInfo)
         }
@@ -154,23 +205,25 @@ fun RankCard(usersInfo: UserResult) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        ElevatedCard(Modifier.wrapContentSize()) {
+        ElevatedCard(
+            Modifier
+                .wrapContentHeight()
+                .fillMaxWidth()
+        ) {
             Column(Modifier.padding(12.dp)) {
-                usersInfo.rank?.let {
+                usersInfo.rank?.let { it ->
                     Text(
-                        text = it.capitalize(),
+                        text = it.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
                         color = Utils.getRankColor(it.lowercase()),
                         fontWeight = FontWeight.SemiBold
                     )
                 }
-                usersInfo.handle.let {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.titleLarge,
-                        color = Utils.getRankColor(usersInfo.rank.toString().lowercase()),
-                        fontWeight = FontWeight.W700
-                    )
-                }
+                Text(
+                    text = usersInfo.handle,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Utils.getRankColor(usersInfo.rank.toString().lowercase()),
+                    fontWeight = FontWeight.W700
+                )
                 usersInfo.country?.let {
                     Text(
                         text = it
@@ -476,5 +529,100 @@ fun getColorForVerdict(verdict: String): Color {
         "TESTING" -> Color(0xFF009688)  // Teal
         "REJECTED" -> Color(0xFF673AB7)  // Deep Purple
         else -> Color(0xFF000000)  // Black for unknown verdicts
+    }
+}
+
+@Composable
+fun SubmissionList(
+    submissions: List<UserSubmissions>, paddingValues: PaddingValues, navController: NavController
+) {
+    LazyColumn(
+        modifier = Modifier
+            .padding(paddingValues)
+            .padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        if (submissions.isNotEmpty()) {
+            items(submissions, key = {
+                "${it.id} ${it.contestId} ${it.index}"
+            }) { submission ->
+                SubmissionCard(submission, navController)
+            }
+        } else {
+            item {
+                Text(
+                    text = "No submissions found",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun SubmissionCard(submission: UserSubmissions, navController: NavController) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateContentSize(),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = getColorForVerdict(submission.verdict).copy(alpha = 0.2f)
+        )
+    ) {
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                navController.navigate(
+                    App.WebViewScreen(
+                        url = "https://codeforces.com/contest/${submission.contestId}/submission/${submission.id}",
+                        heading = submission.name
+                    )
+                )
+            }
+            .padding(16.dp)
+
+        ) {
+            Text(
+                text = submission.name,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                InfoChip(
+                    icon = ImageVector.vectorResource(id = R.drawable.baseline_timer_24),
+                    text = "Time: ${submission.time}"
+                )
+                InfoChip(
+                    icon = ImageVector.vectorResource(id = R.drawable.baseline_assignment_24),
+                    text = "Verdict: ${submission.verdict}"
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun InfoChip(icon: ImageVector, text: String) {
+    Surface(
+        shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.surfaceVariant
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = icon, contentDescription = null, modifier = Modifier.size(16.dp)
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = text, style = MaterialTheme.typography.bodySmall
+            )
+        }
     }
 }
