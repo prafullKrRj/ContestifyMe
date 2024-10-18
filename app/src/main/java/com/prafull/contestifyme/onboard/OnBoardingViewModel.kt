@@ -45,7 +45,6 @@ class OnBoardingViewModel : ViewModel(), KoinComponent {
         viewModelScope.launch(Dispatchers.IO) {
             _loginState.update { OnBoardingState.Loading }
             try {
-                Log.d("OnBoardingViewModel", "login: $handle")
                 val user = apiService.getUser(handle)
                 Log.d("OnBoardingViewModel", "login: $user")
                 if (user.status == "FAILED") {
@@ -61,7 +60,6 @@ class OnBoardingViewModel : ViewModel(), KoinComponent {
                         _succeeded.update {
                             true
                         }
-                        Log.d("OnBoardingViewModel", "login: $user")
                         user.let { OnBoardingState.Success(it) }
                     }
                 }

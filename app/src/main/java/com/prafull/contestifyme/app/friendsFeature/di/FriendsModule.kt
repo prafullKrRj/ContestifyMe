@@ -15,7 +15,7 @@ import org.koin.dsl.module
 val friendsModule = module {
 
     viewModel {
-        FriendsViewModel(androidContext())
+        FriendsViewModel()
     }
     viewModel {
         FriendScreenViewModel(get(), androidContext())

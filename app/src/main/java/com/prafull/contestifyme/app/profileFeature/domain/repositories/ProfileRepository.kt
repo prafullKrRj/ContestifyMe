@@ -13,4 +13,5 @@ interface ProfileRepository {
     fun getUserSubmissions(): Flow<BaseClass<List<UserSubmissions>>>
     suspend fun getUserInfoFromLocal(): Flow<BaseClass<UserData>>
     fun getUserHandle(): String
+    suspend fun deleteUserData()
 }

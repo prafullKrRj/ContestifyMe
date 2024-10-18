@@ -27,4 +27,10 @@ class SharedPrefManager(context: Context) {
         editor.putString("handle", handle)
         editor.apply()
     }
+
+    fun logout() {
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
+    }
 }

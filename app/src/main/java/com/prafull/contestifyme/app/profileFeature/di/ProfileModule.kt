@@ -7,12 +7,11 @@ import com.prafull.contestifyme.app.profileFeature.data.repositories.ProfileRepo
 import com.prafull.contestifyme.app.profileFeature.domain.repositories.ProfileRepository
 import com.prafull.contestifyme.app.profileFeature.ui.ProfileViewModel
 import org.koin.android.ext.koin.androidApplication
-import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val profileModule = module {
-    viewModel { ProfileViewModel(androidContext()) }
+    viewModel { ProfileViewModel() }
 
     single<ProfileDatabase> {
         Room.databaseBuilder(

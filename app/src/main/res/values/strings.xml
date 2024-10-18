@@ -11,4 +11,5 @@
     <string name="no_contests">No Contests</string>
     <string name="upcoming_contests">Upcoming Contests</string>
     <string name="past_contests">Past Contests</string>
+    <string name="error">Error</string>
 </resources>

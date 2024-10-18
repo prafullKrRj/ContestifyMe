@@ -1,62 +1,60 @@
 package com.prafull.contestifyme.app.contestsFeature.contestListScreen
 
-import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.prafull.contestifyme.app.commons.BaseClass
 import com.prafull.contestifyme.app.contestsFeature.data.local.ContestsEntity
 import com.prafull.contestifyme.app.contestsFeature.domain.repositories.ContestsRepository
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import retrofit2.HttpException
-import java.io.IOException
 
-data class ContestUiState(
-    val isLoading: Boolean = false,
-    val contests: List<ContestsEntity> = emptyList(),
-    val error: Boolean = false,
-)
 
 class ContestsViewModel() : ViewModel(), KoinComponent {
     private val contestsRepository: ContestsRepository by inject()
-    val state: StateFlow<ContestUiState> = contestsRepository.getContests().map { list ->
-        ContestUiState(false, list, false)
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        ContestUiState(false, emptyList(), false)
-    )
+
+    private val _state = MutableStateFlow<BaseClass<List<ContestsEntity>>>(BaseClass.Loading)
+    val state = _state.asStateFlow()
+    private var isError by mutableStateOf(false)
 
     init {
-        getContests()
+        if ((state.value !is BaseClass.Success || isError) || (state.value is BaseClass.Success && isError)) {
+            updateContests()
+        }
     }
 
-    private fun getContests() {
-        viewModelScope.launch {
-            try {
-                val contests = contestsRepository.getContestsFromApi()
-                contests.contestsResult.forEach {
-                    contestsRepository.insertContests(
-                        ContestsEntity(
-                            it.id,
-                            it.durationSeconds,
-                            it.frozen,
-                            it.name,
-                            it.phase,
-                            it.relativeTimeSeconds,
-                            it.startTimeSeconds,
-                            it.type
-                        )
-                    )
+    fun updateContests() {
+        viewModelScope.launch(Dispatchers.IO) {
+            contestsRepository.getContestsFromApi().collectLatest { response ->
+                when (response) {
+                    is BaseClass.Error -> {
+                        isError = true
+                        contestsRepository.getContests().collectLatest { dbResponse ->
+                            _state.update {
+                                BaseClass.Success(dbResponse)
+                            }
+                        }
+                    }
+
+                    BaseClass.Loading -> {
+                        _state.value = BaseClass.Loading
+                    }
+
+                    is BaseClass.Success -> {
+                        isError = false
+                        _state.update {
+                            response
+                        }
+                    }
                 }
-            } catch (e: HttpException) {
-                Log.d("prafull", "HttpException")
-            } catch (e: IOException) {
-                Log.d("prafull", "IOException")
             }
         }
     }

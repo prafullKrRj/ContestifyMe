@@ -32,16 +32,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.prafull.contestifyme.R
-import com.prafull.contestifyme.Routes
 import retrofit2.HttpException
 import java.io.IOException
 
 @Composable
 fun OnBoardingScreen(
     viewModel: OnBoardingViewModel,
-    navController: NavController,
+    navigateTo: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     val loginState by viewModel.loginState.collectAsState()
@@ -49,7 +47,7 @@ fun OnBoardingScreen(
 
     LaunchedEffect(key1 = succeeded) {
         if (succeeded) {
-            navController.navigate(Routes.ContestifyApp)
+            navigateTo()
         }
     }
 

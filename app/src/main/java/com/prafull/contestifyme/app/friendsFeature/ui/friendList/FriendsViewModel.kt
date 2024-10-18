@@ -20,11 +20,11 @@ import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class FriendsViewModel(
-    private val context: Context
-) : ViewModel(), KoinComponent {
+class FriendsViewModel() : ViewModel(), KoinComponent {
 
     private val repo: FriendRepo by inject()
+    private val context: Context by inject()
+
     private val _friendsList = MutableStateFlow<BaseClass<List<UserResult>>>(BaseClass.Loading)
     val friendsList = _friendsList.asStateFlow()
 
@@ -37,6 +37,8 @@ class FriendsViewModel(
     private val _selectedFriends = MutableStateFlow<MutableSet<UserResult>>(mutableSetOf())
     val selectedFriends = _selectedFriends
 
+
+    private var isError by mutableStateOf(false)
     fun toggleSelectedFriends(friend: UserResult) {
         if (_selectedFriends.value.contains(friend)) {
             _selectedFriends.update {
@@ -60,7 +62,11 @@ class FriendsViewModel(
     }
 
     init {
-        getFriendsList()
+        if ((friendsList.value !is BaseClass.Success || isError) || (friendsList.value is BaseClass.Success && isError)) {
+            getFriendsList()
+        } else {
+            // do nothing
+        }
     }
 
     fun getFriendsList() {
@@ -71,6 +77,7 @@ class FriendsViewModel(
             repo.updateFriends().collectLatest { response ->
                 when (response) {
                     is BaseClass.Success -> {
+                        isError = false
                         _friendsList.update {
                             BaseClass.Success(response.data.map { it.toUserResult() })
                         }
@@ -78,6 +85,7 @@ class FriendsViewModel(
 
                     is BaseClass.Error -> {
                         showToast("Error occurred")
+                        isError = true
                         _friendsList.update {
                             BaseClass.Success(
                                 repo.getFriendsDataFromDB().map { it.toUserResult() }

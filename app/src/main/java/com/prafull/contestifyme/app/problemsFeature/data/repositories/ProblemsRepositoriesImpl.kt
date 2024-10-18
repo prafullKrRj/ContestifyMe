@@ -1,6 +1,5 @@
 package com.prafull.contestifyme.app.problemsFeature.data.repositories
 
-import android.util.Log
 import com.prafull.contestifyme.app.commons.BaseClass
 import com.prafull.contestifyme.app.problemsFeature.constants.ProblemsConstants
 import com.prafull.contestifyme.app.problemsFeature.data.local.ProblemsDao
@@ -19,25 +18,18 @@ class ProblemsRepositoryImpl() : ProblemsRepository, KoinComponent {
     private val problemsApiService: ProblemsApiService by inject()
     private val dao: ProblemsDao by inject()
 
-    override suspend fun getProblemsFromApi(): ProblemsDto = problemsApiService.getProblems(
-        ProblemsConstants.getProblemsByTags(
-            emptyList()
-        )
-    )
-
     override fun getListOfProblems(): Flow<BaseClass<List<ProblemsEntity>>> = flow {
         try {
-            Log.d("ProblemsRepositoryImpl", "getListOfProblems: ")
             val responseFromApi: ProblemsDto = problemsApiService.getProblems(
                 ProblemsConstants.getProblemsByTags(
                     emptyList()
                 )
             )
-            Log.d("ProblemsRepositoryImpl", "getListOfProblems: $responseFromApi")
             if (responseFromApi.status == "FAILED") {
                 emit(BaseClass.Error(Exception("Failed to fetch data")))
             } else {
                 val list = responseFromApi.result.problems.map { it.toProblemEntity() }
+                addProblemsToDb(list)
                 emit(BaseClass.Success(list))
             }
         } catch (e: Exception) {
@@ -46,6 +38,9 @@ class ProblemsRepositoryImpl() : ProblemsRepository, KoinComponent {
     }
 
     override fun getProblemsFromDb(): Flow<List<ProblemsEntity>> = dao.getProblemsFromDb()
+    override suspend fun addProblemsToDb(problems: List<ProblemsEntity>) {
+        dao.upsertProblems(problems)
+    }
 
     override suspend fun deleteAll() = dao.deleteALl()
     override suspend fun upsertProblems(problems: List<ProblemsEntity>) =

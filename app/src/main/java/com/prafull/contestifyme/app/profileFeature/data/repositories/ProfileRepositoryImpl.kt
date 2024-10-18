@@ -24,6 +24,10 @@ class ProfileRepositoryImpl : ProfileRepository, KoinComponent {
     private val onBoardApi by inject<OnBoardApiService>()
     override fun getUserHandle(): String = sharedPrefManager.getLoginUserHandle()
 
+    override suspend fun deleteUserData() {
+        profileDao.deleteUserData()
+    }
+
     override suspend fun getUserInfo(): Flow<BaseClass<UserData>> = flow {
         try {
             val handle = getUserHandle()

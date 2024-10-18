@@ -1,9 +1,11 @@
 package com.prafull.contestifyme.app.profileFeature.ui
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.prafull.contestifyme.app.commons.BaseClass
@@ -18,18 +20,20 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 
-@SuppressLint("MutableCollectionMutableState")
-class ProfileViewModel(
-    val context: Context
-) : ViewModel(), KoinComponent {
+class ProfileViewModel : ViewModel(), KoinComponent {
 
+    private val context: Context by inject()
     private val profileRepository: ProfileRepository by inject()
 
     private val _profileUiState = MutableStateFlow<BaseClass<UserData>>(BaseClass.Loading)
     val profileUiState = _profileUiState.asStateFlow()
 
+    private var isError by mutableStateOf(false)
+
     init {
-        updateUserInfo()
+        if ((profileUiState.value !is BaseClass.Success || isError) || (profileUiState.value is BaseClass.Success && isError)) {
+            updateUserInfo()
+        }
     }
 
     fun updateUserInfo() {
@@ -37,6 +41,7 @@ class ProfileViewModel(
             profileRepository.getUserInfo().collectLatest { response ->
                 when (response) {
                     is BaseClass.Error -> {
+                        isError = true
                         when (response.exception) {
                             is java.io.IOException -> {
                                 showToast("No internet connection.")
@@ -51,13 +56,17 @@ class ProfileViewModel(
                             }
 
                             else -> {
-                                Log.d("ProfileViewModel", "updateUserInfo: ${response.exception}")
+                                Log.d(
+                                    "ProfileViewModel",
+                                    "updateUserInfo: ${response.exception}"
+                                )
                                 showToast("An unexpected error occurred.")
                             }
                         }
-                        profileRepository.getUserInfoFromLocal().collectLatest { localResponse ->
-                            _profileUiState.update { localResponse }
-                        }
+                        profileRepository.getUserInfoFromLocal()
+                            .collectLatest { localResponse ->
+                                _profileUiState.update { localResponse }
+                            }
                     }
 
                     BaseClass.Loading -> {
@@ -65,6 +74,7 @@ class ProfileViewModel(
                     }
 
                     is BaseClass.Success -> {
+                        isError = false
                         _profileUiState.update { response }
                     }
                 }

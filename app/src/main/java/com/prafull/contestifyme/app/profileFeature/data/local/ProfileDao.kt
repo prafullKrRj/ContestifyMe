@@ -44,4 +44,7 @@ interface ProfileDao {
         insertUserRating(userData.toUserRatingEntities())
         insertUserSubmissions(userData.toUserSubmissionEntities())
     }
+
+    @Query("DELETE FROM user_info")
+    suspend fun deleteUserData()
 }

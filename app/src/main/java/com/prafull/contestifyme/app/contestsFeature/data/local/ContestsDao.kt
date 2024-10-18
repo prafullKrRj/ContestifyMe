@@ -12,5 +12,10 @@ interface ContestsDao {
     suspend fun insertContests(contestsEntity: ContestsEntity)
 
     @Query("SELECT * FROM contests")
+
+
     fun getContests(): Flow<List<ContestsEntity>>
+
+    @Upsert
+    suspend fun insertContests(contestsEntity: List<ContestsEntity>)
 }

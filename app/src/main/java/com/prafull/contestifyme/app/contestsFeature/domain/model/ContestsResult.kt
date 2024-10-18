@@ -1,6 +1,7 @@
 package com.prafull.contestifyme.app.contestsFeature.domain.model
 
 import com.google.gson.annotations.SerializedName
+import com.prafull.contestifyme.app.contestsFeature.data.local.ContestsEntity
 
 data class ContestsResult(
     @SerializedName("durationSeconds")
@@ -26,4 +27,8 @@ data class ContestsResult(
 
     @SerializedName("type")
     val type: String
-)
+) {
+    fun toContestEntity() = ContestsEntity(
+        id, durationSeconds, frozen, name, phase, relativeTimeSeconds, startTimeSeconds, type
+    )
+}

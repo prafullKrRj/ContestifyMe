@@ -10,14 +10,13 @@ import com.prafull.contestifyme.app.problemsFeature.ui.ProblemsViewModel
 import com.prafull.contestifyme.app.problemsFeature.ui.acsmsguru.AcmsGuruViewModel
 import com.prafull.contestifyme.utils.Constants
 import org.koin.android.ext.koin.androidApplication
-import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 val problemsModule = module {
-    viewModel { ProblemsViewModel(androidContext()) }
+    viewModel { ProblemsViewModel() }
     single<ProblemsApiService> {
         Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)

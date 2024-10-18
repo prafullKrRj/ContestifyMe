@@ -24,29 +24,39 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.prafull.contestifyme.R
 import com.prafull.contestifyme.app.ContestRoutes
+import com.prafull.contestifyme.app.commons.BaseClass
 import com.prafull.contestifyme.app.commons.ui.SimpleTopAppBar
 import com.prafull.contestifyme.app.commons.ui.getTime
 import com.prafull.contestifyme.app.contestsFeature.data.local.ContestsEntity
+import com.prafull.contestifyme.app.friendsFeature.ui.friendList.LoadingScreen
 
 @Composable
 fun ContestsScreen(
     viewModel: ContestsViewModel,
     navController: NavController
 ) {
-    val state: ContestUiState by viewModel.state.collectAsState()
+    val contestState by viewModel.state.collectAsState()
     Scaffold(
         topBar = {
             SimpleTopAppBar(label = R.string.contest)
-        }
+        },
     ) { paddingValues ->
-        if (state.contests.isNotEmpty()) {
-            ContestsMainScreen(
-                contest = state.contests,
-                modifier = Modifier.padding(paddingValues),
-                navController = navController
-            )
-        } else {
-            Headings(modifier = Modifier.padding(start = 16.dp), label = R.string.no_contests)
+        when (val state = contestState) {
+            is BaseClass.Loading -> {
+                LoadingScreen()
+            }
+
+            is BaseClass.Error -> {
+                Headings(modifier = Modifier.padding(start = 16.dp), label = R.string.error)
+            }
+
+            is BaseClass.Success -> {
+                ContestsMainScreen(
+                    contest = state.data,
+                    modifier = Modifier.padding(paddingValues),
+                    navController = navController
+                )
+            }
         }
     }
 }

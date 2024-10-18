@@ -17,29 +17,29 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import retrofit2.HttpException
-import java.io.IOException
 
-class ProblemsViewModel(
-    private val context: Context
-) : ViewModel(), KoinComponent {
+class ProblemsViewModel : ViewModel(), KoinComponent {
 
     private val problemsRepository: ProblemsRepository by inject()
-
+    private val context by inject<Context>()
 
     private val _uiState = MutableStateFlow<BaseClass<ProblemState>>(BaseClass.Loading)
     val uiState = _uiState.asStateFlow()
     private var isError by mutableStateOf(false)
 
     init {
-        getProblemsFromInternet()
+        if (uiState.value !is BaseClass.Success || isError) {
+            getProblemsFromInternet()
+        }
     }
 
-    fun getProblemsFromInternet() {
+    private fun getProblemsFromInternet() {
         viewModelScope.launch {
+            _uiState.value = BaseClass.Loading
             problemsRepository.getListOfProblems().collectLatest { response ->
                 when (response) {
                     is BaseClass.Error -> {
+                        isError = true
                         problemsRepository.getProblemsFromDb().collectLatest { listEntity ->
                             if (listEntity.isEmpty()) {
                                 _uiState.update { BaseClass.Error(Exception("No Data Found")) }
@@ -52,45 +52,18 @@ class ProblemsViewModel(
                     }
 
                     BaseClass.Loading -> {
+                        isError = false
                         _uiState.update { BaseClass.Loading }
                     }
 
                     is BaseClass.Success -> {
+                        isError = false
                         _uiState.update { BaseClass.Success(ProblemState(response.data)) }
                     }
                 }
             }
         }
     }
-
-    private fun getProblems() {
-        viewModelScope.launch {
-            try {
-                val x = problemsRepository.getProblemsFromApi()
-                problemsRepository.deleteAll()
-                val list = mutableListOf<ProblemsEntity>()
-                x.result.problems.forEachIndexed { index, item ->
-                    list.add(
-                        ProblemsEntity(
-                            rating = item.rating,
-                            points = item.points,
-                            unique = "${item.contestId}-${item.index}",
-                            index = item.index,
-                            tags = item.tags,
-                            name = item.name
-                        )
-                    )
-                }
-                isError = false
-                problemsRepository.upsertProblems(list)
-            } catch (e: HttpException) {
-                isError = true
-            } catch (e: IOException) {
-                isError = true
-            }
-        }
-    }
-
 }
 
 data class ProblemState(

@@ -8,16 +8,15 @@ import androidx.navigation.toRoute
 import com.prafull.contestifyme.app.App
 import com.prafull.contestifyme.app.friendsFeature.ui.comparehandles.CompareScreen
 import com.prafull.contestifyme.app.friendsFeature.ui.friendList.FriendListScreen
-import com.prafull.contestifyme.app.friendsFeature.ui.friendList.FriendsViewModel
 import com.prafull.contestifyme.app.friendsFeature.ui.friendscreen.FriendScreen
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 
-fun NavGraphBuilder.friends(navController: NavController, friendsViewModel: FriendsViewModel) {
+fun NavGraphBuilder.friends(navController: NavController) {
     navigation<App.Friends>(startDestination = FriendsRoutes.FriendsList) {
         composable<FriendsRoutes.FriendsList> {
-            FriendListScreen(viewModel = friendsViewModel, navController)
+            FriendListScreen(viewModel = getViewModel(), navController)
         }
         composable<FriendsRoutes.FriendScreen> {
             val handle = it.toRoute<FriendsRoutes.FriendScreen>()

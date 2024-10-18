@@ -103,9 +103,8 @@ fun ProblemsMain(viewModel: ProblemsViewModel, navController: NavController) {
             ) {
                 when (state) {
                     is BaseClass.Error -> {
-                        ErrorScreen {
-                            viewModel.getProblemsFromInternet()
-                        }
+                        Text(text = (state as BaseClass.Error).exception.toString())
+
                     }
 
                     BaseClass.Loading -> {

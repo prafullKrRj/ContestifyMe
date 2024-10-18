@@ -2,7 +2,6 @@ package com.prafull.contestifyme.app
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,7 +13,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -22,9 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -37,45 +33,34 @@ import com.prafull.contestifyme.app.ai.chatScreen.AiConst
 import com.prafull.contestifyme.app.ai.chatScreen.ChatScreen
 import com.prafull.contestifyme.app.ai.enrollToAI.EnrollingScreen
 import com.prafull.contestifyme.app.contestsFeature.contestListScreen.ContestsScreen
-import com.prafull.contestifyme.app.contestsFeature.contestListScreen.ContestsViewModel
 import com.prafull.contestifyme.app.contestsFeature.contestScreen.ContestScreen
 import com.prafull.contestifyme.app.friendsFeature.friends
-import com.prafull.contestifyme.app.friendsFeature.ui.friendList.FriendsViewModel
 import com.prafull.contestifyme.app.problemsFeature.ProblemRoutes
 import com.prafull.contestifyme.app.problemsFeature.ui.ProblemsMain
-import com.prafull.contestifyme.app.problemsFeature.ui.ProblemsViewModel
 import com.prafull.contestifyme.app.problemsFeature.ui.acsmsguru.AcmsScreen
 import com.prafull.contestifyme.app.profileFeature.ui.ProfileScreen
-import com.prafull.contestifyme.app.profileFeature.ui.ProfileViewModel
 import com.prafull.contestifyme.app.settings.SettingsScreen
 import com.prafull.contestifyme.app.webview.WebViewComposable
 import com.prafull.contestifyme.goBackStack
+import com.prafull.contestifyme.navigateAndClearBackStack
+import com.prafull.contestifyme.onboard.OnBoardingScreen
+import com.prafull.contestifyme.utils.managers.SharedPrefManager
 import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-@Composable
-fun ContestifyAPP() {
-    val navController = rememberNavController()
-    ContestifyMainApp(navController = navController)
-}
 
 @SuppressLint("RestrictedApi")
 @Composable
-fun ContestifyMainApp(navController: NavHostController, logout: () -> Unit = {}) {
-    val viewModelStoreOwner = LocalViewModelStoreOwner.current!!
+fun ContestifyMainApp() {
+    val navController = rememberNavController()
     val currDestination = navController.currentBackStackEntryAsState().value?.destination?.route
-    LaunchedEffect(key1 = currDestination) {
-        Log.d("ContestifyMainApp", "Current Destination: $currDestination")
-    }
-    val profileViewModel: ProfileViewModel = getViewModel(viewModelStoreOwner = viewModelStoreOwner)
-    val contestsViewModel: ContestsViewModel =
-        getViewModel(viewModelStoreOwner = viewModelStoreOwner)
-    val friendsViewModel: FriendsViewModel = getViewModel(viewModelStoreOwner = viewModelStoreOwner)
-    val problemsViewModel: ProblemsViewModel =
-        getViewModel(viewModelStoreOwner = viewModelStoreOwner)
     val selected = rememberSaveable { mutableIntStateOf(0) }
     val context = LocalContext.current
+
+    val startDestination =
+        if (SharedPrefManager(context).isLoggedIn()) App.Profile else App.OnBoarding
+
     Scaffold(
         bottomBar = {
             if (canShowBottomBar(
@@ -91,10 +76,15 @@ fun ContestifyMainApp(navController: NavHostController, logout: () -> Unit = {})
                 .fillMaxSize()
                 .padding(paddingValues),
             navController = navController,
-            startDestination = App.Profile
+            startDestination = startDestination
         ) {
+            composable<App.OnBoarding> {
+                OnBoardingScreen(viewModel = koinViewModel()) {
+                    navController.navigateAndClearBackStack(App.Profile)
+                }
+            }
             composable<App.Profile> {
-                ProfileScreen(viewModel = profileViewModel, navController)
+                ProfileScreen(viewModel = getViewModel(), navController)
             }
             composable<App.Settings> {
                 SettingsScreen(
@@ -105,7 +95,7 @@ fun ContestifyMainApp(navController: NavHostController, logout: () -> Unit = {})
             composable<App.LibrariesList> {
                 Text(text = "Libraries")
             }
-            friends(navController, friendsViewModel)
+            friends(navController)
             composable<App.WebViewScreen> {
                 val item = it.toRoute<App.WebViewScreen>()
                 WebViewComposable(item.url, item.heading, navController)
@@ -135,7 +125,7 @@ fun ContestifyMainApp(navController: NavHostController, logout: () -> Unit = {})
             }
             navigation<App.Problems>(ProblemRoutes.ProblemsMain) {
                 composable<ProblemRoutes.ProblemsMain> {
-                    ProblemsMain(viewModel = problemsViewModel, navController = navController)
+                    ProblemsMain(viewModel = getViewModel(), navController = navController)
                 }
                 composable<ProblemRoutes.AcmsGuru> {
                     AcmsScreen(viewModel = getViewModel(), navController)
@@ -144,7 +134,7 @@ fun ContestifyMainApp(navController: NavHostController, logout: () -> Unit = {})
 
             navigation<App.Contests>(ContestRoutes.ContestList) {
                 composable<ContestRoutes.ContestList> {
-                    ContestsScreen(viewModel = contestsViewModel, navController)
+                    ContestsScreen(viewModel = getViewModel(), navController)
                 }
                 composable<ContestRoutes.ContestScreen> {
                     val item = it.toRoute<ContestRoutes.ContestScreen>()
@@ -219,4 +209,5 @@ fun canShowBottomBar(currRoute: String): Boolean {
             && currRoute != "com.prafull.contestifyme.app.AiRoutes.ApiSettings"
             && currRoute != "com.prafull.contestifyme.app.App.Settings"
             && currRoute != "com.prafull.contestifyme.app.App.LibrariesList"
+            && currRoute != "com.prafull.contestifyme.app.App.OnBoarding"
 }

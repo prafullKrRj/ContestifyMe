@@ -4,6 +4,8 @@ import kotlinx.serialization.Serializable
 
 sealed interface App {
 
+    @Serializable
+    data object OnBoarding : App
 
     @Serializable
     data object Profile : App
